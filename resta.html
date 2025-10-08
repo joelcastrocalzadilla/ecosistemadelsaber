@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Resta divertida con ositos, globo y piano</title>
+<style>
+  body { font-family: sans-serif; text-align: center; margin: 0; padding: 0; }
+  .pantalla { display: none; padding: 20px; }
+  #inicio { display: block; }
+  .grupo { font-size: 2em; margin: 20px; min-height: 50px; }
+  #globo {
+    width: 120px; height: 120px;
+    border-radius: 50%;
+    background: orange;
+    margin: 20px auto;
+    transition: all 0.5s ease;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 2.5em; color: white;
+  }
+  .globo-con-numero {
+    display: flex; flex-direction: column; align-items: center; gap: 10px;
+  }
+  #numeroGlobo {
+    font-size: 2.5em; font-weight: bold; color: #333;
+  }
+  #resultado { margin-top: 20px; font-size: 1.5em; }
+  .cuenta {
+    font-size: 2.5em;
+    line-height: 1.2;
+    display: inline-block;
+    text-align: right;
+    margin-top: 20px;
+  }
+  .linea {
+    border-top: 3px solid black;
+    margin-top: 5px;
+  }
+</style>
+</head>
+<body id="fondo">
+
+<!-- Pantalla inicial -->
+<div id="inicio" class="pantalla">
+  <h1>Bienvenido a la resta divertida</h1>
+  <p>Escribe tu nombre y selecciona:</p>
+  <input id="nombre" placeholder="Tu nombre">
+  <select id="genero">
+    <option value="azul">Niño 👦</option>
+    <option value="rosado">Niña 👧</option>
+  </select><br><br>
+  <button onclick="empezar()">Comenzar</button>
+</div>
+
+<!-- Pantalla del juego -->
+<div id="juego" class="pantalla">
+  <h2 id="saludo"></h2>
+  <p>Escribe dos números para restar (minuendo menos sustraendo):</p>
+  <input id="num1" type="number" placeholder="Ej: 9"> −
+  <input id="num2" type="number" placeholder="Ej: 4">
+  <button onclick="iniciarResta()">Restar</button>
+
+  <div>
+    <h3>Grupo inicial</h3>
+    <div id="grupo" class="grupo"></div>
+  </div>
+
+  <div class="globo-con-numero">
+    <div id="globo">🎈</div>
+    <div id="numeroGlobo">0</div>
+  </div>
+
+  <h2 id="resultado"></h2>
+  <div id="cuentaFinal"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+<script>
+// Pantalla inicial y fondo personalizado
+function empezar(){
+  const nombre = document.getElementById("nombre").value;
+  const genero = document.getElementById("genero").value;
+  document.getElementById("inicio").style.display="none";
+  document.getElementById("juego").style.display="block";
+  document.getElementById("saludo").textContent = "Hola " + nombre + ", ¡vamos a restar!";
+  document.body.style.background = (genero==="azul") ? "#cce5ff" : "#ffd6e7";
+}
+
+// Dibujar ositos
+function dibujarOsitos(cantidad){
+  return "🧸".repeat(Math.max(0, cantidad));
+}
+
+// Sonidos de piano (descendentes)
+function playNote(frequency, duration=0.35){
+  const ctx = new (window.AudioContext || window.webkitAudioContext)();
+  const osc = ctx.createOscillator();
+  const gain = ctx.createGain();
+  osc.type = "sine";
+  osc.frequency.value = frequency;
+  osc.connect(gain);
+  gain.connect(ctx.destination);
+  osc.start();
+  gain.gain.setValueAtTime(0.22, ctx.currentTime);
+  gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration);
+  osc.stop(ctx.currentTime + duration);
+}
+const escalaDesc = [392.00, 349.23, 329.63, 293.66, 261.63]; // G F E D C
+let pasoMusical = 0;
+function playStepSound(){
+  playNote(escalaDesc[pasoMusical % escalaDesc.length]);
+  pasoMusical++;
+}
+function playFinalChord(){
+  // Acorde menor alegre: C-E-G con una octava grave C
+  playNote(261.63, 0.9); // C
+  playNote(329.63, 0.9); // E
+  playNote(392.00, 0.9); // G
+}
+
+// Juego de resta
+function iniciarResta(){
+  let minuendo = parseInt(document.getElementById("num1").value);
+  let sustraendo = parseInt(document.getElementById("num2").value);
+  if(isNaN(minuendo)||isNaN(sustraendo)) return;
+
+  // Aseguramos que la operación sea minuendo - sustraendo
+  let a = minuendo;
+  let b = sustraendo;
+
+  let grupoDiv = document.getElementById("grupo");
+  let resultado = document.getElementById("resultado");
+  let globo = document.getElementById("globo");
+  let numeroGlobo = document.getElementById("numeroGlobo");
+  let cuentaFinal = document.getElementById("cuentaFinal");
+
+  grupoDiv.textContent = dibujarOsitos(a);
+  resultado.textContent = "";
+  cuentaFinal.innerHTML = "";
+  globo.style.width="120px"; globo.style.height="120px";
+  globo.textContent="🎈";
+  globo.style.background="orange";
+  numeroGlobo.textContent = a;
+  pasoMusical = 0;
+
+  let pasos = b;
+  let total = a;
+  let intervalo = setInterval(()=>{
+    if(pasos>0){
+      pasos--;
+      total = Math.max(0, total-1);
+      grupoDiv.textContent = dibujarOsitos(total);
+
+      // achicar globo
+      let progreso = (b - pasos); // pasos realizados
+      let size = 120 - progreso*20; // decrece 20px por paso
+      globo.style.width=Math.max(60, size)+"px";
+      globo.style.height=Math.max(60, size)+"px";
+
+      // actualizar número
+      numeroGlobo.textContent = total;
+
+      // sonido descendente
+      playStepSound();
+    } else {
+      clearInterval(intervalo);
+      resultado.textContent = `Resultado: ${a - b} ositos`;
+      // confeti y explosión
+      confetti({ particleCount: 160, spread: 70, origin: { y: 0.6 } });
+      globo.style.background="transparent";
+      globo.textContent="💥";
+      playFinalChord();
+
+      // Cuenta vertical como en el cuaderno
+      cuentaFinal.innerHTML = `
+        <div class="cuenta">
+          ${a}<br>
+          − ${b}<br>
+          <div class="linea"></div>
+          ${a - b}
+        </div>
+      `;
+    }
+  }, 900);
+}
+</script>
+</body>
+</html>

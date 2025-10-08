@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Lanza con ángulo y fuerza</title>
+  <style>
+    :root {
+      --pelota-size: 2em;
+      --canasta-width: 100px;
+    }
+    body {
+      font-family: sans-serif;
+      text-align: center;
+      background-color: #c8e6c9;
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden;
+    }
+    #campo {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 40px;
+      background-color: #2e7d32;
+      z-index: 0;
+    }
+    #escena {
+      position: relative;
+      height: 400px;
+      margin-top: 30px;
+      overflow: hidden;
+    }
+    #nino {
+      font-size: 3em;
+      position: absolute;
+    }
+    #canasta {
+      position: absolute;
+      bottom: 40px;
+      right: 50px;
+      width: var(--canasta-width);
+      height: 100px;
+      border: 3px dashed #4caf50;
+      border-radius: 20px;
+      background-color: #a5d6a7;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-content: flex-start;
+      padding: 5px;
+      z-index: 1;
+    }
+    .pelota {
+      font-size: var(--pelota-size);
+      position: absolute;
+    }
+    .pelotaAcumulada {
+      font-size: 1.5em;
+      margin: 3px;
+    }
+    #controls {
+      margin-top: 20px;
+    }
+    #conteo {
+      margin-top: 10px;
+    }
+    #aciertos {
+      font-size: 2.5em;
+      color: #1b5e20;
+    }
+    #intentos {
+      font-size: 1.5em;
+      color: #4e342e;
+    }
+    input {
+      margin: 5px;
+    }
+    .confeti {
+      position: absolute;
+      top: 0;
+      font-size: 2em;
+      animation: caer 2s linear forwards;
+    }
+    @keyframes caer {
+      to {
+        top: 100%;
+        opacity: 0;
+      }
+    }
+    .mariposa {
+      position: absolute;
+      font-size: 2em;
+      left: 50%;
+      top: 100%;
+      transform: translateX(-50%);
+      animation: volar 4s ease-out forwards;
+      z-index: 2;
+    }
+    @keyframes volar {
+      0% { top: 100%; opacity: 1; }
+      100% { top: 50%; opacity: 0; }
+    }
+    .mensaje {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 1.5em;
+      background: #fff8e1;
+      padding: 10px 20px;
+      border-radius: 10px;
+      color: #4e342e;
+      animation: aparecer 2s ease-out;
+      z-index: 3;
+    }
+    @keyframes aparecer {
+      0% { transform: scale(0); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    #morrocoy {
+      position: absolute;
+      bottom: 40px;
+      left: 100%;
+      font-size: 2.5em;
+      cursor: pointer;
+      animation: caminarIzquierda 30s linear infinite;
+      z-index: 2;
+    }
+    @keyframes caminarIzquierda {
+      0% { left: 100%; }
+      100% { left: -100px; }
+    }
+    #morrocoy::after {
+      content: " 🪧 Haz clic aquí";
+      font-size: 0.6em;
+      margin-left: 10px;
+      color: #2e7d32;
+    }
+    .valor {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 1.4em;
+      background: #fff3e0;
+      padding: 12px 24px;
+      border-radius: 12px;
+      color: #4e342e;
+      animation: titilar 1s infinite alternate;
+      z-index: 4;
+    }
+    @keyframes titilar {
+      from { opacity: 1; }
+      to { opacity: 0.3; }
+    }
+    .medalla {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 4em;
+      animation: brillar 2s ease-in-out infinite alternate;
+      z-index: 5;
+    }
+    @keyframes brillar {
+      from { opacity: 0.5; transform: scale(1); }
+      to { opacity: 1; transform: scale(1.2); }
+    }
+  </style>
+</head>
+<body>
+  <h1>¡Lanza con ángulo y fuerza!</h1>
+  <div id="escena">
+    <div id="nino">🧒</div>
+    <div id="canasta"></div>
+    <div id="campo"></div>
+    <div id="morrocoy" onclick="mostrarMensajeValor()">🐢</div>
+  </div>
+
+  <div id="controls">
+    Ángulo: <input type="number" id="angulo" value="45" min="10" max="80">°
+    Fuerza: <input type="number" id="fuerza" value="50" min="10" max="100">
+    <button onclick="lanzarPelota()">Lanzar</button>
+  </div>
+
+  <div id="conteo">
+    <div id="aciertos">🏀 Aciertos: 0</div>
+    <div id="intentos">🎯 Intentos: 0</div>
+  </div>
+
+  <!-- Sonidos -->
+  <audio id="aplausos" src="https://www.soundjay.com/human/applause-01.mp3"></audio>
+  <audio id="animo" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_2c8e3b8f9f.mp3?filename=kids-cheering-1-101522.mp3"></audio>
+  <audio id="samba" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_9f8e3b8f9f.mp3?filename=samba-drum-loop-1-101523.mp3" loop autoplay></audio>
+  <audio id="triunfo" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_3c8e3b8f9f.mp3?filename=triumph-fanfare-101524.mp3"></audio>
+
+<script>
+  let aciertos = 0;
+  let intentos = 0;
+
+  const escena = document.getElementById("escena");
+  const canasta = document.getElementById("canasta");
+  const aplausos = document.getElementById("aplausos");
+  const animo = document.getElementById("animo");
+  const nino = document.getElementById("nino");
+
+  const mensajesMotivacionales = [
+    "¡Soy el mejor!",
+    "¡Con 5 aciertos avanzas de nivel y con 10 aciertos GANAS la medalla de Honor!",
+    "Invita a tus padres a competir contigo",
+    "Debo respetar a mis padres",
+    "Debo comer saludable",
+    "¡Soy muy inteligente!",    
+    "Debo hacer mis tareas",
+     "¡Soy un luchador!",
+    "No debo hablar con extraños",
+    "Debo cuidar el planeta",
+    "¡Puedo hacerlo!",
+    "¡Soy capaz de lograr cualquier cosa!"
+  ];
+
+  const mensajesValores = [
+    "Debo respetar a mis padres",
+    "Debo comer saludable",
+    "Debo hacer mis tareas",
+    "No debo hablar con extraños",
+    "Debo cuidar el planeta",
+    "Debo ayudar a los demás"
+  ];
+
+  function lanzarPelota() {
+    intentos++;
+    document.getElementById("intentos").innerText = `🎯 Intentos: ${intentos}`;
+
+    const anguloInput = document.getElementById("angulo");
+    const fuerzaInput = document.getElementById("fuerza");
+
+    const angulo = parseFloat(anguloInput.value);
+    const fuerza = parseFloat(fuerzaInput.value);
+
+    const radianes = angulo * Math.PI / 180;
+    const velocidadX = Math.cos(radianes) * fuerza;
+    const velocidadY = Math.sin(radianes) * fuerza;
+
+        const pelota = document.createElement("div");
+    pelota.className = "pelota";
+    pelota.innerText = "🏀";
+    escena.appendChild(pelota);
+
+    const lanzadorX = parseInt(nino.style.left) || 50;
+    const lanzadorY = parseInt(nino.style.bottom) || 40;
+
+    let x = lanzadorX;
+    let y = lanzadorY;
+    let tiempo = 0;
+
+    const intervalo = setInterval(() => {
+      tiempo += 0.1;
+      x = lanzadorX + velocidadX * tiempo;
+      y = lanzadorY + velocidadY * tiempo - 4.9 * tiempo * tiempo;
+
+      pelota.style.left = `${x}px`;
+      pelota.style.bottom = `${y}px`;
+
+      if (y < 40) {
+        clearInterval(intervalo);
+        escena.removeChild(pelota);
+
+        const canastaX = window.innerWidth - 100;
+
+        if (x > canastaX - 50 && x < canastaX + 50) {
+          aciertos++;
+          const acumulada = document.createElement("div");
+          acumulada.className = "pelotaAcumulada";
+          acumulada.innerText = "🏀";
+          canasta.appendChild(acumulada);
+
+          document.getElementById("aciertos").innerText = `🏀 Aciertos: ${aciertos}`;
+          aplausos.play();
+          animo.play();
+          lanzarConfeti();
+          decir(`¡Acierto número ${aciertos}!`);
+
+          anguloInput.value = 0;
+          fuerzaInput.value = 0;
+
+          moverLanzador();
+
+          if (aciertos === 5) {
+            document.documentElement.style.setProperty('--pelota-size', '1.2em');
+            document.documentElement.style.setProperty('--canasta-width', '70px');
+            decir("¡Nivel 2 desbloqueado! La pelota es más pequeña y la canasta más angosta.");
+          }
+
+          if (aciertos === 10) {
+            const medalla = document.createElement("div");
+            medalla.className = "medalla";
+            medalla.innerText = "🥇";
+            escena.appendChild(medalla);
+
+            document.getElementById("triunfo").play();
+            decir("¡Eres un campeón! Has ganado la medalla de oro.");
+
+            setTimeout(() => escena.removeChild(medalla), 6000);
+          }
+
+        } else {
+          let mensaje = "";
+          if (x > canastaX - 80 && x < canastaX + 80) {
+            mensaje = "¡Estuvo cerca! Intenta otra vez.";
+          } else if (fuerza < 40) {
+            mensaje = "¡Dale con más fuerza!";
+          } else if (angulo < 30) {
+            mensaje = "¡Aumenta el ángulo!";
+          } else if (angulo > 70) {
+            mensaje = "¡Disminuye el ángulo!";
+          } else {
+            mensaje = "¡Piensa bien, cambia el ángulo y la fuerza!";
+          }
+
+          document.getElementById("aciertos").innerText = `🏀 Aciertos: ${aciertos}`;
+          document.getElementById("intentos").innerText = `🎯 Intentos: ${intentos}`;
+          decir(mensaje);
+        }
+      }
+    }, 30);
+  }
+
+  function lanzarConfeti() {
+    for (let i = 0; i < 20; i++) {
+      const confeti = document.createElement("div");
+      confeti.className = "confeti";
+      confeti.innerText = ["🎉", "✨", "🎊"][Math.floor(Math.random() * 3)];
+      confeti.style.left = `${Math.random() * window.innerWidth}px`;
+      escena.appendChild(confeti);
+      setTimeout(() => escena.removeChild(confeti), 2000);
+    }
+  }
+
+  function decir(texto) {
+    const voz = new SpeechSynthesisUtterance(texto);
+    voz.lang = 'es-ES';
+    speechSynthesis.speak(voz);
+  }
+
+  function moverLanzador() {
+    const nuevaX = Math.floor(Math.random() * 200) + 50;
+    const nuevaY = Math.floor(Math.random() * 60) + 40;
+    nino.style.left = `${nuevaX}px`;
+    nino.style.bottom = `${nuevaY}px`;
+  }
+
+  function lanzarMariposa() {
+    const mariposa = document.createElement("div");
+    mariposa.className = "mariposa";
+    mariposa.innerText = "🦋";
+    escena.appendChild(mariposa);
+
+    setTimeout(() => {
+      escena.removeChild(mariposa);
+      mostrarMensajeMotivacional();
+    }, 4000);
+  }
+
+  function mostrarMensajeMotivacional() {
+    const mensaje = document.createElement("div");
+    mensaje.className = "mensaje";
+    const texto = mensajesMotivacionales[Math.floor(Math.random() * mensajesMotivacionales.length)];
+    mensaje.innerText = texto;
+    escena.appendChild(mensaje);
+    decir(texto);
+    setTimeout(() => escena.removeChild(mensaje), 4000);
+  }
+
+  function mostrarMensajeValor() {
+    const mensaje = document.createElement("div");
+    mensaje.className = "valor";
+    const texto = mensajesValores[Math.floor(Math.random() * mensajesValores.length)];
+    mensaje.innerText = texto;
+    escena.appendChild(mensaje);
+    decir(texto);
+    setTimeout(() => escena.removeChild(mensaje), 5000);
+  }
+
+  // Iniciar lanzador y mariposas
+  moverLanzador();
+  setInterval(lanzarMariposa, 20000);
+</script>
+</body>
+</html>

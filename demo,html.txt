@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Practicando sílabas con emojis</title>
+<style>
+  body { font-family: sans-serif; text-align: center; background: #e3f2fd; }
+  input, button { font-size: 1.5em; margin: 10px; padding: 10px; border-radius: 8px; }
+  #silabaMostrada { font-size: 5em; margin-top: 20px; }
+  #imagenes { font-size: 3em; margin-top: 10px; }
+  #saludo { font-size: 1.2em; margin-top: 10px; color: #333; }
+</style>
+</head>
+<body>
+  <h1>Practicando sílabas con emojis</h1>
+  <input id="nombre" placeholder="Tu nombre">
+  <button onclick="iniciar()">Comenzar</button>
+  <button onclick="repetirSilaba()">🔁 Repetir</button>
+  <div id="saludo"></div>
+  <input id="entrada" maxlength="3" placeholder="pa" oninput="decirSilaba()">
+  <div id="silabaMostrada"></div>
+  <div id="imagenes"></div>
+
+<script>
+let voces = [];
+let nombreNiño = "niño";
+let timerInactividad;
+let ultimaSilaba = "";
+
+// ✅ Diccionario de sílabas con la letra P
+const ejemplos = {
+  "pa":[["pato","🦆"],["papa","🥔"],["paleta","🍭"]],
+  "pe":[["pera","🍐"],["pelota","⚽"],["perro","🐶"]],
+  "pi":[["pino","🌲"],["piedra","🪨"],["pintura","🎨"]],
+  "po":[["pollo","🐔"],["polo","🍭"],["portón","🚪"]],
+  "pu":[["pulpo","🐙"],["puma","🐆"],["pupusa","🥟"]]
+};
+
+function cargarVoces() {
+  voces = speechSynthesis.getVoices();
+  if (voces.length === 0) setTimeout(cargarVoces, 500);
+}
+speechSynthesis.onvoiceschanged = cargarVoces;
+cargarVoces();
+
+function hablar(texto){
+  if (voces.length === 0) voces = speechSynthesis.getVoices();
+  let utter = new SpeechSynthesisUtterance(texto);
+  utter.lang = "es-ES";
+  utter.rate = 0.8;
+  let voz = voces.find(v => v.lang.startsWith("es"));
+  if (voz) utter.voice = voz;
+  speechSynthesis.cancel();
+  speechSynthesis.speak(utter);
+}
+
+function iniciar(){
+  let nombreIngresado = document.getElementById("nombre").value.trim();
+  if(nombreIngresado) nombreNiño = nombreIngresado;
+  let mensaje = `Hola ${nombreNiño}, escribe una sílaba para comenzar.`;
+  document.getElementById("saludo").textContent = mensaje;
+  hablar(mensaje);
+  reiniciarTimer();
+}
+
+function reiniciarTimer(){
+  clearTimeout(timerInactividad);
+  timerInactividad = setTimeout(()=>{
+    let mensaje = `¡Ey ${nombreNiño}! ¿Qué pasa? Sigamos practicando, cambia la sílaba...`;
+    document.getElementById("saludo").textContent = mensaje;
+    hablar(mensaje);
+  }, 20000);
+}
+
+function decirSilaba(){
+  reiniciarTimer();
+  let silaba = document.getElementById("entrada").value.toLowerCase();
+  if(!silaba.match(/^[a-zñ]{1,3}$/i)) return;
+  ultimaSilaba = silaba;
+  document.getElementById("silabaMostrada").textContent = silaba.toUpperCase();
+
+  let lista = ejemplos[silaba] || [];
+  if(lista.length === 0){
+    hablar(`Lo siento ${nombreNiño}, no tengo ejemplos para la sílaba ${silaba}. Intenta con otra.`);
+    document.getElementById("imagenes").innerHTML = "";
+    return;
+  }
+
+  let mensaje = `${silaba} de ${lista.map(p => p[0]).join(", ")}. Muy bien ${nombreNiño}.`;
+  hablar(mensaje);
+  document.getElementById("imagenes").innerHTML = lista.map(p => p[1]).join(" ");
+}
+
+function repetirSilaba(){
+  if(!ultimaSilaba) return;
+
+  let lista = ejemplos[ultimaSilaba] || [];
+  if(lista.length === 0){
+    hablar(`Lo siento ${nombreNiño}, no tengo ejemplos para la sílaba ${ultimaSilaba}.`);
+    return;
+  }
+
+  let mensaje = `${ultimaSilaba} de ${lista.map(p => p[0]).join(", ")}. Muy bien ${nombreNiño}.`;
+  hablar(mensaje);
+  document.getElementById("imagenes").innerHTML = lista.map(p => p[1]).join(" ");
+}
+</script>
+</body>
+</html>

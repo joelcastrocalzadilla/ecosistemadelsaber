@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Cuenta con Tito el Payasito 🤡</title>
+  <style>
+    body {
+      font-family: 'Comic Sans MS', sans-serif;
+      text-align: center;
+      background: linear-gradient(135deg, #ffecb3, #ffe0b2);
+      margin: 0;
+      padding: 0;
+    }
+    #tito {
+      font-size: 5em;
+      cursor: pointer;
+      margin-top: 40px;
+      animation: brincar 1.5s infinite alternate;
+    }
+    @keyframes brincar {
+      from { transform: translateY(0); }
+      to { transform: translateY(-20px); }
+    }
+    #contador {
+      font-size: 4em;
+      color: #d32f2f;
+      margin-top: 20px;
+    }
+    #emojiZona {
+      margin-top: 20px;
+      font-size: 2em;
+    }
+    .confeti {
+      position: absolute;
+      top: 0;
+      font-size: 2em;
+      animation: caer 2s linear forwards;
+    }
+    @keyframes caer {
+      to { top: 100%; opacity: 0; }
+    }
+    .animado {
+      animation: payasoZoom 0.8s ease-out;
+    }
+    @keyframes payasoZoom {
+      0% {
+        transform: scale(0.3) rotate(0deg);
+        opacity: 0.3;
+        color: #f57c00;
+      }
+      100% {
+        transform: scale(1.4) rotate(360deg);
+        opacity: 1;
+        color: #c2185b;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>¡Cuenta con Tito el Payasito! 🤡🎪</h1>
+  <div id="tito" onclick="contar()">🤡</div>
+  <div id="contador">0</div>
+  <div id="emojiZona"></div>
+
+  <!-- Música de circo libre -->
+  <audio id="musicaFondo" src="https://cdn.pixabay.com/download/audio/2023/03/28/audio_0f6c4f9e2e.mp3?filename=funny-clown-music-142994.mp3" loop></audio>
+  <audio id="triunfo" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_3c8e3b8f9f.mp3?filename=triumph-fanfare-101524.mp3"></audio>
+
+<script>
+  let cuenta = 0;
+  let musicaActivada = false;
+
+  const contador = document.getElementById("contador");
+  const emojiZona = document.getElementById("emojiZona");
+  const triunfo = document.getElementById("triunfo");
+  const musica = document.getElementById("musicaFondo");
+
+  const frasesPayaso = [
+    "¡Unooo! Como un zapato gigante bailando salsa.",
+    "¡Dos! Como dos narices rojas brincando.",
+    "¡Tres! Como tres globos saltando en la pista.",
+    "¡Cuatro! Como cuatro risas en el aire.",
+    "¡Cinco! Como cinco sombreros girando.",
+    "¡Seis! Como seis pelucas voladoras.",
+    "¡Siete! Como siete trompetas de colores.",
+    "¡Ocho! Como ocho pastelazos felices.",
+    "¡Nueve! Como nueve saltos de alegría.",
+    "¡Diez! Como diez carcajadas explosivas."
+  ];
+
+  function contar() {
+    if (!musicaActivada) {
+      musica.play();
+      musica.volume = 1;
+      musicaActivada = true;
+      decir("¡Que suene el circooo!");
+    }
+
+    cuenta++;
+    contador.innerText = cuenta;
+    contador.classList.add("animado");
+    setTimeout(() => contador.classList.remove("animado"), 800);
+
+    const frase = frasesPayaso[cuenta - 1] || `¡${cuenta}! Tito dice que eres increíble.`;
+    decir(frase);
+
+    const estrella = document.createElement("span");
+    estrella.innerText = "🎈";
+    emojiZona.appendChild(estrella);
+
+    if (cuenta % 5 === 0) {
+      lanzarConfeti();
+      triunfo.play();
+      decir("¡Esooo! ¡Tito está feliz!");
+    }
+  }
+
+  function decir(texto) {
+    const voz = new SpeechSynthesisUtterance(texto);
+    voz.lang = 'es-MX';
+    voz.rate = 1.0;
+    voz.pitch = 1.4;
+    voz.volume = 1;
+
+    const voces = speechSynthesis.getVoices();
+    const vozPayaso = voces.find(v => v.name.includes("Sabina") || v.lang === "es-MX");
+    if (vozPayaso) voz.voice = vozPayaso;
+
+    speechSynthesis.speak(voz);
+  }
+
+  function lanzarConfeti() {
+    for (let i = 0; i < 25; i++) {
+      const confeti = document.createElement("div");
+      confeti.className = "confeti";
+      confeti.innerText = ["🎉", "✨", "🎊", "🎈"][Math.floor(Math.random() * 4)];
+      confeti.style.left = `${Math.random() * window.innerWidth}px`;
+      document.body.appendChild(confeti);
+      setTimeout(() => document.body.removeChild(confeti), 2000);
+    }
+  }
+
+  window.speechSynthesis.onvoiceschanged = () => {};
+</script>
+</body>
+</html>

@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Practicando sílabas con emojis</title>
+<style>
+  body { font-family: sans-serif; text-align: center; background: #e3f2fd; }
+  #nombre { width: 250px; font-size: 1.2em; padding: 5px; border-radius: 8px; }
+  input { font-size: 2em; text-align: center; width: 120px; margin: 20px; }
+  button { font-size: 1.5em; padding: 10px 20px; cursor: pointer; border-radius: 8px; background: #bbdefb; }
+  #silabaMostrada { font-size: 6em; margin-top: 30px; color: #333; }
+  #imagenes { margin-top: 20px; font-size: 3em; }
+  #saludo { font-size: 1.5em; margin-top: 20px; color: #444; }
+</style>
+</head>
+<body>
+  <h1>Practicando sílabas</h1>
+  <p>Escribe tu nombre:</p>
+  <input id="nombre" placeholder="Gabriel">
+  <button onclick="iniciar()">Comenzar</button>
+
+  <div id="saludo"></div>
+
+  <div style="margin-top:20px;">
+    <input id="entrada" maxlength="2" placeholder="pa" oninput="decirSilaba()">
+  </div>
+
+  <div id="silabaMostrada"></div>
+  <div id="imagenes"></div>
+
+<script>
+let voces = [];
+let nombreNiño = "Gabriel";
+let timerInactividad;
+
+function cargarVoces(){ voces = speechSynthesis.getVoices(); }
+speechSynthesis.onvoiceschanged = cargarVoces;
+
+// --- función de voz ---
+function hablar(texto){
+  let utter = new SpeechSynthesisUtterance(texto);
+  utter.lang = "es-ES";
+  utter.rate = 0.8;
+  let voz = voces.find(v => v.lang.startsWith("es"));
+  if(voz) utter.voice = voz;
+  speechSynthesis.speak(utter);
+}
+
+// --- iniciar ---
+function iniciar(){
+  let nombreIngresado = document.getElementById("nombre").value.trim();
+  if(nombreIngresado) nombreNiño = nombreIngresado;
+  let mensaje = `Hola ${nombreNiño}, ¿cómo estás? ¿Qué te parece si practicamos las sílabas? Escribe una sílaba.`;
+  document.getElementById("saludo").textContent = mensaje;
+  hablar(mensaje);
+  reiniciarTimer();
+}
+
+// --- temporizador ---
+function reiniciarTimer(){
+  clearTimeout(timerInactividad);
+  timerInactividad = setTimeout(()=>{
+    let mensaje = `¡Ey ${nombreNiño}! ¿Qué pasa? Sigamos practicando, cambia la sílaba...`;
+    document.getElementById("saludo").textContent = mensaje;
+    hablar(mensaje);
+  }, 20000);
+}
+
+// --- decirSilaba ---
+function decirSilaba(){
+  reiniciarTimer();
+  let silaba = document.getElementById("entrada").value.toLowerCase();
+  if(!silaba.match(/^[a-zñ]{1,2}$/i)) return;
+
+  document.getElementById("silabaMostrada").textContent = silaba.toUpperCase();
+
+   const ejemplos = {
+    // P
+    "pa":[["pato","🦆"],["papa","🥔"],["paleta","🍭"]],
+    "pe":[["pera","🍐"],["pelota","⚽"],["perro","🐶"]],
+    "pi":[["pino","🌲"],["piedra","🪨"],["pintura","🎨"]],
+    "po":[["pollo","🐔"],["polo","🍭"],["portón","🚪"]],
+    "pu":[["pulpo","🐙"],["puma","🐆"],["pupusa","🥟"]],
+    // M
+    "ma":[["mano","✋"],["mango","🥭"],["mapa","🗺️"]],
+    "me":[["mesa","🪑"],["melón","🍈"],["medalla","🏅"]],
+    "mi":[["miel","🍯"],["mimo","🤡"],["misa","⛪"]],
+    "mo":[["mono","🐒"],["moto","🏍️"],["móvil","📱"]],
+    "mu":[["mujer","👩"],["música","🎵"],["muela","🦷"]],
+    // B
+    "ba":[["barco","⛵"],["bala","💣"],["banana","🍌"]],
+    "be":[["bebé","👶"],["berenjena","🍆"],["beso","💋"]],
+    "bi":[["bicicleta","🚲"],["bigote","👨"],["billete","💵"]],
+    "bo":[["bola","⚽"],["bolsa","🛍️"],["bota","👢"]],
+    "bu":[["burro","🐴"],["búho","🦉"],["buque","🚢"]],
+    // D
+    "da":[["dado","🎲"],["dama","👩"],["dardo","🎯"]],
+    "de":[["dedo","☝️"],["delantal","👩‍🍳"],["desierto","🏜️"]],
+    "di":[["dibujo","🎨"],["diente","🦷"],["dinosaurio","🦖"]],
+    "do":[["dona","🍩"],["dormir","😴"],["dólar","💵"]],
+    "du":[["dulce","🍬"],["duende","🧝"],["duna","🏖️"]],
+
+    // F
+    "fa":[["faro","🗼"],["faja","🧣"],["familia","👨‍👩‍👧"]],
+    "fe":[["feliz","😊"],["foca","🦭"],["fresa","🍓"]],
+    "fi":[["fideo","🍜"],["filtro","🧃"],["física","📘"]],
+    "fo":[["foco","💡"],["fogata","🔥"],["forma","📐"]],
+    "fu":[["fuego","🔥"],["futbol","⚽"],["fumar","🚬"]],
+
+    // G
+    "ga":[["gato","🐱"],["gallo","🐓"],["gafas","👓"]],
+    "ge":[["gema","💎"],["gelatina","🍮"],["gente","🧑"]],
+    "gi":[["girasol","🌻"],["guitarra","🎸"],["gigante","🧌"]],
+    "go":[["gorra","🧢"],["gota","💧"],["gol","🥅"]],
+    "gu":[["gusano","🪱"],["guante","🧤"],["guía","📖"]],
+    // J
+    "ja":[["jardín","🌻"],["jarrón","🏺"],["jamón","🥓"]],
+    "je":[["jefe","👨‍💼"],["jersey","👕"],["jet","✈️"]],
+    "ji":[["jirafa","🦒"],["jinete","🤠"],["jingle","🎶"]],
+    "jo":[["joven","🧑"],["juego","🎮"],["joya","💍"]],
+    "ju":[["jugo","🧃"],["juguete","🧸"],["jungla","🌴"]],
+
+    // L
+    "la":[["lago","🏞️"],["lámpara","💡"],["lata","🥫"]],
+    "le":[["leche","🥛"],["león","🦁"],["letra","🔤"]],
+    "li":[["libro","📖"],["limón","🍋"],["lirio","🌸"]],
+    "lo":[["lobo","🐺"],["loro","🦜"],["loma","⛰️"]],
+    "lu":[["luna","🌙"],["luz","💡"],["lupa","🔍"]],
+
+    // N
+    "na":[["naranja","🍊"],["nave","🚀"],["nariz","👃"]],
+    "ne":[["nene","👶"],["nieve","❄️"],["neón","💡"]],
+    "ni":[["nido","🪺"],["niña","👧"],["nieve","⛄"]],
+    "no":[["noche","🌙"],["nube","☁️"],["nota","🎵"]],
+    "nu":[["número","🔢"],["nuez","🌰"],["nudo","🪢"]],
+
+    // R
+    "ra":[["rana","🐸"],["radio","📻"],["ramo","💐"]],
+    "re":[["regalo","🎁"],["reloj","⌚"],["rey","🤴"]],
+    "ri":[["río","🌊"],["rico","😋"],["rifa","🎟️"]],
+    "ro":[["rosa","🌹"],["robot","🤖"],["ropa","👕"]],
+    "ru":[["rueda","⚙️"],["rulo","➰"],["runa","🔮"]],
+
+    // S
+    "sa":[["sapo","🐸"],["sandía","🍉"],["sala","🛋️"]],
+    "se":[["semilla","🌱"],["serpiente","🐍"],["señal","🚦"]],
+    "si":[["silla","🪑"],["sierra","🪚"],["sirena","🧜"]],
+    "so":[["sol","☀️"],["sombrero","👒"],["sopa","🍲"]],
+    "su":[["suma","➕"],["sueño","💤"],["suerte","🍀"]],
+
+    // T
+    "ta":[["taza","☕"],["taco","🌮"],["tallo","🌿"]],
+    "te":[["teléfono","📱"],["tenedor","🍴"],["techo","🏠"]],
+    "ti":[["tigre","🐯"],["tiza","✏️"],["tierra","🌍"]],
+    "to":[["toro","🐂"],["tomate","🍅"],["torta","🍰"]],
+    "tu":[["tubo","🧪"],["tulipán","🌷"],["túnel","🚇"]],
+
+    // H
+    "ha":[["hacha","🪓"],["hamburguesa","🍔"],["harina","🌾"]],
+    "he":[["helado","🍦"],["hermano","👦"],["herradura","🐎"]],
+    "hi":[["hielo","🧊"],["hilo","🧵"],["hipopótamo","🦛"]],
+    "ho":[["hoja","🍃"],["hongo","🍄"],["hotel","🏨"]],
+    "hu":[["huevo","🥚"],["humo","💨"],["huracán","🌀"]],
+    // C
+    "ca":[["casa","🏠"],["cama","🛏️"],["cangrejo","🦀"]],
+    "ce":[["celular","📱"],["cereza","🍒"],["cebra","🦓"]],
+    "ci":[["cielo","☁️"],["cinta","🎀"],["cigarra","🦗"]],
+    "co":[["coco","🥥"],["conejo","🐇"],["corazón","❤️"]],
+    "cu":[["cubo","🧊"],["cuchara","🥄"],["cuerda","🪢"]],
+    "pa":[["pato","🦆"],["papa","🥔"],["paleta","🍭"]],
+    "pe":[["pera","🍐"],["pelota","⚽"],["perro","🐶"]],
+    "pi":[["pino","🌲"],["piedra","🪨"],["pintura","🎨"]],
+    "po":[["pollo","🐔"],["polo","🍭"],["portón","🚪"]],
+    "pu":[["pulpo","🐙"],["puma","🐆"],["pupusa","🥟"]],
+    "ma":[["mano","✋"],["mango","🥭"],["mapa","🗺️"]],
+    "me":[["mesa","🪑"],["melón","🍈"],["medalla","🏅"]],
+    "mi":[["miel","🍯"],["mimo","🤡"],["misa","⛪"]],
+    "mo":[["mono","🐒"],["moto","🏍️"],["móvil","📱"]],
+    "mu":[["mujer","👩"],["música","🎵"],["muela","🦷"]],
+    "ba":[["barco","⛵"],["bala","💣"],["banana","🍌"]],
+    "be":[["bebé","👶"],["berenjena","🍆"],["beso","💋"]],
+    "bi":[["bicicleta","🚲"],["bigote","👨"],["billete","💵"]],
+    "bo":[["bola","⚽"],["bolsa","🛍️"],["bota","👢"]],
+    "bu":[["burro","🐴"],["búho","🦉"],["buque","🚢"]],
+    "ca":[["casa","🏠"],["cama","🛏️"],["cangrejo","🦀"]],
+    "ce":[["celular","📱"],["cereza","🍒"],["cebra","🦓"]],
+    "ci":[["cielo","☁️"],["cinta","🎀"],["cigarra","🦗"]],
+    "co":[["coco","🥥"],["conejo","🐇"],["corazón","❤️"]],
+    "cu":[["cubo","🧊"],["cuchara","🥄"],["cuerda","🪢"]],
+    "da":[["dado","🎲"],["dama","👩"],["dardo","🎯"]],
+    "de":[["dedo","☝️"],["delantal","👩‍🍳"],["desierto","🏜️"]],
+    "di":[["dibujo","🎨"],["diente","🦷"],["dinosaurio","🦖"]],
+    "do":[["dona","🍩"],["dormir","😴"],["dólar","💵"]],
+    "du":[["dulce","🍬"],["duende","🧝"],["duna","🏖️"]],
+    "fa":[["faro","🗼"],["faja","🧣"],["familia","👨‍👩‍👧"]],
+    "fe":[["feliz","😊"],["foca","🦭"],["fresa","🍓"]],
+    "fi":[["fideo","🍜"],["filtro","🧃"],["física","📘"]],
+    "fo":[["foco","💡"],["fogata","🔥"],["forma","📐"]],
+    "fu":[["fuego","🔥"],["futbol","⚽"],["fumar","🚬"]],
+    "ga":[["gato","🐱"],["gallo","🐓"],["gafas","👓"]],
+    "ge":[["gema","💎"],["gelatina","🍮"],["gente","🧑"]],
+    "gi":[["girasol","🌻"],["guitarra","🎸"],["gigante","🧌"]],
+    "go":[["gorra","🧢"],["gota","💧"],["gol","🥅"]],
+    "gu":[["gusano","🪱"],["guante","🧤"],["guía","📖"]],
+    "ha":[["hacha","🪓"],["hamburguesa","🍔"],["harina","🌾"]],
+    "he":[["helado","🍦"],["hermano","👦"],["herradura","🐎"]],
+    "hi":[["hielo","🧊"],["hilo","🧵"],["hipopótamo","🦛"]],
+    "ho":[["hoja","🍃"],["hongo","🍄"],["hotel","🏨"]],
+    "hu":[["huevo","🥚"],["humo","💨"],["huracán","🌀"]],
+        // J
+    "ja":[["jardín","🌻"],["jarrón","🏺"],["jamón","🥓"]],
+    "je":[["jefe","👨‍💼"],["jersey","👕"],["jet","✈️"]],
+    "ji":[["jirafa","🦒"],["jinete","🤠"],["jingle","🎶"]],
+    "jo":[["joven","🧑"],["juego","🎮"],["joya","💍"]],
+    "ju":[["jugo","🧃"],["juguete","🧸"],["jungla","🌴"]],
+
+    // N
+    "na":[["naranja","🍊"],["nave","🚀"],["nariz","👃"]],
+    "ne":[["nene","👶"],["nieve","❄️"],["neón","💡"]],
+    "ni":[["nido","🪺"],["niña","👧"],["nieve","⛄"]],
+    "no":[["noche","🌙"],["nube","☁️"],["nota","🎵"]],
+    "nu":[["número","🔢"],["nuez","🌰"],["nudo","🪢"]]
+
+    // V
+    "va":[["vaca","🐄"],["vaso","🥛"],["valle","⛰️"]],
+    "ve":[["vela","🕯️"],["verde","💚"],["ventana","🪟"]],
+    "vi":[["vino","🍷"],["vida","🌱"],["violín","🎻"]],
+    "vo":[["volcán","🌋"],["voz","🗣️"],["volante","🕹️"]],
+    "vu":[["vuelo","✈️"],["vuelta","🔄"],["vulcán","🌋"]],
+
+    // Y
+    "ya":[["yate","🛥️"],["yema","🥚"],["yegua","🐎"]],
+    "ye":[["yema","🌱"],["yerba","🌿"],["yeso","🩹"]],
+    "yi":[["yiyo","👦"],["yira","👧"],["yip","🚙"]],
+    "yo":[["yoyo","🪀"],["yogur","🥛"],["yoga","🧘"]],
+    "yu":[["yuca","🥔"],["yunque","⚒️"],["yuyo","🌿"]],
+
+    // Z
+    "za":[["zapato","👞"],["zanahoria","🥕"],["zorro","🦊"]],
+    "ze":[["zebra","🦓"],["zen","🧘"],["zepelín","🎈"]],
+    "zi":[["zigzag","〰️"],["zip","🗜️"],["zinc","⚙️"]],
+    "zo":[["zorro","🦊"],["zoológico","🐅"],["zona","📍"]],
+    "zu":[["zumo","🧃"],["zurdo","✋"],["zueco","👡"]],
+
+    // CH
+    "cha":[["chango","🐒"],["chicle","🍬"],["chico","👦"]],
+    "che":[["cheque","💵"],["chela","🍺"],["chelo","🎻"]],
+    "chi":[["chile","🌶️"],["chico","👦"],["chiste","😂"]],
+    "cho":[["chocolate","🍫"],["chorizo","🌭"],["choza","🏚️"]],
+    "chu":[["churro","🥖"],["chucho","🐶"],["chupón","🍼"]],
+
+    // LL
+    "lla":[["llama","🦙"],["llave","🔑"],["llanto","😭"]],
+    "lle":[["lleno","📦"],["llevar","🚶"],["lleno","🍽️"]],
+    "lli":[["llino","🌾"],["llimar","🪚"],["llirios","🌸"]],
+    "llo":[["lloro","😭"],["llover","🌧️"],["llovizna","🌦️"]],
+    "llu":[["lluvia","🌧️"],["lluvioso","☔"],["lluvión","💦"]],
+
+    // Ñ
+    "ña":[["ñandú","🦤"],["ñame","🍠"],["ñandutí","🧵"]],
+    "ñe":[["ñero","👦"],["ñepa","🤷"],["ñejas","👵"]],
+    "ñi":[["ñique","🪵"],["ñiqui","🤭"],["ñisca","🍄"]],
+    "ño":[["ñoño","🤓"],["ñoquis","🥟"],["ñor","👴"]],
+    "ñu":[["ñu","🐃"],["ñudo","🪢"],["ñublar","🌫️"]],
+
+    // Q
+    "que":[["queso","🧀"],["quemar","🔥"],["querer","❤️"]],
+    "qui":[["quinto","5️⃣"],["quinto","📏"],["química","⚗️"]],
+    "qua":[["quark","⚛️"],["quasar","✨"],["quadro","🖼️"]],
+    "quo":[["quorum","👥"],["quorum","📊"],["quorum","📋"]]
+  };
+
+  let lista = ejemplos[silaba] || [];
+  if(lista.length === 0){
+    hablar(`Lo siento ${nombreNiño}, aún no tengo ejemplos para la sílaba ${silaba}. Intenta con otra.`);
+    document.getElementById("imagenes").innerHTML = "";
+    return;
+  }
+
+  let textoEjemplos = lista.map(p => `${silaba} de ${p[0]}`).join(", ");
+  let mensaje = `${silaba} ... ${silaba}. ${textoEjemplos}. Muy bien ${nombreNiño}, ahora coloca una nueva sílaba.`;
+  hablar(mensaje);
+
+  document.getElementById("imagenes").innerHTML = lista.map(p => p[1]).join(" ");
+}
+</script>
+</body>
+</html>
+

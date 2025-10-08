@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Practicando letras con emojis</title>
+<style>
+  body { font-family: sans-serif; text-align: center; background: #fce4ec; }
+  #nombre {
+    width: 250px;
+    font-size: 1.2em;
+    padding: 5px;
+    border-radius: 8px;
+  }
+  input {
+    font-size: 2em;
+    text-align: center;
+    width: 120px;
+    margin: 20px;
+  }
+  button {
+    font-size: 1.5em;
+    padding: 10px 20px;
+    cursor: pointer;
+    border-radius: 8px;
+    background: #ffccbc;
+  }
+  #letraMostrada {
+    font-size: 6em;
+    margin-top: 30px;
+    color: #333;
+  }
+  #imagenes {
+    margin-top: 20px;
+    font-size: 3em;
+  }
+  #saludo {
+    font-size: 1.5em;
+    margin-top: 20px;
+    color: #444;
+  }
+</style>
+</head>
+<body>
+  <h1>Practicando letras</h1>
+  <p>Escribe tu nombre:</p>
+  <input id="nombre" placeholder="Gabriel">
+  <button onclick="iniciar()">Comenzar</button>
+
+  <div id="saludo"></div>
+
+  <div style="margin-top:20px;">
+    <input id="entrada" maxlength="1" placeholder="A" oninput="decirLetra()">
+  </div>
+
+  <div id="letraMostrada"></div>
+  <div id="imagenes"></div>
+
+<script>
+let voces = [];
+let nombreNiño = "Gabriel";
+let timerInactividad;
+
+function cargarVoces(){ voces = speechSynthesis.getVoices(); }
+speechSynthesis.onvoiceschanged = cargarVoces;
+
+function iniciar(){
+  let nombreIngresado = document.getElementById("nombre").value.trim();
+  if(nombreIngresado) nombreNiño = nombreIngresado;
+  let mensaje = `Hola ${nombreNiño}, ¿cómo estás? ¿Qué te parece si practicamos las letras? Escribe una letra.`;
+  document.getElementById("saludo").textContent = mensaje;
+  hablar(mensaje);
+  reiniciarTimer();
+}
+
+function reiniciarTimer(){
+  clearTimeout(timerInactividad);
+  timerInactividad = setTimeout(()=>{
+    let mensaje = `¡Ey ${nombreNiño}! ¿Qué pasa? Sigamos practicando, cambia la letra...`;
+    document.getElementById("saludo").textContent = mensaje;
+    hablar(mensaje);
+  }, 20000); // 20 segundos
+}
+
+function hablar(texto){
+  let utter = new SpeechSynthesisUtterance(texto);
+  utter.lang = "es-ES";
+  utter.rate = 0.8;
+  let voz = voces.find(v => v.lang.startsWith("es") && v.name.toLowerCase().includes("female"));
+  if(!voz){ voz = voces.find(v => v.lang.startsWith("es")); }
+  if(voz) utter.voice = voz;
+  speechSynthesis.speak(utter);
+}
+
+function decirLetra(){
+  reiniciarTimer();
+  let letra = document.getElementById("entrada").value.toLowerCase();
+  if(!letra.match(/[a-zñ]/i)) return;
+
+  document.getElementById("letraMostrada").textContent = letra.toUpperCase();
+
+  const nombres = {
+    "a":"a","b":"be","c":"ce","d":"de","e":"e","f":"efe","g":"ge",
+    "h":"hache","i":"i","j":"jota","k":"ka","l":"ele","m":"eme",
+    "n":"ene","ñ":"eñe","o":"o","p":"pe","q":"cu","r":"erre",
+    "s":"ese","t":"te","u":"u","v":"uve","w":"uve doble",
+    "x":"equis","y":"i griega","z":"zeta"
+  };
+
+  const ejemplos = {
+    "a":[["avión","✈️"],["árbol","🌳"],["amigo","👦"]],
+    "b":[["barco","⛵"],["bola","⚽"],["burro","🐴"]],
+    "c":[["casa","🏠"],["camión","🚚"],["coco","🥥"]],
+    "d":[["dado","🎲"],["delfín","🐬"],["diamante","💎"]],
+    "e":[["elefante","🐘"],["estrella","⭐"],["espejo","🪞"]],
+    "f":[["flor","🌸"],["foca","🦭"],["fresa","🍓"]],
+    "g":[["gato","🐱"],["guitarra","🎸"],["globo","🎈"]],
+    "h":[["hoja","🍃"],["huevo","🥚"],["hamburguesa","🍔"]],
+    "i":[["iglesia","⛪"],["isla","🏝️"],["iguana","🦎"]],
+    "j":[["jirafa","🦒"],["jugo","🧃"],["jardín","🌻"]],
+    "k":[["koala","🐨"],["karate","🥋"]],
+    "l":[["luna","🌙"],["lápiz","✏️"],["león","🦁"]],
+    "m":[["mano","✋"],["mesa","🪑"],["mariposa","🦋"]],
+    "n":[["nube","☁️"],["nido","🪺"],["naranja","🍊"]],
+    "ñ":[["ñandú","🪶"],["niño","👦"],["uña","💅"]],
+    "o":[["oso","🐻"],["oro","🥇"],["ojo","👁️"]],
+    "p":[["pájaro","🐦"],["pelota","⚽"],["perro","🐶"]],
+    "q":[["queso","🧀"],["quinto","5️⃣"]],
+    "r":[["ratón","🐭"],["rosa","🌹"],["ropa","👕"]],
+    "s":[["sol","☀️"],["silla","🪑"],["sapo","🐸"]],
+    "t":[["taza","☕"],["tigre","🐯"],["tierra","🌍"]],
+    "u":[["uva","🍇"],["uno","1️⃣"],["uña","💅"]],
+    "v":[["vaca","🐄"],["vela","🕯️"],["ventana","🪟"]],
+    "w":[["wifi","📶"],["waffle","🧇"]],
+    "x":[["xilófono","🎼"],["xenón","💡"]],
+    "y":[["yoyo","🪀"],["yegua","🐎"],["yema","🥚"]],
+    "z":[["zapato","👞"],["zanahoria","🥕"],["zorro","🦊"]]
+  };
+
+  let nombre = nombres[letra] || letra;
+  let lista = ejemplos[letra] || [];
+  let textoEjemplos = lista.map(p => `${nombre} de ${p[0]}`).join(", ");
+
+  let mensaje = `${nombre} ... ${nombre}. ${textoEjemplos}. Muy bien ${nombreNiño}, ahora coloca una nueva letra.`;
+  hablar(mensaje);
+
+  document.getElementById("imagenes").innerHTML = lista.map(p => p[1]).join(" ");
+}
+</script>
+</body>
+</html>
