@@ -3,118 +3,285 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>¿Cómo puedo apoyar este proyecto?</title>
+  <title>Compartiendo lo Aprendido — Ecosistema del Saber</title>
+
   <style>
+    :root{
+      --verde: #2e8b57;
+      --verde-osc: #3b7d4f;
+      --arena: #ffe4b5;
+      --arena-suave: #fffacd;
+      --cielo: #e6f7ff;
+      --luz: #ffefd5;
+      --fondo1: #fff8dc;
+      --fondo2: #e0ffff;
+    }
+
+    * { box-sizing: border-box; }
     body {
       margin: 0;
-      font-family: "Segoe UI", system-ui, sans-serif;
-      background: linear-gradient(to bottom, #fff8dc, #e0ffff);
+      font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
       color: #333;
+      background: linear-gradient(to bottom, var(--fondo1), var(--fondo2));
     }
+    main { padding: 20px; }
+
     header {
       text-align: center;
-      background: #ffefd5;
-      padding: 20px;
-      border-bottom: 3px solid #2e8b57;
+      padding: 16px 20px 8px;
+      position: relative;
     }
-    header h1 {
-      margin: 0;
-      font-size: 2rem;
-      color: #2e8b57;
-    }
-    main {
-      max-width: 900px;
-      margin: 20px auto;
-      padding: 0 20px;
-      text-align: center;
-    }
-    p {
-      font-size: 1.1rem;
-      margin-bottom: 20px;
-    }
-    .botonera {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 14px;
-      justify-content: center;
-      margin-top: 20px;
-    }
-    .boton-apoyo {
-      flex: 1 1 200px;
-      padding: 14px 18px;
+    .marquee-wrap {
+      overflow: hidden;
+      background-color: var(--luz);
       border-radius: 12px;
-      font-weight: bold;
-      cursor: pointer;
-      border: none;
-      color: #fff;
-      transition: transform 0.2s ease, filter 0.2s ease;
+      padding: 10px 0;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.08);
     }
-    .boton-apoyo:hover {
-      transform: translateY(-2px);
-      filter: brightness(1.05);
+    .marquee {
+      display: inline-block;
+      font-weight: 800;
+      font-size: clamp(1.4rem, 3.5vw, 2rem);
+      color: var(--verde);
+      white-space: nowrap;
+      padding-left: 100%;
+      animation: scroll-title 12s linear infinite;
     }
-    .compartir { background: #2e8b57; }
-    .sugerir { background: #4682b4; }
-    .experiencia { background: #ff8c00; }
-    .cafecito { background: #c71585; }
-    .agradecer { background: #6a5acd; }
-    footer {
-      margin: 40px auto;
+    @keyframes scroll-title {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-100%); }
+    }
+
+    .subtitulo {
+      font-size: clamp(1rem, 2.5vw, 1.3rem);
+      font-style: italic;
+      color: var(--verde-osc);
+      margin: 10px auto 22px;
+      max-width: 900px;
+      display: grid;
+      place-items: center;
+      animation: aparecer 750ms ease-out;
+    }
+    @keyframes aparecer {
+      from { opacity: 0; transform: translateY(-6px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .objetivos {
+      background: #f0fff0;
+      border-radius: 12px;
+      padding: 16px 18px;
+      margin: 0 auto 24px;
+      max-width: 960px;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+      line-height: 1.45;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 1fr minmax(280px, 640px) 1fr;
+      gap: clamp(12px, 2vw, 24px);
+      align-items: start;
+      margin: 0 auto;
+      max-width: 1200px;
+    }
+
+    .columna {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .centro-info {
+      background: var(--cielo);
+      border-radius: 14px;
+      padding: 18px;
+      min-height: 120px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.10);
+      display: grid;
+      place-items: center;
       text-align: center;
+      font-weight: 700;
+      font-size: clamp(1rem, 2.2vw, 1.15rem);
+    }
+
+    .cuadro {
+      background: var(--arena);
+      border-radius: 12px;
+      padding: 12px 14px;
+      font-weight: 700;
+      cursor: pointer;
+      user-select: none;
+      box-shadow: 2px 2px 8px rgba(0,0,0,0.18);
+      transition: transform 150ms ease, background-color 200ms ease, box-shadow 150ms ease;
+      outline: none;
+    }
+    .cuadro:hover,
+    .cuadro:focus-visible {
+      transform: translateY(-1px) scale(1.03);
+      background: var(--arena-suave);
+      box-shadow: 4px 6px 12px rgba(0,0,0,0.22);
+    }
+    .cuadro:active {
+      transform: scale(0.98);
+      box-shadow: 1px 2px 6px rgba(0,0,0,0.15);
+    }
+
+    footer {
+      text-align: center;
+      margin: 26px auto 20px;
       color: #555;
     }
-    .volver {
-      display: inline-block;
-      margin-top: 20px;
+    .botones {
+      margin-top: 10px;
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .boton {
+      border: none;
+      border-radius: 10px;
       padding: 10px 18px;
       background: #add8e6;
-      border-radius: 10px;
-      font-weight: bold;
-      text-decoration: none;
-      color: #000;
+      font-weight: 700;
+      cursor: pointer;
+      transition: filter 160ms ease, transform 120ms ease;
     }
-    .volver:hover { filter: brightness(1.05); }
+    .boton:hover { filter: brightness(1.05); transform: translateY(-1px); }
+
+    @media (max-width: 880px) {
+      .layout { grid-template-columns: 1fr; }
+      .centro-info { order: -1; }
+    }
   </style>
 </head>
+
 <body>
-  <header>
-    <h1>🤝 ¿Cómo puedo apoyar este proyecto?</h1>
-    <p>Cada gesto, grande o pequeño, hace florecer este Ecosistema del Saber 🌸</p>
-  </header>
-
   <main>
-    <p>Elige la forma en que quieras aportar:</p>
-    <div class="botonera">
-      <button class="boton-apoyo compartir" onclick="alert('¡Gracias por compartir este proyecto con tus amigos y familiares! 🌍')">
-        🌍 Compartir con otros
-      </button>
+    <header>
+      <div class="marquee-wrap" aria-hidden="true">
+        <div class="marquee">🌿 Ecosistema del Saber 🌿</div>
+      </div>
+      <div class="subtitulo">Un jardín de conocimientos que florece contigo 🌸</div>
+    </header>
 
-      <button class="boton-apoyo sugerir" onclick="alert('Puedes enviarnos tus ideas y sugerencias para nuevos temas ✨')">
-        💡 Sugerir un tema
-      </button>
+    <section class="objetivos">
+      Este espacio busca transformar el aprendizaje en un ritual de juego, amor y descubrimiento compartido.
+      Cada sección acompaña a niños, familias y educadores con recursos claros, cálidos y multisensoriales
+      que celebran el esfuerzo y la curiosidad.
+    </section>
 
-      <button class="boton-apoyo experiencia" onclick="alert('Cuéntanos tu experiencia usando estos recursos 🎉')">
-        🎉 Contar mi experiencia
-      </button>
+    <section class="layout">
+      <!-- Columna izquierda -->
+      <div class="columna">
+        <button class="cuadro" 
+          data-info="Aprender con ternura y juegos junto a la abuelita: letras, sílabas, números y un juego de cestas para compartir en familia."
+          data-url="contar.html">
+          👵 ESTUDIANDO CON LA ABUELITA
+        </button>
 
-      <button class="boton-apoyo cafecito" onclick="window.open('https://www.buymeacoffee.com/', '_blank')">
-        ☕ Invitar un cafecito
-      </button>
+        <button class="cuadro" 
+          data-info="Conceptos esenciales de economía explicados con ejemplos cercanos y prácticos para la vida diaria."
+          data-url="economia.html">
+          💰 ESTUDIANDO UN POCO DE ECONOMÍA
+        </button>
 
-      <button class="boton-apoyo agradecer" onclick="alert('¡Gracias por tu compañía y apoyo constante! 💜')">
-        🙏 Dejar un agradecimiento
-      </button>
-    </div>
+        <button class="cuadro" 
+          data-info="Recursos y referencias para aprender jugando: tablas, constantes, fórmulas y materiales de apoyo."
+          data-url="tablas-constantes.html">
+          📊 TABLAS Y CONSTANTES
+        </button>
+
+        <button class="cuadro" 
+          data-info="Ideas nuevas que nacen para ti con amor y creatividad, proyectos en construcción que se irán sumando."
+          data-url="nuevos-proyectos.html">
+          🌱 NUEVOS PROYECTOS POR TI
+        </button>
+      </div>
+
+      <!-- Centro dinámico -->
+      <div class="centro-info" id="infoCentro">
+        Pasa el cursor o enfoca un cuadro para ver su descripción aquí.
+      </div>
+
+      <!-- Columna derecha -->
+      <div class="columna">
+        <button class="cuadro"
+          data-info="Teoría y ejercicios prácticos con calculadora interactiva: matemáticas, física, química y estadística. Incluye operaciones básicas (suma, resta, multiplicación, división), matemáticas de bachillerato y geometría (triángulo, circunferencia, elipse). Se irán añadiendo más temas según lo soliciten los estudiantes."
+          data-url="https://secretosdelbuenestudiante.blogspot.com/2025/09/el-secreto-del-buen-alumno.html">
+          📚 SECRETOS DEL BUEN ESTUDIANTE
+        </button>
+
+        <button class="cuadro" 
+          data-info="Diferentes test educativos para reflexionar sobre tu salud. No sustituye al médico, pero ayuda a tomar conciencia de la importancia de cuidarse."
+          data-url="https://buscandosaludhoy.blogspot.com/2025/09/index.html">
+          ❤️ BUSCANDO SALUD HOY
+        </button>
+
+                <button class="cuadro" 
+          data-info="Videos de apoyo que acompañan y refuerzan cada clase con claridad, cariño y ejemplos prácticos."
+          data-url="https://www.youtube.com/@joelcastro-dp9ex">
+          🎥 VIDEOS DE APOYO (CLASES)
+        </button>
+
+        <button class="cuadro" 
+          data-info="Un espacio para agradecer y reconocer a quienes apoyan este proyecto, porque tu compañía hace posible este jardín de saberes."
+          data-url="apoyo-proyecto.html">
+          🙏 GRACIAS POR APOYAR ESTE PROYECTO
+        </button>
+      </div>
+    </section>
+
+    <footer>
+      Desarrollado en Villa del Rosario, Norte de Santander, Colombia por Profesor Joel
+      <div class="botones">
+        <button class="boton" onclick="location.href='perfil.html'">Perfil</button>
+        <button class="boton" onclick="location.href='apoyo-proyecto.html'">¿Cómo puedo apoyar este proyecto?</button>
+      </div>
+    </footer>
   </main>
 
-  <footer>
-    <a href="index.html" class="volver">⬅️ Volver al Ecosistema</a>
-    <p>Desarrollado con cariño por Profesor Joel 🌿</p>
-  </footer>
+  <script>
+    const cuadros = document.querySelectorAll('.cuadro');
+    const infoCentro = document.getElementById('infoCentro');
+
+    function setInfo(text) {
+      infoCentro.textContent = text || 'Pasa el cursor o enfoca un cuadro para ver su descripción aquí.';
+    }
+
+    cuadros.forEach(cuadro => {
+      const info = cuadro.getAttribute('data-info');
+      const url  = cuadro.getAttribute('data-url');
+
+      // Hover
+      cuadro.addEventListener('mouseover', () => setInfo(info));
+      cuadro.addEventListener('mouseout', () => setInfo(null));
+
+      // Foco con teclado
+      cuadro.addEventListener('focus', () => setInfo(info));
+      cuadro.addEventListener('blur',  () => setInfo(null));
+
+      // Navegación por doble clic
+      cuadro.addEventListener('dblclick', () => {
+        if (url) location.href = url;
+      });
+
+      // Navegación con Enter o Espacio
+      cuadro.addEventListener('keydown', (e) => {
+        if ((e.key === 'Enter' || e.key === ' ') && url) {
+          e.preventDefault();
+          location.href = url;
+        }
+      });
+    });
+
+    // Opcional: sonidos suaves en hover
+    // const hoverSound = new Audio('assets/hover.mp3');
+    // cuadros.forEach(c => c.addEventListener('mouseover', () => {
+    //   hoverSound.currentTime = 0;
+    //   hoverSound.play();
+    // }));
+  </script>
 </body>
 </html>
-
-
-
-
-
