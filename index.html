@@ -17,7 +17,6 @@
       --fondo2: #e0ffff;
     }
 
-    /* Base */
     * { box-sizing: border-box; }
     body {
       margin: 0;
@@ -27,7 +26,6 @@
     }
     main { padding: 20px; }
 
-    /* Header con animación del título */
     header {
       text-align: center;
       padding: 16px 20px 8px;
@@ -69,7 +67,6 @@
       to   { opacity: 1; transform: translateY(0); }
     }
 
-    /* Objetivos */
     .objetivos {
       background: #f0fff0;
       border-radius: 12px;
@@ -80,7 +77,6 @@
       line-height: 1.45;
     }
 
-    /* Layout principal: columnas y centro */
     .layout {
       display: grid;
       grid-template-columns: 1fr minmax(280px, 640px) 1fr;
@@ -109,7 +105,6 @@
       font-size: clamp(1rem, 2.2vw, 1.15rem);
     }
 
-    /* Tarjetas/“cuadros” */
     .cuadro {
       background: var(--arena);
       border-radius: 12px;
@@ -132,7 +127,6 @@
       box-shadow: 1px 2px 6px rgba(0,0,0,0.15);
     }
 
-    /* Footer */
     footer {
       text-align: center;
       margin: 26px auto 20px;
@@ -156,85 +150,67 @@
     }
     .boton:hover { filter: brightness(1.05); transform: translateY(-1px); }
 
-    /* Responsivo: en pantallas pequeñas, columnas se apilan */
     @media (max-width: 880px) {
-      .layout {
-        grid-template-columns: 1fr;
-      }
-      .centro-info {
-        order: -1;
-      }
+      .layout { grid-template-columns: 1fr; }
+      .centro-info { order: -1; }
     }
   </style>
 </head>
 
 <body>
   <main>
-    <!-- Encabezado -->
-    <header aria-label="Encabezado del sitio">
+    <header>
       <div class="marquee-wrap" aria-hidden="true">
         <div class="marquee">🌿 Ecosistema del Saber 🌿</div>
       </div>
       <div class="subtitulo">Un jardín de conocimientos que florece contigo 🌸</div>
     </header>
 
-    <!-- Objetivos del blog -->
-    <section class="objetivos" aria-label="Objetivos del blog">
+    <section class="objetivos">
       Este espacio busca transformar el aprendizaje en un ritual de juego, amor y descubrimiento compartido.
       Cada sección acompaña a niños, familias y educadores con recursos claros, cálidos y multisensoriales
       que celebran el esfuerzo y la curiosidad.
     </section>
 
-    <!-- Layout principal: columnas + centro dinámico -->
-    <section class="layout" aria-label="Exploración de secciones">
-      <!-- Columna izquierda (según tu imagen) -->
-      <div class="columna" aria-label="Secciones columna izquierda">
-        <button class="cuadro" role="link" aria-label="Estudiando con la Abuelita"
-          data-info="Aprendiendo con ternura y juegos junto a la abuelita."
+    <section class="layout">
+      <div class="columna">
+        <button class="cuadro" data-info="Aprendiendo con ternura y juegos junto a la abuelita."
           data-url="estudiando-abuelita.html">ESTUDIANDO CON LA ABUELITA</button>
 
-        <button class="cuadro" role="link" aria-label="Estudiando un poco de Economía"
-          data-info="Conceptos esenciales de economía explicados con ejemplos cercanos."
+        <button class="cuadro" data-info="Conceptos esenciales de economía explicados con ejemplos cercanos."
           data-url="economia.html">ESTUDIANDO UN POCO DE ECONOMÍA</button>
 
-        <button class="cuadro" role="link" aria-label="Tablas y constantes"
-          data-info="Recursos y referencias para aprender jugando: tablas, constantes y más."
+        <button class="cuadro" data-info="Recursos y referencias para aprender jugando: tablas, constantes y más."
           data-url="tablas-constantes.html">TABLAS Y CONSTANTES</button>
 
-        <button class="cuadro" role="link" aria-label="Nuevos proyectos por ti"
-          data-info="Ideas nuevas que nacen para ti con amor y creatividad."
+        <button class="cuadro" data-info="Ideas nuevas que nacen para ti con amor y creatividad."
           data-url="nuevos-proyectos.html">NUEVOS PROYECTOS POR TI</button>
       </div>
 
-      <!-- Centro: se actualiza con hover/focus -->
-      <div class="centro-info" id="infoCentro" aria-live="polite">
+      <div class="centro-info" id="infoCentro">
         Pasa el cursor o enfoca un cuadro para ver su descripción aquí.
       </div>
 
-      <!-- Columna derecha (según tu imagen) -->
-      <div class="columna" aria-label="Secciones columna derecha">
-        <button class="cuadro" role="link" aria-label="Secretos del buen estudiante"
+      <div class="columna">
+        <button class="cuadro"
           data-info="Consejos prácticos para aprender con alegría y constancia."
-          data-url="https://secretosdelbuenestudiante.blogspot.com/2025/09/el-secreto-del-buen-alumno.html">SECRETOS DEL BUEN ESTUDIANTE</button>
+          data-url="https://secretosdelbuenestudiante.blogspot.com/2025/09/el-secreto-del-buen-alumno.html">
+          SECRETOS DEL BUEN ESTUDIANTE
+        </button>
 
-        <button class="cuadro" role="link" aria-label="Buscando salud hoy"
-          data-info="Pequeños hábitos y rutinas para cuidar nuestra salud día a día."
+        <button class="cuadro" data-info="Pequeños hábitos y rutinas para cuidar nuestra salud día a día."
           data-url="salud-hoy.html">BUSCANDO SALUD HOY</button>
 
-        <button class="cuadro" role="link" aria-label="Videos de apoyo (clases)"
-          data-info="Videos que acompañan y refuerzan cada clase con claridad y cariño."
+        <button class="cuadro" data-info="Videos que acompañan y refuerzan cada clase con claridad y cariño."
           data-url="videos-apoyo.html">VIDEOS DE APOYO (CLASES)</button>
 
-        <button class="cuadro" role="link" aria-label="Gracias por apoyar este proyecto"
-          data-info="Gracias por apoyar este proyecto. Tu compañía hace posible este jardín de saberes."
+        <button class="cuadro" data-info="Gracias por apoyar este proyecto. Tu compañía hace posible este jardín de saberes."
           data-url="agradecimiento.html">GRACIAS POR APOYAR ESTE PROYECTO</button>
       </div>
     </section>
-
-    <!-- Pie de página -->
-    <footer aria-label="Información del autor">
+        <footer>
       Desarrollado en Villa del Rosario, Norte de Santander, Colombia por Profesor Joel
-      <div class="botones" role="navigation" aria-label="Navegación secundaria">
+      <div class="botones">
         <button class="boton" onclick="location.href='perfil.html'">Perfil</button>
         <button class="boton" onclick="location.href='apoyo-proyecto.html'">¿Cómo puedo apoyar este proyecto?</button>
       </div>
@@ -242,7 +218,6 @@
   </main>
 
   <script>
-    // Centro dinámico: hover, focus y doble clic para navegar
     const cuadros = document.querySelectorAll('.cuadro');
     const infoCentro = document.getElementById('infoCentro');
 
@@ -258,7 +233,7 @@
       cuadro.addEventListener('mouseover', () => setInfo(info));
       cuadro.addEventListener('mouseout', () => setInfo(null));
 
-      // Accesible: foco con teclado
+      // Foco con teclado
       cuadro.addEventListener('focus', () => setInfo(info));
       cuadro.addEventListener('blur',  () => setInfo(null));
 
@@ -267,7 +242,7 @@
         if (url) location.href = url;
       });
 
-      // También navegar con Enter/Espacio (accesibilidad)
+      // Navegación con Enter o Espacio
       cuadro.addEventListener('keydown', (e) => {
         if ((e.key === 'Enter' || e.key === ' ') && url) {
           e.preventDefault();
@@ -276,9 +251,12 @@
       });
     });
 
-    // Opcional: ganchos para sonidos suaves en hover (agrega tus audios si quieres)
+    // Opcional: sonidos suaves en hover
     // const hoverSound = new Audio('assets/hover.mp3');
-    // cuadros.forEach(c => c.addEventListener('mouseover', () => { hoverSound.currentTime = 0; hoverSound.play(); }));
+    // cuadros.forEach(c => c.addEventListener('mouseover', () => {
+    //   hoverSound.currentTime = 0;
+    //   hoverSound.play();
+    // }));
   </script>
 </body>
 </html>
