@@ -178,54 +178,55 @@ function iniciarSuma(){
   globo.style.background="red";
   numeroGlobo.textContent = mayor;
 
-  let pasos = menor;
-  let total = mayor;
-  let intervalo = setInterval(()=>{
-    if(pasos>0){
-      pasos--;
-      menorDiv.textContent = dibujarOsitos(pasos);
-      total++;
-      mayorDiv.textContent = dibujarOsitos(total);
+  const frases = [
+    `Si tenemos ${mayor} ositos y le sumamos ${menor} ositos...`,
+    "Para que te sea más fácil, mantén en tu mente el número más grande.",
+    `Vamos a ver... tengo ${mayor} en la mente y le voy a sumar ${menor}.`,
+    `Serían ${Array.from({length: menor}, (_, i) => mayor + i + 1).join(', ')}...`,
+    `Añadimos ${menor} ositos a los ${mayor} que teníamos.`,
+    "Eso que daría así como te muestro acá abajo...",
+    "¡Bravo, campeón! Has sumado con alegría y concentración.",
+    "Sigamos. Coloca dos números nuevamente."
+  ];
 
-      let size = 100 + (menor-pasos)*25;
-      globo.style.width=size+"px";
-      globo.style.height=size+"px";
+  hablarAbuelita(frases, 3000);
 
-      numeroGlobo.textContent = total;
-      playStepSound();
-    } else {
-      clearInterval(intervalo);
-      resultado.textContent = `Resultado: ${a+b} ositos`;
-      confetti({ particleCount: 200, spread: 80, origin: { y: 0.6 } });
-      globo.style.background="transparent";
-      globo.textContent="💥";
-      playFinalChord();
+  setTimeout(() => {
+    let pasos = menor;
+    let total = mayor;
+    let intervalo = setInterval(() => {
+      if (pasos > 0) {
+        pasos--;
+        menorDiv.textContent = dibujarOsitos(pasos);
+        total++;
+        mayorDiv.textContent = dibujarOsitos(total);
 
-      cuentaFinal.innerHTML = `
-        <div class="cuenta">
-          ${a}<br>
-          + ${b}<br>
-          <div class="linea"></div>
-          ${a+b}
-        </div>
-      `;
+        let size = 100 + (menor - pasos) * 25;
+        globo.style.width = size + "px";
+        globo.style.height = size + "px";
+        numeroGlobo.textContent = total;
+        playStepSound();
+      } else {
+        clearInterval(intervalo);
+              resultado.textContent = `Resultado: ${a + b} ositos`;
+        confetti({ particleCount: 200, spread: 80, origin: { y: 0.6 } });
+        globo.style.background = "transparent";
+        globo.textContent = "💥";
+        playFinalChord();
 
-      medallaFinal.innerHTML = `<div class="medalla">🥇</div>`;
+        cuentaFinal.innerHTML = `
+          <div class="cuenta">
+            ${a}<br>
+            + ${b}<br>
+            <div class="linea"></div>
+            ${a + b}
+          </div>
+        `;
 
-           setTimeout(() => {
-        hablarAbuelita([
-          `Si tenemos ${mayor} ositos y le sumamos ${menor} ositos...`,
-          "Para que te sea más fácil, mantén en tu mente el número más grande.",
-          `Vamos a ver... tengo ${mayor} en la mente y le voy a sumar ${menor}.`,
-          `Serían ${Array.from({length: menor}, (_, i) => mayor + i + 1).join(', ')}...`,
-          `Añadimos ${menor} ositos a los ${mayor} que teníamos.`,
-          "Eso que daría así como te muestro acá abajo...",
-          "¡Bravo, campeón! Has sumado con alegría y concentración.",
-          "Sigamos. Coloca dos números nuevamente."
-        ]);
-      }, 1000); // espera 1 segundo antes de hablar
-    }
-  }, 4000); // velocidad pausada para cada osito
+        medallaFinal.innerHTML = `<div class="medalla">🥇</div>`;
+      }
+    }, 4000); // velocidad pausada para cada osito
+  }, frases.length * 3000); // esperar a que termine la narración
 }
 </script>
 </body>
