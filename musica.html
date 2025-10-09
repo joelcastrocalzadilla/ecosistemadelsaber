@@ -90,7 +90,7 @@
 
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
 <script>
-function hablarAbuelita(frases, pausa = 3000) {
+function hablarAbuelita(frases, pausa = 3000, callback = null) {
   let i = 0;
   function decirSiguiente() {
     if (i < frases.length) {
@@ -100,6 +100,8 @@ function hablarAbuelita(frases, pausa = 3000) {
       speechSynthesis.speak(voz);
       i++;
       setTimeout(decirSiguiente, pausa);
+    } else if (callback) {
+      callback();
     }
   }
   decirSiguiente();
@@ -189,9 +191,7 @@ function iniciarSuma(){
     "Sigamos. Coloca dos números nuevamente."
   ];
 
-  hablarAbuelita(frases, 3000);
-
-  setTimeout(() => {
+  hablarAbuelita(frases, 3000, () => {
     let pasos = menor;
     let total = mayor;
     let intervalo = setInterval(() => {
@@ -208,8 +208,8 @@ function iniciarSuma(){
         playStepSound();
       } else {
         clearInterval(intervalo);
-              resultado.textContent = `Resultado: ${a + b} ositos`;
-        confetti({ particleCount: 200, spread: 80, origin: { y: 0.6 } });
+        resultado.textContent = `Resultado: ${a + b} ositos`;
+             confetti({ particleCount: 200, spread: 80, origin: { y: 0.6 } });
         globo.style.background = "transparent";
         globo.textContent = "💥";
         playFinalChord();
@@ -226,7 +226,7 @@ function iniciarSuma(){
         medallaFinal.innerHTML = `<div class="medalla">🥇</div>`;
       }
     }, 4000); // velocidad pausada para cada osito
-  }, frases.length * 3000); // esperar a que termine la narración
+  }); // ← esta cierra el callback de hablarAbuelita
 }
 </script>
 </body>
