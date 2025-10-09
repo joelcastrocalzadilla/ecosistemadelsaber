@@ -1,42 +1,42 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<title>Suma divertida con ositos, globo y piano</title>
-<style>
-  body { font-family: sans-serif; text-align: center; margin: 0; padding: 0; }
-  .pantalla { display: none; padding: 20px; }
-  #inicio { display: block; }
-  .grupo { font-size: 2em; margin: 20px; min-height: 50px; }
-  .contenedor { display: flex; justify-content: center; gap: 50px; }
-  #globo {
-    width: 100px; height: 100px;
-    border-radius: 50%;
-    background: red;
-    margin: 20px auto;
-    transition: all 0.5s ease;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 2.5em; color: white;
-  }
-  .globo-con-numero {
-    display: flex; flex-direction: column; align-items: center; gap: 10px;
-  }
-  #numeroGlobo {
-    font-size: 2.5em; font-weight: bold; color: #333;
-  }
-  #resultado { margin-top: 20px; font-size: 1.5em; }
-  .cuenta {
-    font-size: 2.5em;
-    line-height: 1.2;
-    display: inline-block;
-    text-align: right;
-    margin-top: 20px;
-  }
-  .linea {
-    border-top: 3px solid black;
-    margin-top: 5px;
-  }
-</style>
+  <meta charset="UTF-8">
+  <title>Suma divertida con ositos, globo y piano</title>
+  <style>
+    body { font-family: sans-serif; text-align: center; margin: 0; padding: 0; }
+    .pantalla { display: none; padding: 20px; }
+    #inicio { display: block; }
+    .grupo { font-size: 2em; margin: 20px; min-height: 50px; }
+    .contenedor { display: flex; justify-content: center; gap: 50px; }
+    #globo {
+      width: 100px; height: 100px;
+      border-radius: 50%;
+      background: red;
+      margin: 20px auto;
+      transition: all 0.5s ease;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 2.5em; color: white;
+    }
+    .globo-con-numero {
+      display: flex; flex-direction: column; align-items: center; gap: 10px;
+    }
+    #numeroGlobo {
+      font-size: 2.5em; font-weight: bold; color: #333;
+    }
+    #resultado { margin-top: 20px; font-size: 1.5em; }
+    .cuenta {
+      font-size: 2.5em;
+      line-height: 1.2;
+      display: inline-block;
+      text-align: right;
+      margin-top: 20px;
+    }
+    .linea {
+      border-top: 3px solid black;
+      margin-top: 5px;
+    }
+  </style>
 </head>
 <body id="fondo">
 
@@ -82,23 +82,42 @@
 
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
 <script>
-// --- Dibujar ositos ---
+function hablarAbuelita(frases, pausa = 2500) {
+  let i = 0;
+  function decirSiguiente() {
+    if (i < frases.length) {
+      const voz = new SpeechSynthesisUtterance(frases[i]);
+      voz.lang = 'es-ES';
+      voz.rate = 0.85;
+      speechSynthesis.speak(voz);
+      i++;
+      setTimeout(decirSiguiente, pausa);
+    }
+  }
+  decirSiguiente();
+}
+
 function dibujarOsitos(cantidad){
   return "🧸".repeat(cantidad);
 }
 
-// --- Pantalla inicial ---
 function empezar(){
   const nombre = document.getElementById("nombre").value;
   const genero = document.getElementById("genero").value;
   document.getElementById("inicio").style.display="none";
   document.getElementById("juego").style.display="block";
   document.getElementById("saludo").textContent = "Hola " + nombre + ", vamos a jugar!";
+
   if(genero==="azul"){ document.body.style.background="#cce5ff"; }
   else { document.body.style.background="#ffd6e7"; }
+
+  hablarAbuelita([
+    "Vamos a jugar sumando...",
+    "Por favor escribe dos números.",
+    "Cuando estés listo, haz clic en sumar."
+  ]);
 }
 
-// --- Sonidos de piano ---
 function playNote(frequency, duration=0.4){
   const ctx = new (window.AudioContext || window.webkitAudioContext)();
   const osc = ctx.createOscillator();
@@ -113,7 +132,6 @@ function playNote(frequency, duration=0.4){
   osc.stop(ctx.currentTime + duration);
 }
 
-// Escala sencilla (Do mayor)
 const escala = [261.63, 293.66, 329.63, 349.23, 392.00, 440.00, 493.88]; 
 let pasoMusical = 0;
 function playStepSound(){
@@ -121,12 +139,11 @@ function playStepSound(){
   pasoMusical++;
 }
 function playFinalChord(){
-  playNote(261.63, 1); // C
-  playNote(329.63, 1); // E
-  playNote(392.00, 1); // G
+  playNote(261.63, 1);
+  playNote(329.63, 1);
+  playNote(392.00, 1);
 }
 
-// --- Juego principal ---
 function iniciarSuma(){
   let a = parseInt(document.getElementById("num1").value);
   let b = parseInt(document.getElementById("num2").value);
@@ -151,6 +168,16 @@ function iniciarSuma(){
   globo.style.background="red";
   numeroGlobo.textContent = mayor;
 
+  hablarAbuelita([
+    `Si tenemos ${mayor} ositos y le sumamos ${menor} ositos...`,
+    "Para que te sea más fácil, mantén en tu mente el número más grande.",
+    `Vamos a ver... tengo ${mayor} en la mente y le voy a sumar ${menor}.`,
+    `Serían ${mayor + 1}, ${mayor + 2}, ${mayor + 3}...`,
+    `Añadimos ${menor} ositos a los ${mayor} que teníamos.`,
+    "Eso que daría así como te muestro acá abajo...",
+    "Sigamos. Coloca dos números nuevamente."
+  ]);
+
   let pasos = menor;
   let total = mayor;
   let intervalo = setInterval(()=>{
@@ -160,27 +187,20 @@ function iniciarSuma(){
       total++;
       mayorDiv.textContent = dibujarOsitos(total);
 
-      // crecer globo
       let size = 100 + (menor-pasos)*25;
       globo.style.width=size+"px";
       globo.style.height=size+"px";
 
-      // actualizar número
       numeroGlobo.textContent = total;
-
-      // sonido de piano
       playStepSound();
     } else {
       clearInterval(intervalo);
-      resultado.textContent = `Resultado: ${mayor+menor} ositos`;
-      // Explosión de confeti 🎉
+      resultado.textContent = `Resultado: ${a+b} ositos`;
       confetti({ particleCount: 200, spread: 80, origin: { y: 0.6 } });
       globo.style.background="transparent";
       globo.textContent="💥";
-      // acorde final
       playFinalChord();
 
-      // Mostrar la cuenta en formato vertical
       cuentaFinal.innerHTML = `
         <div class="cuenta">
           ${a}<br>
