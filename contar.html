@@ -83,10 +83,7 @@
       animation: caer 2s linear forwards;
     }
     @keyframes caer {
-      to {
-        top: 100%;
-        opacity: 0;
-      }
+      to { top: 100%; opacity: 0; }
     }
     .mariposa {
       position: absolute;
@@ -171,6 +168,7 @@
 </head>
 <body>
   <h1>¡Lanza con ángulo y fuerza!</h1>
+
   <div id="escena">
     <div id="nino">🧒</div>
     <div id="canasta"></div>
@@ -189,13 +187,12 @@
     <div id="intentos">🎯 Intentos: 0</div>
   </div>
 
-  <!-- Sonidos -->
+  <!-- 🎵 Sonidos -->
+  <audio id="audiojuego" src="audiojuego.mp3" autoplay loop></audio>
   <audio id="aplausos" src="https://www.soundjay.com/human/applause-01.mp3"></audio>
   <audio id="animo" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_2c8e3b8f9f.mp3?filename=kids-cheering-1-101522.mp3"></audio>
-  <audio id="samba" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_9f8e3b8f9f.mp3?filename=samba-drum-loop-1-101523.mp3" loop autoplay></audio>
   <audio id="triunfo" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_3c8e3b8f9f.mp3?filename=triumph-fanfare-101524.mp3"></audio>
-
-<script>
+  <script>
   let aciertos = 0;
   let intentos = 0;
 
@@ -211,9 +208,9 @@
     "Invita a tus padres a competir contigo",
     "Debo respetar a mis padres",
     "Debo comer saludable",
-    "¡Soy muy inteligente!",    
+    "¡Soy muy inteligente!",
     "Debo hacer mis tareas",
-     "¡Soy un luchador!",
+    "¡Soy un luchador!",
     "No debo hablar con extraños",
     "Debo cuidar el planeta",
     "¡Puedo hacerlo!",
@@ -243,7 +240,7 @@
     const velocidadX = Math.cos(radianes) * fuerza;
     const velocidadY = Math.sin(radianes) * fuerza;
 
-        const pelota = document.createElement("div");
+    const pelota = document.createElement("div");
     pelota.className = "pelota";
     pelota.innerText = "🏀";
     escena.appendChild(pelota);
