@@ -30,6 +30,15 @@
       margin-top: 20px;
       font-size: 2em;
     }
+    #imagenZona img {
+      max-width: 150px;
+      margin: 10px;
+      animation: aparecer 0.8s ease-out;
+    }
+    @keyframes aparecer {
+      from { transform: scale(0.3); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
     .confeti {
       position: absolute;
       top: 0;
@@ -61,6 +70,7 @@
   <div id="tito" onclick="contar()">🤡</div>
   <div id="contador">0</div>
   <div id="emojiZona"></div>
+  <div id="imagenZona"></div>
 
   <!-- Música de circo libre -->
   <audio id="musicaFondo" src="https://cdn.pixabay.com/download/audio/2023/03/28/audio_0f6c4f9e2e.mp3?filename=funny-clown-music-142994.mp3" loop></audio>
@@ -72,6 +82,7 @@
 
   const contador = document.getElementById("contador");
   const emojiZona = document.getElementById("emojiZona");
+  const imagenZona = document.getElementById("imagenZona");
   const triunfo = document.getElementById("triunfo");
   const musica = document.getElementById("musicaFondo");
 
@@ -87,6 +98,21 @@
     "¡Nueve! Como nueve saltos de alegría.",
     "¡Diez! Como diez carcajadas explosivas."
   ];
+
+  const claves = ["zapato", "nariz", "globo", "risa", "sombrero", "peluca", "trompeta", "pastel", "salto", "carcajada"];
+
+  const imagenes = {
+    zapato: "https://cdn-icons-png.flaticon.com/512/2933/2933826.png",
+    nariz: "https://cdn-icons-png.flaticon.com/512/3771/3771401.png",
+    globo: "https://cdn-icons-png.flaticon.com/512/3468/3468379.png",
+    risa: "https://cdn-icons-png.flaticon.com/512/742/742751.png",
+    sombrero: "https://cdn-icons-png.flaticon.com/512/2933/2933825.png",
+    peluca: "https://cdn-icons-png.flaticon.com/512/3771/3771402.png",
+    trompeta: "https://cdn-icons-png.flaticon.com/512/2933/2933831.png",
+    pastel: "https://cdn-icons-png.flaticon.com/512/3075/3075977.png",
+    salto: "https://cdn-icons-png.flaticon.com/512/3771/3771403.png",
+    carcajada: "https://cdn-icons-png.flaticon.com/512/742/742751.png"
+  };
 
   function contar() {
     if (!musicaActivada) {
@@ -108,6 +134,8 @@
     estrella.innerText = "🎈";
     emojiZona.appendChild(estrella);
 
+    mostrarImagen(claves[cuenta - 1]);
+
     if (cuenta % 5 === 0) {
       lanzarConfeti();
       triunfo.play();
@@ -127,6 +155,13 @@
     if (vozPayaso) voz.voice = vozPayaso;
 
     speechSynthesis.speak(voz);
+  }
+
+  function mostrarImagen(clave) {
+    imagenZona.innerHTML = "";
+    const img = document.createElement("img");
+    img.src = imagenes[clave] || "https://cdn-icons-png.flaticon.com/512/3771/3771400.png";
+    imagenZona.appendChild(img);
   }
 
   function lanzarConfeti() {
