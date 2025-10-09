@@ -90,29 +90,25 @@
     "¡Unooo! Como un zapato gigante bailando salsa.",
     "¡Dos! Como dos narices rojas brincando.",
     "¡Tres! Como tres globos saltando en la pista.",
-    "¡Cuatro! Como cuatro risas en el aire.",
-    "¡Cinco! Como cinco sombreros girando.",
-    "¡Seis! Como seis pelucas voladoras.",
-    "¡Siete! Como siete trompetas de colores.",
-    "¡Ocho! Como ocho pastelazos felices.",
-    "¡Nueve! Como nueve saltos de alegría.",
-    "¡Diez! Como diez carcajadas explosivas."
+    "¡Cuatro! Como cuatro frutas bailando en ronda.",
+    "¡Cinco! Como cinco conejos saltarines.",
+    "¡Seis! Como seis gorras girando en el aire.",
+    "¡Siete! Como siete globos de colores.",
+    "¡Ocho! Como ocho globos de colores.",
+    "¡Nueve! Como nueve globos de colores.",
+    "¡Diez! Como diez globos de colores."
   ];
 
-  const claves = ["zapato", "nariz", "globo", "risa", "sombrero", "peluca", "trompeta", "pastel", "salto", "carcajada"];
+  const imagenes = {
+    1: "a2zapatos.jpg",
+    2: "a3frutas.jpg",
+    3: "a5conejos.png",
+    4: "afrutas.jpg",
+    5: "a5conejos.png",
+    6: "agorra.png"
+    // Del 7 al 10 se usa globo.png por defecto
+  };
 
- const imagenes = {
-  zapato: "https://es.vecteezy.com/arte-vectorial/11094763-dibujo-vectorial-de-zapatos-para-ninos",
-  nariz: "https://www.freepik.es/vector-gratis/payaso-dibujos-animados-nariz-roja_28459311.htm",
-  globo: "https://www.freepik.es/vector-premium/conjunto-globos-diferentes-colores-rosa-azul-verde-ilustracion-vectorial-estilo-infantil-dibujos-animados_21776425.htm",
-  risa: "https://www.freepik.es/vector-premium/conjunto-emoji-risa-sobre-fondo-blanco_13435480.htm",
-  sombrero: "https://www.freepik.es/vector-premium/ilustracion-sombrero-payaso-dibujado-mano_33847404.htm",
-  peluca: "https://www.freepik.es/vector-premium/payaso-colorido-peluca-pelo_9250970.htm",
-  trompeta: "https://www.freepik.es/vector-premium/dibujos-animados-trompeta-mardi-gras-clipart-coloreado_38527606.htm",
-  pastel: "https://www.freepik.es/vector-premium/dibujo-infantil-pastel-cumpleanos_47097054.htm",
-  salto: "https://es.123rf.com/photo_78824747_salto-de-dibujos-animados-feliz-ni%C3%B1a-de-la-escuela.html",
-  carcajada: "https://es.pngtree.com/freepng/laughing-out-loud-emoji_15717201.html"
-};
   function contar() {
     if (!musicaActivada) {
       musica.play();
@@ -133,7 +129,7 @@
     estrella.innerText = "🎈";
     emojiZona.appendChild(estrella);
 
-    mostrarImagen(claves[cuenta - 1]);
+    mostrarImagen(cuenta);
 
     if (cuenta % 5 === 0) {
       lanzarConfeti();
@@ -156,10 +152,10 @@
     speechSynthesis.speak(voz);
   }
 
-  function mostrarImagen(clave) {
+  function mostrarImagen(numero) {
     imagenZona.innerHTML = "";
     const img = document.createElement("img");
-    img.src = imagenes[clave] || "https://cdn-icons-png.flaticon.com/512/3771/3771400.png";
+    img.src = imagenes[numero] || "globo.png"; // Imagen por defecto si no hay específica
     imagenZona.appendChild(img);
   }
 
@@ -178,5 +174,3 @@
 </script>
 </body>
 </html>
-
-
