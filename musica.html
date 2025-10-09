@@ -36,6 +36,15 @@
       border-top: 3px solid black;
       margin-top: 5px;
     }
+    .medalla {
+      font-size: 4em;
+      margin-top: 20px;
+      animation: brillar 2s ease-in-out infinite alternate;
+    }
+    @keyframes brillar {
+      from { opacity: 0.5; transform: scale(1); }
+      to { opacity: 1; transform: scale(1.2); }
+    }
   </style>
 </head>
 <body id="fondo">
@@ -78,6 +87,7 @@
 
   <h2 id="resultado"></h2>
   <div id="cuentaFinal"></div>
+  <div id="medallaFinal"></div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
@@ -158,25 +168,17 @@ function iniciarSuma(){
   let globo = document.getElementById("globo");
   let numeroGlobo = document.getElementById("numeroGlobo");
   let cuentaFinal = document.getElementById("cuentaFinal");
+  let medallaFinal = document.getElementById("medallaFinal");
 
   mayorDiv.textContent = dibujarOsitos(mayor);
   menorDiv.textContent = dibujarOsitos(menor);
   resultado.textContent = "";
   cuentaFinal.innerHTML = "";
+  medallaFinal.innerHTML = "";
   globo.style.width="100px"; globo.style.height="100px";
   globo.textContent="🎈";
   globo.style.background="red";
   numeroGlobo.textContent = mayor;
-
-  hablarAbuelita([
-    `Si tenemos ${mayor} ositos y le sumamos ${menor} ositos...`,
-    "Para que te sea más fácil, mantén en tu mente el número más grande.",
-    `Vamos a ver... tengo ${mayor} en la mente y le voy a sumar ${menor}.`,
-    `Serían ${mayor + 1}, ${mayor + 2}, ${mayor + 3}...`,
-    `Añadimos ${menor} ositos a los ${mayor} que teníamos.`,
-    "Eso que daría así como te muestro acá abajo...",
-    "Sigamos. Coloca dos números nuevamente."
-  ]);
 
   let pasos = menor;
   let total = mayor;
@@ -209,8 +211,21 @@ function iniciarSuma(){
           ${a+b}
         </div>
       `;
+
+      medallaFinal.innerHTML = `<div class="medalla">🥇</div>`;
+
+      hablarAbuelita([
+        `Si tenemos ${mayor} ositos y le sumamos ${menor} ositos...`,
+        "Para que te sea más fácil, mantén en tu mente el número más grande.",
+         `Vamos a ver... tengo ${mayor} en la mente y le voy a sumar ${menor}.`,
+  `Serían ${Array.from({length: menor}, (_, i) => mayor + i + 1).join(', ')}...`,
+  `Añadimos ${menor} ositos a los ${mayor} que teníamos.`,
+  "Eso que daría así como te muestro acá abajo...",
+  "¡Bravo, campeón! Has sumado con alegría y concentración.",
+  "Sigamos. Coloca dos números nuevamente."
+]);
     }
-  }, 1000);
+  }, 2000); // ← velocidad más lenta para animación
 }
 </script>
 </body>
