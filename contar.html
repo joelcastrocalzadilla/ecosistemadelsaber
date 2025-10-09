@@ -193,6 +193,20 @@
   <audio id="animo" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_2c8e3b8f9f.mp3?filename=kids-cheering-1-101522.mp3"></audio>
   <audio id="triunfo" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_3c8e3b8f9f.mp3?filename=triumph-fanfare-101524.mp3"></audio>
   <script>
+    window.addEventListener('load', () => {
+  const audio = document.getElementById("audiojuego");
+  audio.play().catch(() => {
+    const boton = document.createElement("button");
+    boton.innerText = "🎵 Activar música principal";
+    boton.style = "position:fixed;top:10px;right:10px;font-size:1em;padding:10px;z-index:999;";
+    boton.onclick = () => {
+      audio.play();
+      boton.remove();
+      decir("¡Música activada! Que comience la celebración.");
+    };
+    document.body.appendChild(boton);
+  });
+});
   let aciertos = 0;
   let intentos = 0;
 
@@ -385,21 +399,21 @@
   setInterval(lanzarMariposa, 20000);
 </script>
   <script>
-  window.addEventListener('load', () => {
-    const audio = document.getElementById("audiojuego");
-    audio.play().catch(() => {
-      // Si el navegador bloquea el autoplay, puedes mostrar un botón para activarlo
-      const boton = document.createElement("button");
-      boton.innerText = "🎵 Activar música";
-      boton.style = "position:fixed;top:10px;right:10px;font-size:1em;padding:10px;";
-      boton.onclick = () => {
-        audio.play();
-        boton.remove();
-      };
-      document.body.appendChild(boton);
-    });
+window.addEventListener('load', () => {
+  const audio = document.getElementById("audiojuego");
+  audio.play().catch(() => {
+    const boton = document.createElement("button");
+    boton.innerText = "🎵 Activar música principal";
+    boton.style = "position:fixed;top:10px;right:10px;font-size:1em;padding:10px;z-index:999;";
+    boton.onclick = () => {
+      audio.play();
+      boton.remove();
+      decir("¡Música activada! Que comience la celebración.");
+    };
+    document.body.appendChild(boton);
   });
-</script>
+});
 </body>
 </html>
+
 
