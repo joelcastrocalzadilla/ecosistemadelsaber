@@ -49,7 +49,6 @@
 </head>
 <body id="fondo">
 
-<!-- Pantalla inicial -->
 <div id="inicio" class="pantalla">
   <h1>Bienvenido a la suma divertida</h1>
   <p>Escribe tu nombre y selecciona:</p>
@@ -61,7 +60,6 @@
   <button onclick="empezar()">Comenzar</button>
 </div>
 
-<!-- Pantalla del juego -->
 <div id="juego" class="pantalla">
   <h2 id="saludo"></h2>
   <p>Escribe dos números para sumar:</p>
@@ -92,7 +90,7 @@
 
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
 <script>
-function hablarAbuelita(frases, pausa = 2500) {
+function hablarAbuelita(frases, pausa = 3000) {
   let i = 0;
   function decirSiguiente() {
     if (i < frases.length) {
@@ -214,18 +212,20 @@ function iniciarSuma(){
 
       medallaFinal.innerHTML = `<div class="medalla">🥇</div>`;
 
-      hablarAbuelita([
-        `Si tenemos ${mayor} ositos y le sumamos ${menor} ositos...`,
-        "Para que te sea más fácil, mantén en tu mente el número más grande.",
-         `Vamos a ver... tengo ${mayor} en la mente y le voy a sumar ${menor}.`,
-  `Serían ${Array.from({length: menor}, (_, i) => mayor + i + 1).join(', ')}...`,
-  `Añadimos ${menor} ositos a los ${mayor} que teníamos.`,
-  "Eso que daría así como te muestro acá abajo...",
-  "¡Bravo, campeón! Has sumado con alegría y concentración.",
-  "Sigamos. Coloca dos números nuevamente."
-]);
+           setTimeout(() => {
+        hablarAbuelita([
+          `Si tenemos ${mayor} ositos y le sumamos ${menor} ositos...`,
+          "Para que te sea más fácil, mantén en tu mente el número más grande.",
+          `Vamos a ver... tengo ${mayor} en la mente y le voy a sumar ${menor}.`,
+          `Serían ${Array.from({length: menor}, (_, i) => mayor + i + 1).join(', ')}...`,
+          `Añadimos ${menor} ositos a los ${mayor} que teníamos.`,
+          "Eso que daría así como te muestro acá abajo...",
+          "¡Bravo, campeón! Has sumado con alegría y concentración.",
+          "Sigamos. Coloca dos números nuevamente."
+        ]);
+      }, 1000); // espera 1 segundo antes de hablar
     }
-  }, 2000); // ← velocidad más lenta para animación
+  }, 4000); // velocidad pausada para cada osito
 }
 </script>
 </body>
