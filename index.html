@@ -262,8 +262,8 @@
       cuadro.addEventListener('focus', () => setInfo(info));
       cuadro.addEventListener('blur',  () => setInfo(null));
 
-      // Navegación por doble clic
-      cuadro.addEventListener('dblclick', () => {
+      // Navegación por clic
+      cuadro.addEventListener('click', () => {
         if (url) location.href = url;
       });
 
@@ -285,6 +285,7 @@
   </script>
 </body>
 </html>
+
 
 
 
