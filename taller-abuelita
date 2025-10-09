@@ -73,10 +73,10 @@
     <div class="actividad" onclick="location.href='letras.html'">
       ✏️ Practicando las letras
     </div>
-    <div class="actividad" onclick="location.href='silabas-abuelita.html'">
+    <div class="actividad" onclick="location.href='silabas.html'">
       📖 Sílabas con la Abuelita
     </div>
-    <div class="actividad" onclick="location.href='numeros-tito.html'">
+    <div class="actividad" onclick="location.href='numeros.html'">
       🔢 Los números con Tito
     </div>
     <div class="actividad" onclick="location.href='pelotica.html'">
