@@ -136,17 +136,12 @@ function decirLetra(){
     "z":[["zapato","👞"],["zanahoria","🥕"],["zorro","🦊"]]
   };
 
-  let nombre = nombres[letra] || letra;
+let nombre = nombres[letra] || letra;
 let lista = ejemplos[letra] || [];
 
 // 🔑 Forzamos a que siempre lea el nombre de la letra (ej: "be") y no la letra aislada
 let textoEjemplos = lista.map(p => {
-  return `${nombres} de ${p[0]}`;
-
-
-
-
-  
+  return `${nombre} de ${p[0]}`;
 }).join(". ");
 
   // ✅ Siempre usamos el nombre de la letra, no la letra sola
@@ -159,6 +154,7 @@ let textoEjemplos = lista.map(p => {
 </script>
 </body>
 </html>
+
 
 
 
