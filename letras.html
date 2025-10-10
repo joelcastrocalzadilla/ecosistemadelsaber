@@ -141,7 +141,12 @@ let lista = ejemplos[letra] || [];
 
 // 🔑 Forzamos a que siempre lea el nombre de la letra (ej: "be") y no la letra aislada
 let textoEjemplos = lista.map(p => {
-  return `${nombre} de ${p[0]}`;
+  return `${letra} de ${p[0]}`;
+
+
+
+
+  
 }).join(". ");
 
   // ✅ Siempre usamos el nombre de la letra, no la letra sola
@@ -154,6 +159,7 @@ let textoEjemplos = lista.map(p => {
 </script>
 </body>
 </html>
+
 
 
 
