@@ -60,8 +60,20 @@ let voces = [];
 let nombreNiño = "Gabriel";
 let timerInactividad;
 
-function cargarVoces(){ voces = speechSynthesis.getVoices(); }
+// 👇 Esta función carga las voces disponibles del navegador
+function cargarVoces(){ 
+  voces = speechSynthesis.getVoices(); 
+  if (voces.length === 0) {
+    // Si aún no están listas, vuelve a intentar
+    setTimeout(cargarVoces, 200);
+  }
+}
+
+// 👇 Esto hace que se ejecute cuando el navegador termina de cargar las voces
 speechSynthesis.onvoiceschanged = cargarVoces;
+
+// 👇 Y la llamamos una vez al inicio
+cargarVoces();
 
 function iniciar(){
   let nombreIngresado = document.getElementById("nombre").value.trim();
@@ -82,6 +94,9 @@ function reiniciarTimer(){
 }
 
 function hablar(texto){
+  if (voces.length === 0) {
+    voces = speechSynthesis.getVoices();
+  }
   let utter = new SpeechSynthesisUtterance(texto);
   utter.lang = "es-ES";
   utter.rate = 0.8;
@@ -152,6 +167,7 @@ document.getElementById("imagenes").innerHTML = lista.map(p => p[1]).join(" ");
 </script>
 </body>
 </html>
+
 
 
 
