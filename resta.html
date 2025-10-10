@@ -75,14 +75,27 @@
 
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
 <script>
+// --- VOZ DE LA ABUELITA ---
+function hablar(texto){
+  let utter = new SpeechSynthesisUtterance(texto);
+  utter.lang = "es-ES";
+  utter.rate = 0.9;
+  speechSynthesis.cancel();
+  speechSynthesis.speak(utter);
+}
+
 // Pantalla inicial y fondo personalizado
 function empezar(){
   const nombre = document.getElementById("nombre").value;
   const genero = document.getElementById("genero").value;
   document.getElementById("inicio").style.display="none";
   document.getElementById("juego").style.display="block";
-  document.getElementById("saludo").textContent = "Hola " + nombre + ", ¡vamos a restar!";
+  document.getElementById("saludo").textContent = "Hola " + nombre + ", ¡vamos a restar y divertirnos!";
   document.body.style.background = (genero==="azul") ? "#cce5ff" : "#ffd6e7";
+
+  // Saludo efusivo con voz
+  hablar(`Hola ${nombre}! Qué alegría verte. Hoy vamos a jugar con la resta de una forma divertida. 
+  Prepárate para pensar y sonreír.`);
 }
 
 // Dibujar ositos
@@ -111,7 +124,6 @@ function playStepSound(){
   pasoMusical++;
 }
 function playFinalChord(){
-  // Acorde menor alegre: C-E-G con una octava grave C
   playNote(261.63, 0.9); // C
   playNote(329.63, 0.9); // E
   playNote(392.00, 0.9); // G
@@ -123,7 +135,6 @@ function iniciarResta(){
   let sustraendo = parseInt(document.getElementById("num2").value);
   if(isNaN(minuendo)||isNaN(sustraendo)) return;
 
-  // Aseguramos que la operación sea minuendo - sustraendo
   let a = minuendo;
   let b = sustraendo;
 
@@ -142,6 +153,11 @@ function iniciarResta(){
   numeroGlobo.textContent = a;
   pasoMusical = 0;
 
+  // Narración inicial de la resta
+  hablar(`Imagina que tienes ${a} caramelos. 
+  Si le regalas ${b} a la abuelita, ¿cuántos te quedan? 
+  Piensa un momento...`);
+
   let pasos = b;
   let total = a;
   let intervalo = setInterval(()=>{
@@ -151,26 +167,21 @@ function iniciarResta(){
       grupoDiv.textContent = dibujarOsitos(total);
 
       // achicar globo
-      let progreso = (b - pasos); // pasos realizados
-      let size = 120 - progreso*20; // decrece 20px por paso
+      let progreso = (b - pasos);
+      let size = 120 - progreso*20;
       globo.style.width=Math.max(60, size)+"px";
       globo.style.height=Math.max(60, size)+"px";
 
-      // actualizar número
       numeroGlobo.textContent = total;
-
-      // sonido descendente
       playStepSound();
     } else {
       clearInterval(intervalo);
       resultado.textContent = `Resultado: ${a - b} ositos`;
-      // confeti y explosión
       confetti({ particleCount: 160, spread: 70, origin: { y: 0.6 } });
       globo.style.background="transparent";
       globo.textContent="💥";
       playFinalChord();
 
-      // Cuenta vertical como en el cuaderno
       cuentaFinal.innerHTML = `
         <div class="cuenta">
           ${a}<br>
@@ -179,8 +190,12 @@ function iniciarResta(){
           ${a - b}
         </div>
       `;
+
+      // Narración final
+      hablar(`Muy bien! Tenías ${a} caramelos y regalaste ${b} a la abuelita. 
+      Te quedan ${a - b}. Excelente trabajo, vamos a seguir practicando.`);
     }
-  }, 900);
+  }, 1200);
 }
 </script>
 </body>
