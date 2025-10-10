@@ -54,7 +54,7 @@
 <!-- Pantalla del juego -->
 <div id="juego" class="pantalla">
   <h2 id="saludo"></h2>
-  <p>Escribe dos números para restar (minuendo menos sustraendo):</p>
+  <p id="instrucciones"></p>
   <input id="num1" type="number" placeholder="Ej: 9"> −
   <input id="num2" type="number" placeholder="Ej: 4">
   <button onclick="iniciarResta()">Restar</button>
@@ -93,9 +93,15 @@ function empezar(){
   document.getElementById("saludo").textContent = "Hola " + nombre + ", ¡vamos a restar y divertirnos!";
   document.body.style.background = (genero==="azul") ? "#cce5ff" : "#ffd6e7";
 
+  // Instrucciones claras
+  let instrucciones = "Vas a escribir dos números: el primero será el minuendo, el número grande del que vamos a quitar. El segundo será el sustraendo, el número que vamos a restar. Luego oprime el botón RESTAR para continuar.";
+  document.getElementById("instrucciones").textContent = instrucciones;
+
   // Saludo efusivo con voz
-  hablar(`Hola ${nombre}! Qué alegría verte. Hoy vamos a jugar con la resta de una forma divertida. 
-  Prepárate para pensar y sonreír.`);
+  hablar(`Hola ${nombre}! Qué alegría verte. Hoy vamos a jugar con la resta. 
+  Vas a escribir dos números: el primero es el minuendo, el número grande. 
+  El segundo es el sustraendo, el número que vamos a quitar. 
+  Cuando los escribas, oprime el botón Restar para continuar.`);
 }
 
 // Dibujar ositos
@@ -133,7 +139,20 @@ function playFinalChord(){
 function iniciarResta(){
   let minuendo = parseInt(document.getElementById("num1").value);
   let sustraendo = parseInt(document.getElementById("num2").value);
-  if(isNaN(minuendo)||isNaN(sustraendo)) return;
+
+  // Validación: números grandes
+  if(isNaN(minuendo)||isNaN(sustraendo)){
+    hablar("Debes escribir dos números para poder restar.");
+    return;
+  }
+  if(minuendo < 6 || sustraendo < 1){
+    hablar("El minuendo debe ser un número mayor que cinco. Intenta de nuevo.");
+    return;
+  }
+  if(sustraendo > minuendo){
+    hablar("El sustraendo no puede ser mayor que el minuendo. Intenta de nuevo.");
+    return;
+  }
 
   let a = minuendo;
   let b = sustraendo;
@@ -154,9 +173,9 @@ function iniciarResta(){
   pasoMusical = 0;
 
   // Narración inicial de la resta
-  hablar(`Imagina que tienes ${a} caramelos. 
+  hablar(`Muy bien. Tienes ${a} caramelos. 
   Si le regalas ${b} a la abuelita, ¿cuántos te quedan? 
-  Piensa un momento...`);
+  Vamos a verlo paso a paso...`);
 
   let pasos = b;
   let total = a;
@@ -174,29 +193,12 @@ function iniciarResta(){
 
       numeroGlobo.textContent = total;
       playStepSound();
+
+      // Narración de cada paso
+      hablar(`Ahora te quedan ${total} caramelos.`);
     } else {
       clearInterval(intervalo);
       resultado.textContent = `Resultado: ${a - b} ositos`;
       confetti({ particleCount: 160, spread: 70, origin: { y: 0.6 } });
-      globo.style.background="transparent";
-      globo.textContent="💥";
-      playFinalChord();
+      globo.style.background="
 
-      cuentaFinal.innerHTML = `
-        <div class="cuenta">
-          ${a}<br>
-          − ${b}<br>
-          <div class="linea"></div>
-          ${a - b}
-        </div>
-      `;
-
-      // Narración final
-      hablar(`Muy bien! Tenías ${a} caramelos y regalaste ${b} a la abuelita. 
-      Te quedan ${a - b}. Excelente trabajo, vamos a seguir practicando.`);
-    }
-  }, 2500); // 👈 ahora 2.5 segundos entre cada paso (más lento)
-}
-</script>
-</body>
-</html>
