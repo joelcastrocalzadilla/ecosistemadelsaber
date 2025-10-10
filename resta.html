@@ -198,7 +198,28 @@ function iniciarResta(){
       hablar(`Ahora te quedan ${total} caramelos.`);
     } else {
       clearInterval(intervalo);
-      resultado.textContent = `Resultado: ${a - b} ositos`;
+          resultado.textContent = `Resultado: ${a - b} ositos`;
       confetti({ particleCount: 160, spread: 70, origin: { y: 0.6 } });
-      globo.style.background="
+      globo.style.background="transparent";
+      globo.textContent="💥";
+      playFinalChord();
+
+      cuentaFinal.innerHTML = `
+        <div class="cuenta">
+          ${a}<br>
+          − ${b}<br>
+          <div class="linea"></div>
+          ${a - b}
+        </div>
+      `;
+
+      // Narración final
+      hablar(`¡Muy bien! Tenías ${a} caramelos y regalaste ${b} a la abuelita. 
+      Te quedan ${a - b}. Excelente trabajo, vamos a seguir practicando.`);
+    }
+  }, 3000); // 👈 3 segundos entre cada paso (más lento)
+}
+</script>
+</body>
+</html>
 
