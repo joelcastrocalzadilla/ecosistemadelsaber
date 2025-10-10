@@ -141,7 +141,7 @@ function decirLetra(){
 
   // ✅ Siempre usamos el nombre de la letra, no la letra sola
   let textoEjemplos = lista.map(p => `${nombre} de ${p[0]}`).join(", ");
-  let mensaje = `Escucha bien: la letra ${letra.toUpperCase()} se llama "${nombre}". Repito: "${nombre}". ${textoEjemplos}. Muy bien ${nombreNiño}, ahora coloca una nueva letra.`;
+  let mensaje = `Escucha bien: la letra ${letra.toUpperCase()} se llama "${nombre}". Repito: "${letra}". ${textoEjemplos}. Muy bien ${nombreNiño}, ahora coloca una nueva letra.`;
 
   hablar(mensaje);
   document.getElementById("imagenes").innerHTML = lista.map(p => p[1]).join(" ");
@@ -149,3 +149,4 @@ function decirLetra(){
 </script>
 </body>
 </html>
+
