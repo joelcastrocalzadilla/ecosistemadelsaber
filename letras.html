@@ -60,19 +60,14 @@ let voces = [];
 let nombreNiño = "Gabriel";
 let timerInactividad;
 
-// 👇 Esta función carga las voces disponibles del navegador
+// 🔊 Cargar voces disponibles
 function cargarVoces(){ 
   voces = speechSynthesis.getVoices(); 
   if (voces.length === 0) {
-    // Si aún no están listas, vuelve a intentar
     setTimeout(cargarVoces, 200);
   }
 }
-
-// 👇 Esto hace que se ejecute cuando el navegador termina de cargar las voces
 speechSynthesis.onvoiceschanged = cargarVoces;
-
-// 👇 Y la llamamos una vez al inicio
 cargarVoces();
 
 function iniciar(){
@@ -94,12 +89,10 @@ function reiniciarTimer(){
 }
 
 function hablar(texto){
-  if (voces.length === 0) {
-    voces = speechSynthesis.getVoices();
-  }
+  if (voces.length === 0) voces = speechSynthesis.getVoices();
   let utter = new SpeechSynthesisUtterance(texto);
   utter.lang = "es-ES";
-  utter.rate = 0.8;
+  utter.rate = 0.9;
   let voz = voces.find(v => v.lang.startsWith("es"));
   if(voz) utter.voice = voz;
   speechSynthesis.cancel();
@@ -151,34 +144,19 @@ function decirLetra(){
     "z":[["zapato","👞"],["zanahoria","🥕"],["zorro","🦊"]]
   };
 
-let nombre = nombres[letra] || letra;
-let lista = ejemplos[letra] || [];
+  let nombre = nombres[letra] || letra;
+  let lista = ejemplos[letra] || [];
 
-// ✅ Siempre usamos el nombre de la letra (ej: "be"), no la letra aislada
-let textoEjemplos = lista.map(p => `${nombre} de ${p[0]}`).join(". ");
+  // ✅ Siempre usamos el nombre de la letra, no la letra aislada
+  let textoEjemplos = lista.map(p => `${nombre} de ${p[0]}`).join(". ");
 
-// ❌ Aquí estaba el error: usabas "${letra}" en vez de "${nombre}"
-let mensaje = `Escucha bien: la letra ${letra.toUpperCase()} se llama "${nombre}". 
-Repito: "${nombre}". ${textoEjemplos}. Muy bien ${nombreNiño}, ahora coloca una nueva letra.`;
+  // ✅ En el mensaje también usamos "nombre"
+  let mensaje = `Escucha bien: la letra ${letra.toUpperCase()} se llama ${nombre}. 
+Repito: ${nombre}. ${textoEjemplos}. Muy bien ${nombreNiño}, ahora coloca una nueva letra.`;
 
-hablar(mensaje);
-document.getElementById("imagenes").innerHTML = lista.map(p => p[1]).join(" ");
+  hablar(mensaje);
+  document.getElementById("imagenes").innerHTML = lista.map(p => p[1]).join(" ");
 }
 </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
