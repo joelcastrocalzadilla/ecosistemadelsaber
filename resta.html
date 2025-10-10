@@ -134,28 +134,28 @@ function playFinalChord(){
   playNote(329.63, 0.9); // E
   playNote(392.00, 0.9); // G
 }
-
 // Juego de resta
 function iniciarResta(){
   let minuendo = parseInt(document.getElementById("num1").value);
   let sustraendo = parseInt(document.getElementById("num2").value);
 
-  // Validación: números grandes
+  // Validación
   if(isNaN(minuendo)||isNaN(sustraendo)){
     hablar("Debes escribir dos números para poder restar.");
     return;
   }
-  if(minuendo < 6 || sustraendo < 1){
-    hablar("El minuendo debe ser un número mayor que cinco. Intenta de nuevo.");
+  if(minuendo < 1 || minuendo > 10000 || sustraendo < 1 || sustraendo > 10000){
+    hablar("Los números deben estar entre uno y diez mil. Intenta de nuevo.");
     return;
   }
   if(sustraendo > minuendo){
-    hablar("El sustraendo no puede ser mayor que el minuendo. Intenta de nuevo.");
+    hablar("Recuerda: el sustraendo no puede ser mayor que el minuendo. Escribe de nuevo los números.");
     return;
   }
 
   let a = minuendo;
   let b = sustraendo;
+  let diferencia = a - b;
 
   let grupoDiv = document.getElementById("grupo");
   let resultado = document.getElementById("resultado");
@@ -172,10 +172,33 @@ function iniciarResta(){
   numeroGlobo.textContent = a;
   pasoMusical = 0;
 
-  // Narración inicial de la resta
+  // 👉 Si la diferencia es mayor de 10, saltamos directo al final
+  if(diferencia > 10){
+    resultado.textContent = `Resultado: ${diferencia} ositos`;
+    confetti({ particleCount: 160, spread: 70, origin: { y: 0.6 } });
+    globo.style.background="transparent";
+    globo.textContent="💥";
+    playFinalChord();
+
+    cuentaFinal.innerHTML = `
+      <div class="cuenta">
+        ${a}<br>
+        − ${b}<br>
+        <div class="linea"></div>
+        ${diferencia}
+      </div>
+    `;
+
+    hablar(`Muy bien. Tenías ${a} caramelos y regalaste ${b} a la abuelita. 
+    Te quedan ${diferencia}. Como es una resta grande, fuimos directo al resultado. 
+    Ahora escribe nuevamente dos números y oprime el botón Restar para continuar, 
+    y así seguiremos practicando hasta el infinito y más allá.`);
+    return;
+  }
+
+  // 👉 Si la diferencia es 10 o menos, hacemos la animación paso a paso
   hablar(`Muy bien. Tienes ${a} caramelos. 
-  Si le regalas ${b} a la abuelita, ¿cuántos te quedan? 
-  Vamos a verlo paso a paso...`);
+  Si le regalas ${b} a la abuelita, ¿cuántos te quedan? Vamos a verlo paso a paso...`);
 
   let pasos = b;
   let total = a;
@@ -194,11 +217,10 @@ function iniciarResta(){
       numeroGlobo.textContent = total;
       playStepSound();
 
-      // Narración de cada paso
       hablar(`Ahora te quedan ${total} caramelos.`);
     } else {
       clearInterval(intervalo);
-          resultado.textContent = `Resultado: ${a - b} ositos`;
+      resultado.textContent = `Resultado: ${diferencia} ositos`;
       confetti({ particleCount: 160, spread: 70, origin: { y: 0.6 } });
       globo.style.background="transparent";
       globo.textContent="💥";
@@ -209,27 +231,20 @@ function iniciarResta(){
           ${a}<br>
           − ${b}<br>
           <div class="linea"></div>
-          ${a - b}
+          ${diferencia}
         </div>
       `;
 
-           // Narración final
       hablar(`¡Muy bien! Tenías ${a} caramelos y regalaste ${b} a la abuelita. 
-      Te quedan ${a - b}. Excelente trabajo, vamos a seguir practicando. 
+      Te quedan ${diferencia}. Excelente trabajo, vamos a seguir practicando. 
       Ahora escribe nuevamente dos números y oprime el botón Restar para continuar, 
       y así seguiremos jugando hasta el infinito y más allá.`);
     }
-  }, 3000); 
-  // 👈 3 segundos entre cada paso (más lento)
+  }, 3000); // 👈 3 segundos entre cada paso
 }
 </script>
 </body>
-</html>
- }
-</script>
-</body>
-</html>
-
+</html>  
 
 
 
