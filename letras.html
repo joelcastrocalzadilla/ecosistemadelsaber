@@ -139,21 +139,20 @@ function decirLetra(){
 let nombre = nombres[letra] || letra;
 let lista = ejemplos[letra] || [];
 
-// 🔑 Forzamos a que siempre lea el nombre de la letra (ej: "be") y no la letra aislada
-let textoEjemplos = lista.map(p => {
-  return `${nombre} de ${p[0]}`;
-}).join(". ");
+// ✅ Siempre usamos el nombre de la letra (ej: "be"), no la letra aislada
+let textoEjemplos = lista.map(p => `${nombre} de ${p[0]}`).join(". ");
 
-  // ✅ Siempre usamos el nombre de la letra, no la letra sola
-  let textoEjemplos = lista.map(p => `${nombre} de ${p[0]}`).join(", ");
-  let mensaje = `Escucha bien: la letra ${letra.toUpperCase()} se llama "${letra}". Repito: "${letra}". ${textoEjemplos}. Muy bien ${nombreNiño}, ahora coloca una nueva letra.`;
+// ✅ En el mensaje también usamos "nombre", no "letra"
+let mensaje = `Escucha bien: la letra ${letra.toUpperCase()} se llama "${nombre}". 
+Repito: "${nombre}". ${textoEjemplos}. Muy bien ${nombreNiño}, ahora coloca una nueva letra.`;
 
-  hablar(mensaje);
-  document.getElementById("imagenes").innerHTML = lista.map(p => p[1]).join(" ");
+hablar(mensaje);
+document.getElementById("imagenes").innerHTML = lista.map(p => p[1]).join(" ");
 }
 </script>
 </body>
 </html>
+
 
 
 
