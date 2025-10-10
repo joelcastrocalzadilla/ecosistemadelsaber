@@ -157,7 +157,7 @@ let lista = ejemplos[letra] || [];
 // ✅ Siempre usamos el nombre de la letra (ej: "be"), no la letra aislada
 let textoEjemplos = lista.map(p => `${nombre} de ${p[0]}`).join(". ");
 
-// ✅ En el mensaje también usamos "nombre", no "letra"
+// ❌ Aquí estaba el error: usabas "${letra}" en vez de "${nombre}"
 let mensaje = `Escucha bien: la letra ${letra.toUpperCase()} se llama "${nombre}". 
 Repito: "${nombre}". ${textoEjemplos}. Muy bien ${nombreNiño}, ahora coloca una nueva letra.`;
 
@@ -167,6 +167,7 @@ document.getElementById("imagenes").innerHTML = lista.map(p => p[1]).join(" ");
 </script>
 </body>
 </html>
+
 
 
 
