@@ -134,7 +134,7 @@ function playFinalChord(){
   playNote(329.63, 0.9); // E
   playNote(392.00, 0.9); // G
 }
-// Juego de resta
+  // Juego de resta
 function iniciarResta(){
   let minuendo = parseInt(document.getElementById("num1").value);
   let sustraendo = parseInt(document.getElementById("num2").value);
@@ -142,10 +142,6 @@ function iniciarResta(){
   // Validación
   if(isNaN(minuendo)||isNaN(sustraendo)){
     hablar("Debes escribir dos números para poder restar.");
-    return;
-  }
-  if(minuendo < 1 || minuendo > 10000 || sustraendo < 1 || sustraendo > 10000){
-    hablar("Los números deben estar entre uno y diez mil. Intenta de nuevo.");
     return;
   }
   if(sustraendo > minuendo){
@@ -163,7 +159,7 @@ function iniciarResta(){
   let numeroGlobo = document.getElementById("numeroGlobo");
   let cuentaFinal = document.getElementById("cuentaFinal");
 
-  grupoDiv.textContent = dibujarOsitos(a);
+  grupoDiv.textContent = "";
   resultado.textContent = "";
   cuentaFinal.innerHTML = "";
   globo.style.width="120px"; globo.style.height="120px";
@@ -172,9 +168,9 @@ function iniciarResta(){
   numeroGlobo.textContent = a;
   pasoMusical = 0;
 
-  // 👉 Si la diferencia es mayor de 10, saltamos directo al final
+  // 👉 Si la diferencia es mayor de 10, solo mostramos el resultado final
   if(diferencia > 10){
-    resultado.textContent = `Resultado: ${diferencia} ositos`;
+    resultado.textContent = `Resultado: ${diferencia}`;
     confetti({ particleCount: 160, spread: 70, origin: { y: 0.6 } });
     globo.style.background="transparent";
     globo.textContent="💥";
@@ -191,7 +187,7 @@ function iniciarResta(){
 
     hablar(`Muy bien. Tenías ${a} caramelos y regalaste ${b} a la abuelita. 
     Te quedan ${diferencia}. Como es una resta grande, fuimos directo al resultado. 
-    Ahora escribe nuevamente dos números y oprime el botón Restar para continuar, 
+       Ahora escribe nuevamente dos números y oprime el botón Restar para continuar, 
     y así seguiremos practicando hasta el infinito y más allá.`);
     return;
   }
@@ -220,7 +216,7 @@ function iniciarResta(){
       hablar(`Ahora te quedan ${total} caramelos.`);
     } else {
       clearInterval(intervalo);
-      resultado.textContent = `Resultado: ${diferencia} ositos`;
+      resultado.textContent = `Resultado: ${diferencia}`;
       confetti({ particleCount: 160, spread: 70, origin: { y: 0.6 } });
       globo.style.background="transparent";
       globo.textContent="💥";
@@ -244,7 +240,7 @@ function iniciarResta(){
 }
 </script>
 </body>
-</html>  
+</html>
 
 
 
