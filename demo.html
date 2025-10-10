@@ -36,7 +36,6 @@ let nombreNiño = "niño";
 let timerInactividad;
 let ultimaSilaba = "";
 
-// ✅ Diccionario de sílabas con la letra P
 const ejemplos = {
   "pa":[["pato","🦆"],["papa","🥔"],["paleta","🍭"]],
   "pe":[["pera","🍐"],["pelota","⚽"],["perro","🐶"]],
@@ -91,6 +90,26 @@ function decirSilaba(){
   reiniciarTimer();
   let silaba = document.getElementById("entrada").value.toLowerCase();
   if(!silaba.match(/^[a-zñ]{1,3}$/i)) return;
+
+  // Validaciones pedagógicas
+  if(silaba.length === 1){
+    hablar(`Eso no es una sílaba, ${nombreNiño}. Debes poner una consonante y una vocal.`);
+    return;
+  }
+  if(silaba.length === 2){
+    let c1 = silaba.charAt(0);
+    let c2 = silaba.charAt(1);
+    let vocales = "aeiou";
+    if((vocales.includes(c1) && vocales.includes(c2))){
+      hablar(`Eso no es una sílaba, ${nombreNiño}. No se pueden poner dos vocales seguidas. Intenta con consonante más vocal.`);
+      return;
+    }
+    if(!vocales.includes(c1) && !vocales.includes(c2)){
+      hablar(`Eso no es una sílaba, ${nombreNiño}. No se pueden poner dos consonantes seguidas. Intenta con consonante más vocal.`);
+      return;
+    }
+  }
+
   ultimaSilaba = silaba;
   document.getElementById("silabaMostrada").textContent = silaba.toUpperCase();
   animarSilaba();
