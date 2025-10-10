@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>Practicando sílabas con emojis</title>
+<title>Practicando sílabas con la Abuelita</title>
 <style>
   body { font-family: sans-serif; text-align: center; background: #e3f2fd; }
   input, button { font-size: 1.5em; margin: 10px; padding: 10px; border-radius: 8px; }
@@ -21,7 +21,7 @@
 </style>
 </head>
 <body>
-  <h1>Practicando sílabas con emojis</h1>
+  <h1>Practicando sílabas con la Abuelita</h1>
   <input id="nombre" placeholder="Tu nombre">
   <button onclick="iniciar()">Comenzar</button>
   <button onclick="repetirSilaba()">🔁 Repetir</button>
@@ -65,7 +65,7 @@ function hablar(texto){
 function iniciar(){
   let nombreIngresado = document.getElementById("nombre").value.trim();
   if(nombreIngresado) nombreNiño = nombreIngresado;
-  let mensaje = `¡Hola, hola ${nombreNiño}! 👋😀 ¡Qué alegría tenerte aquí! Vamos a jugar con las sílabas, escribe una para comenzar.`;
+  let mensaje = `¡Hola, hola ${nombreNiño}!¡Qué alegría tenerte aquí! Vamos a jugar con las sílabas, escribe una para comenzar.`;
   document.getElementById("saludo").textContent = mensaje;
   hablar(mensaje);
   reiniciarTimer();
@@ -151,3 +151,4 @@ function repetirSilaba(){
 </script>
 </body>
 </html>
+
