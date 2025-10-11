@@ -218,14 +218,15 @@ function verificarRespuesta(opcion) {
     if ([20, 40, 60, 80].includes(puntos)) {
       lanzarConfeti(`¡${puntos} puntos! 🎉`);
       fallos = 0;
-      fallosDiv.textContent = "Fallos: 0 / 10";
+      fallosDiv.textContent = "Fallos: " + fallos + " / 10"; // ✅ actualización visual
     }
 
     // 🏆 Campeonato
     if (puntos === 100) {
       fallos = 0;
-      fallosDiv.textContent = "Fallos: 0 / 10";
+      fallosDiv.textContent = "Fallos: " + fallos + " / 10"; // ✅ actualización visual
       mostrarBannerCampeonato();
+      return; // ✅ detener aquí para que no cree otro globo
     }
 
     crearGlobo();
@@ -312,4 +313,5 @@ function mostrarBannerCampeonato() {
 </script>
 </body>
 </html> 
+
 
