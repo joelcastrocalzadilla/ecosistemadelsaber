@@ -10,7 +10,29 @@
       background: #f0f8ff;
       overflow: hidden;
     }
+#panelInferior {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-top: 10px;
+}
 
+#startBtn {
+  margin-top: 10px;
+  padding: 15px 30px;
+  font-size: 20px;
+  background: #32cd32;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  align-self: center;
+}
+
+#startBtn:hover {
+  background: #228b22;
+}
     #gameArea {
       position: relative;
       width: 400px;
@@ -108,9 +130,10 @@
   <div id="puntos">Puntos: 0</div>
   <div id="fallos">Fallos: 0 / 10</div>
   <div id="gameArea"><div id="lineaTope"></div></div>
+ <div id="panelInferior">
   <div id="opciones"></div>
   <button id="startBtn" onclick="iniciarJuego()">Iniciar Juego</button>
-  <script>
+</div>
 const palabras = [
   {es:"casa",en:"house"},{es:"perro",en:"dog"},{es:"gato",en:"cat"},{es:"libro",en:"book"},
   {es:"agua",en:"water"},{es:"sol",en:"sun"},{es:"luna",en:"moon"},{es:"niño",en:"boy"},
@@ -313,5 +336,6 @@ function mostrarBannerCampeonato() {
 </script>
 </body>
 </html> 
+
 
 
