@@ -72,6 +72,13 @@
       font-size: 1.2em;
       color: #333;
     }
+
+    /* Footer de crédito */
+    footer {
+      margin-top: 30px;
+      font-size: 0.9em;
+      color: #555;
+    }
   </style>
 </head>
 <body>
@@ -86,6 +93,11 @@
   <audio id="musicaFondo" src="https://joelcastrocalzadilla.github.io/ecosistemadelsaber/videlecircus.mp3" loop></audio>
   <!-- Sonido de triunfo -->
   <audio id="triunfo" src="triunfo.mp3"></audio>
+
+  <!-- Footer con crédito -->
+  <footer>
+    Música de fondo: "Vie le cirque" – Jean‑Paul Verpeaux (Pixabay)
+  </footer>
 
 <script>
   let cuenta = 0;
@@ -178,7 +190,7 @@
       lanzarConfeti();
       triunfo.currentTime = 0;
       triunfo.play();
-      decir("¡Bravooo! ¡Llegamos al diez! Vamos a repetir nuevamente el conteo hasta el diez.");
+      decir("¡Bravooo! Llegamos al diez. Y gracias a Jean‑Paul Verpeaux por la música de circo que nos acompaña.");
       cuenta = 0; // reinicia
     }
   }
@@ -204,4 +216,3 @@
 </script>
 </body>
 </html>
-
