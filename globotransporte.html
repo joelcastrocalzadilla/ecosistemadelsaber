@@ -84,10 +84,10 @@
     let modoRepaso = false;
 
     function iniciarJuego() {
+      limpiarListados(); // 👉 limpia cualquier listado previo
       puntos = 0; fallos = 0; duracion = 4000;
       operacionesFalladas = [];
       modoRepaso = false;
-      limpiarListados(); // 👉 limpia cualquier listado previo
       puntosDiv.textContent = "Puntos: " + puntos;
       fallosDiv.textContent = "Fallos: " + fallos + " / 5";
       repasoBtn.style.display = "none";
@@ -106,6 +106,7 @@
     }
 
     function crearGlobo() {
+      limpiarListados(); // 👉 por seguridad, limpia cualquier overlay
       if (globo) globo.remove();
 
       let a, b;
@@ -199,9 +200,10 @@
     }
 
     function mostrarListadoFallos() {
+      limpiarListados(); // 👉 asegura que no haya duplicados
       if (operacionesFalladas.length > 0) {
         const listado = document.createElement("div");
-        listado.className = "listadoFallos";
+        listado.id = "listadoFallosOverlay"; // 👉 ID único
         listado.innerHTML = "<h2>📚 Operaciones para repasar:</h2><ul>" +
           operacionesFalladas.map(obj => `<li>${obj.op} = ${obj.res}</li>`).join("") +
           "</ul>";
@@ -209,11 +211,12 @@
         listado.style.top = "20%";
         listado.style.left = "50%";
         listado.style.transform = "translate(-50%, 0)";
-        listado.style.background = "white";
+                listado.style.background = "white";
         listado.style.padding = "20px";
         listado.style.border = "3px solid #333";
         listado.style.borderRadius = "10px";
-                listado.style.maxHeight = "300px";
+        listado.style.zIndex = "9999";
+        listado.style.maxHeight = "300px";
         listado.style.overflowY = "auto";
         document.body.appendChild(listado);
       }
@@ -221,7 +224,8 @@
 
     function limpiarListados() {
       // 👉 Elimina cualquier listado de fallos que esté en pantalla
-      document.querySelectorAll(".listadoFallos").forEach(el => el.remove());
+      const overlay = document.getElementById("listadoFallosOverlay");
+      if (overlay) overlay.remove();
     }
   </script>
 </body>
