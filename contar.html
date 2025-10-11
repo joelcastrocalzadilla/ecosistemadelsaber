@@ -178,7 +178,7 @@
 
   <div id="controls">
     Ángulo: <input type="number" id="angulo" value="45" min="10" max="80">°
-    Fuerza: <input type="number" id="fuerza" value="50" min="10" max="100">
+    Fuerza: <input type="number" id="fuerza" value="50" min="10" max="150">
     <button onclick="lanzarPelota()">Lanzar</button>
   </div>
 
@@ -189,21 +189,11 @@
 
   <!-- 🎵 Sonidos -->
   <audio id="audiojuego" src="audiojuego.mp3" autoplay loop></audio>
-  <script>
-    window.addEventListener('load', () => {
-  const audio = document.getElementById("audiojuego");
-  audio.play().catch(() => {
-    const boton = document.createElement("button");
-    boton.innerText = "🎵 Activar música principal";
-    boton.style = "position:fixed;top:10px;right:10px;font-size:1em;padding:10px;z-index:999;";
-    boton.onclick = () => {
-      audio.play();
-      boton.remove();
-      decir("¡Música activada! Que comience la celebración.");
-    };
-    document.body.appendChild(boton);
-  });
-});
+  <audio id="aplausos" src="aplausos.mp3"></audio>
+  <audio id="animo" src="animo.mp3"></audio>
+  <audio id="triunfo" src="triunfo.mp3"></audio>
+
+<script>
   let aciertos = 0;
   let intentos = 0;
 
@@ -217,13 +207,8 @@
     "¡Soy el mejor!",
     "¡Con 5 aciertos avanzas de nivel y con 10 aciertos GANAS la medalla de Honor!",
     "Invita a tus padres a competir contigo",
-    "Debo respetar a mis padres",
-    "Debo comer saludable",
     "¡Soy muy inteligente!",
-    "Debo hacer mis tareas",
     "¡Soy un luchador!",
-    "No debo hablar con extraños",
-    "Debo cuidar el planeta",
     "¡Puedo hacerlo!",
     "¡Soy capaz de lograr cualquier cosa!"
   ];
@@ -241,11 +226,8 @@
     intentos++;
     document.getElementById("intentos").innerText = `🎯 Intentos: ${intentos}`;
 
-    const anguloInput = document.getElementById("angulo");
-    const fuerzaInput = document.getElementById("fuerza");
-
-    const angulo = parseFloat(anguloInput.value);
-    const fuerza = parseFloat(fuerzaInput.value);
+    const angulo = parseFloat(document.getElementById("angulo").value);
+    const fuerza = parseFloat(document.getElementById("fuerza").value);
 
     const radianes = angulo * Math.PI / 180;
     const velocidadX = Math.cos(radianes) * fuerza;
@@ -271,7 +253,7 @@
       pelota.style.left = `${x}px`;
       pelota.style.bottom = `${y}px`;
 
-      if (y < 40) {
+           if (y < 40) {
         clearInterval(intervalo);
         escena.removeChild(pelota);
 
@@ -290,9 +272,11 @@
           lanzarConfeti();
           decir(`¡Acierto número ${aciertos}!`);
 
-          anguloInput.value = 0;
-          fuerzaInput.value = 0;
+          // Reiniciar inputs
+          document.getElementById("angulo").value = 0;
+          document.getElementById("fuerza").value = 0;
 
+          // Mover al lanzador tras acierto
           moverLanzador();
 
           if (aciertos === 5) {
@@ -353,8 +337,9 @@
   }
 
   function moverLanzador() {
-    const nuevaX = Math.floor(Math.random() * 200) + 50;
-    const nuevaY = Math.floor(Math.random() * 60) + 40;
+    const maxX = escena.clientWidth - 100; // ancho de la escena
+    const nuevaX = Math.floor(Math.random() * maxX);
+    const nuevaY = 40; // fijo en el suelo
     nino.style.left = `${nuevaX}px`;
     nino.style.bottom = `${nuevaY}px`;
   }
@@ -395,7 +380,8 @@
   moverLanzador();
   setInterval(lanzarMariposa, 20000);
 </script>
-  <script>
+
+<script>
 window.addEventListener('load', () => {
   const audio = document.getElementById("audiojuego");
   audio.play().catch(() => {
@@ -410,8 +396,6 @@ window.addEventListener('load', () => {
     document.body.appendChild(boton);
   });
 });
+</script>
 </body>
 </html>
-
-
-
