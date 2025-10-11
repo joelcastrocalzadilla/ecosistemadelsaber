@@ -2,17 +2,16 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Juego de Globos Matemáticos</title>
+  <title>Transporte - Globos de Vocabulario</title>
   <style>
-    body { font-family: Arial, sans-serif; text-align: center; background: #f0f8ff; margin:0; padding:0; }
+    body { font-family: Arial, sans-serif; text-align: center; background: #f9f9f9; margin:0; padding:0; }
     #gameArea { position: relative; width: 400px; height: 500px; margin: 20px auto; border: 2px solid #333;
       background: linear-gradient(#d0f0ff, #ffffff); overflow: hidden; }
     #lineaTope { position: absolute; top: 0; left: 0; width: 100%; height: 10px; background: red; }
-    .globo { position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 80px; height: 100px;
+    .globo { position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 100px; height: 120px;
       background: pink; border-radius: 50% 50% 45% 45%; display: flex; align-items: center; justify-content: center;
       font-size: 20px; font-weight: bold; color: #333; }
 
-    /* Opciones en 2 filas x 2 columnas */
     #opciones {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
@@ -32,7 +31,6 @@
 
     #puntos, #fallos { font-size: 20px; margin: 10px; }
 
-    /* Botones de control siempre centrados abajo */
     .botones {
       position: fixed;
       bottom: 20px;
@@ -52,8 +50,7 @@
     }
     button:hover { background: #228b22; }
 
-    /* Panel lateral derecho para el listado */
-    #listadoFallosOverlay {
+    #fallasTransOverlay {
       position: fixed;
       top: 100px;
       right: 20px;
@@ -70,23 +67,42 @@
   </style>
 </head>
 <body>
-  <h1>🎈 Globos Matemáticos 🎈</h1>
+  <h1>🎈 Transporte - Globos de Vocabulario 🎈</h1>
   <div id="puntos">Puntos: 0</div>
   <div id="fallos">Fallos: 0 / 5</div>
   <div id="gameArea"><div id="lineaTope"></div></div>
-
-  <!-- Opciones en 2x2 -->
   <div id="opciones"></div>
 
-  <!-- Botones de control siempre centrados -->
   <div class="botones">
-    <button id="startBtn" onclick="iniciarJuego()">Iniciar Juego</button>
+    <button onclick="iniciarJuego()">Iniciar Juego</button>
     <button id="repasoBtn" style="display:none;" onclick="iniciarRepaso()">Practicar falladas</button>
   </div>
 
   <script>
-    let puntos = 0, fallos = 0, resultadoCorrecto, globo, animacion;
-    let duracion = 4000, pos = 0; // 👉 velocidad más lenta
+    const transporte = [
+      {en:"Car", es:"Carro"},
+      {en:"Bus", es:"Bus"},
+      {en:"Bicycle", es:"Bicicleta"},
+      {en:"Motorcycle", es:"Motocicleta"},
+      {en:"Train", es:"Tren"},
+      {en:"Airplane", es:"Avión"},
+      {en:"Boat", es:"Barco"},
+      {en:"Ship", es:"Nave"},
+      {en:"Truck", es:"Camión"},
+      {en:"Taxi", es:"Taxi"},
+      {en:"Subway", es:"Metro"},
+      {en:"Tram", es:"Tranvía"},
+      {en:"Helicopter", es:"Helicóptero"},
+      {en:"Scooter", es:"Patineta"},
+      {en:"Skateboard", es:"Monopatín"},
+      {en:"Horse", es:"Caballo"},
+      {en:"Rocket", es:"Cohete"}
+    ];
+
+    let puntos = 0, fallos = 0, palabraActual, respuestaCorrecta;
+    let globo, animacion, pos = 0, duracion = 4000;
+    let fallasTrans = [];
+    let modoRepaso = false;
     const alturaMax = 400;
 
     const gameArea = document.getElementById("gameArea");
@@ -95,51 +111,48 @@
     const fallosDiv = document.getElementById("fallos");
     const repasoBtn = document.getElementById("repasoBtn");
 
-    let operacionesFalladas = [];
-    let modoRepaso = false;
-
     function iniciarJuego() {
-      limpiarListados();
+      limpiarFallasTrans();
       puntos = 0; fallos = 0; duracion = 4000;
-      operacionesFalladas = [];
+      fallasTrans = [];
       modoRepaso = false;
       puntosDiv.textContent = "Puntos: " + puntos;
       fallosDiv.textContent = "Fallos: " + fallos + " / 5";
       repasoBtn.style.display = "none";
-      crearGlobo();
+      crearGloboTrans();
     }
 
     function iniciarRepaso() {
-      if (operacionesFalladas.length === 0) return;
-      limpiarListados();
+      if (fallasTrans.length === 0) return;
+      limpiarFallasTrans();
       puntos = 0; fallos = 0; duracion = 4000;
       modoRepaso = true;
       puntosDiv.textContent = "Puntos: " + puntos;
       fallosDiv.textContent = "Fallos: " + fallos + " / 5";
       repasoBtn.style.display = "none";
-      crearGlobo();
+      crearGloboTrans();
     }
 
-    function crearGlobo() {
+    function crearGloboTrans() {
       if (globo) globo.remove();
-      let a, b;
-      if (modoRepaso && operacionesFalladas.length > 0) {
-        let {op, res} = operacionesFalladas.shift();
-        resultadoCorrecto = res;
-        globo = document.createElement("div");
-        globo.className = "globo";
-        globo.textContent = op;
+
+      if (modoRepaso && fallasTrans.length > 0) {
+        let {pregunta, respuestaCorrecta:res} = fallasTrans.shift();
+        palabraActual = pregunta;
+        respuestaCorrecta = res;
       } else {
-        a = Math.floor(Math.random() * 9) + 1;
-        b = Math.floor(Math.random() * 9) + 1;
-        resultadoCorrecto = a * b;
-        globo = document.createElement("div");
-        globo.className = "globo";
-        globo.textContent = `${a}x${b}`;
+        let item = transporte[Math.floor(Math.random()*transporte.length)];
+        palabraActual = item.en;
+        respuestaCorrecta = item.es;
       }
+
+      globo = document.createElement("div");
+      globo.className = "globo";
+      globo.textContent = palabraActual;
       gameArea.appendChild(globo);
+
       pos = 0;
-      mostrarOpciones(resultadoCorrecto);
+      mostrarOpciones(respuestaCorrecta);
       moverGlobo();
     }
 
@@ -147,8 +160,8 @@
       opcionesDiv.innerHTML = "";
       let opciones = [correcto];
       while (opciones.length < 4) {
-        let num = Math.floor(Math.random() * 81) + 1;
-        if (!opciones.includes(num)) opciones.push(num);
+        let candidato = transporte[Math.floor(Math.random()*transporte.length)].es;
+        if (!opciones.includes(candidato)) opciones.push(candidato);
       }
       opciones.sort(() => Math.random() - 0.5);
       opciones.forEach(op => {
@@ -169,33 +182,33 @@
         globo.style.bottom = pos + "px";
         if (pos >= alturaMax) {
           clearInterval(animacion);
-          registrarFallo(true);
+          registrarFalla(true);
         }
       }, intervalo);
     }
 
     function verificarRespuesta(opcion) {
-      if (opcion === resultadoCorrecto) {
+      if (opcion === respuestaCorrecta) {
         puntos++;
         puntosDiv.textContent = "Puntos: " + puntos;
         clearInterval(animacion);
         duracion = 4000;
-        crearGlobo();
+        crearGloboTrans();
       } else {
-        registrarFallo(false);
+        registrarFalla(false);
         duracion = Math.max(300, duracion / 2);
         moverGlobo();
       }
     }
 
-    function registrarFallo(porTiempo) {
+    function registrarFalla(porTiempo) {
       fallos++;
       fallosDiv.textContent = "Fallos: " + fallos + " / 5";
       if (globo) {
-        operacionesFalladas.push({op: globo.textContent, res: resultadoCorrecto});
+        fallasTrans.push({pregunta: globo.textContent, respuestaCorrecta});
       }
       if (fallos >= 5) {
-        mostrarListadoFallos();
+        mostrarFallasTrans();
         alert("¡Has perdido! Reiniciando...");
         repasoBtn.style.display = "block";
         clearInterval(animacion);
@@ -203,28 +216,27 @@
       } else {
         if (porTiempo) {
           duracion = 4000;
-          crearGlobo();
+          crearGloboTrans();
         }
       }
     }
 
-    function mostrarListadoFallos() {
-      limpiarListados();
-      if (operacionesFalladas.length > 0) {
-        const listado = document.createElement("div");
-        listado.id = "listadoFallosOverlay";
-        listado.innerHTML = "<h2>📚 Operaciones para repasar:</h2><ul>" +
-          operacionesFalladas.map(obj => `<li>${obj.op} = ${obj.res}</li>`).join("") +
+      function mostrarFallasTrans() {
+      limpiarFallasTrans();
+      if (fallasTrans.length > 0) {
+        const panel = document.createElement("div");
+        panel.id = "fallasTransOverlay";
+        panel.innerHTML = "<h2>❌ Transportes para repasar:</h2><ul>" +
+          fallasTrans.map(f => `<li>${f.pregunta} → ${f.respuestaCorrecta}</li>`).join("") +
           "</ul>";
-        document.body.appendChild(listado);
+        document.body.appendChild(panel);
       }
     }
 
-    function limpiarListados() {
-      const overlay = document.getElementById("listadoFallosOverlay");
+    function limpiarFallasTrans() {
+      const overlay = document.getElementById("fallasTransOverlay");
       if (overlay) overlay.remove();
     }
   </script>
 </body>
 </html>
-
