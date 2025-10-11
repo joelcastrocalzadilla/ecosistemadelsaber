@@ -63,12 +63,18 @@
         color: #c2185b;
       }
     }
+    #mensaje {
+      margin-top: 10px;
+      font-size: 1.2em;
+      color: #333;
+    }
   </style>
 </head>
 <body>
   <h1>¡Cuenta con Tito el Payasito! 🤡🎪</h1>
-  <div id="tito" onclick="contar()">🤡</div>
+  <div id="tito" onclick="contar()" title="Toca a Tito para contar">🤡</div>
   <div id="contador">0</div>
+  <div id="mensaje">Toca a Tito para empezar…</div>
   <div id="emojiZona"></div>
   <div id="imagenZona"></div>
 
@@ -85,29 +91,55 @@
   const imagenZona = document.getElementById("imagenZona");
   const triunfo = document.getElementById("triunfo");
   const musica = document.getElementById("musicaFondo");
+  const mensaje = document.getElementById("mensaje");
 
-  const frasesPayaso = [
-    "¡Unooo! Como un gorra gigante bailando salsa.",
-    "¡Dos! Como dos zapatos brincando.",
-    "¡Tres! Como tres Frutas saltando en la pista.",
-    "¡Cuatro! Como cuatro frutas bailando en ronda.",
-    "¡Cinco! Como cinco conejos saltarines.",
-    "¡Seis! Como seis globos girando en el aire.",
-    "¡Siete! Como siete globos de colores.",
-    "¡Ocho! Como ocho globos de disfrutando un carnaval.",
-    "¡Nueve! Como nueve globos de colores animando una fiesta.",
-    "¡Diez! Como diez globos de colores."
-  ];
+  // Saludo inicial
+  window.addEventListener('load', () => {
+    decir("¡Holaaa! Soy Tito el Payasito. ¿Listo para contar conmigo? Únete y repite en voz alta: uno, dos, tres... ¡Toca a Tito para empezar!");
+  });
 
+  function decir(texto) {
+    speechSynthesis.cancel();
+    const voz = new SpeechSynthesisUtterance(texto);
+    voz.lang = 'es-ES';
+    voz.rate = 0.95;
+    voz.pitch = 1.2;
+    speechSynthesis.speak(voz);
+  }
+
+  // Frases variadas
+  const objetosPorNumero = {
+    1: "una gorra gigante bailando salsa",
+    2: "dos zapatos brincando",
+    3: "tres frutas saltando en la pista",
+    4: "cuatro frutas bailando en ronda",
+    5: "cinco conejos saltarines",
+    6: "seis niños girando como trompos",
+    7: "siete gatos curiosos jugando",
+    8: "ocho flores moviéndose con el viento",
+    9: "nueve estrellas parpadeando",
+    10:"diez payasos haciendo piruetas"
+  };
+
+  function fraseConteo(n) {
+    const objeto = objetosPorNumero[n] || `${n} cosas divertidas en el circo`;
+    const numeroTexto = numeroAtexto(n);
+    return `¡${numeroTexto}! Como ${objeto}. Únete y repite conmigo: ${numeroTexto}.`;
+  }
+
+  function numeroAtexto(n) {
+    const mapa = ["cero","uno","dos","tres","cuatro","cinco","seis","siete","ocho","nueve","diez"];
+    return mapa[n] || String(n);
+  }
+
+  // Solo tienes estas imágenes
   const imagenes = {
+    1: "agorra.png",
     2: "a2zapatos.jpg",
     3: "a3frutas.jpg",
-    5: "a5conejos.png",
     4: "afrutas.jpg",
-    1: "agorra.png"
-
-    
-    // Del 7 al 10 se usa globo.png por defecto
+    5: "a5conejos.png"
+    // del 6 al 10 usará globo.png
   };
 
   function contar() {
@@ -115,48 +147,39 @@
       musica.play();
       musica.volume = 1;
       musicaActivada = true;
-      decir("¡Que suene el circooo!");
+      decir("¡Que suene el circooo! ¡Vamos a contar juntos!");
+      mensaje.textContent = "¡Cuenta tocando a Tito y repite en voz alta!";
     }
 
     cuenta++;
+    if (cuenta > 10) cuenta = 1; // ciclo de 1 a 10
+
     contador.innerText = cuenta;
     contador.classList.add("animado");
     setTimeout(() => contador.classList.remove("animado"), 800);
 
-    const frase = frasesPayaso[cuenta - 1] || `¡${cuenta}! Tito dice que eres increíble.`;
+    const frase = fraseConteo(cuenta);
     decir(frase);
 
     const estrella = document.createElement("span");
-    estrella.innerText = "🎈";
+    estrella.innerText = ["🎈","🎉","✨","🎊"][Math.floor(Math.random() * 4)];
     emojiZona.appendChild(estrella);
 
     mostrarImagen(cuenta);
 
     if (cuenta % 5 === 0) {
       lanzarConfeti();
+      triunfo.currentTime = 0;
       triunfo.play();
-      decir("¡Esooo! ¡Tito está feliz!");
+      decir("¡Bravooo! ¡Tito está feliz! Cinco más y llegamos al diez.");
     }
-  }
-
-  function decir(texto) {
-    const voz = new SpeechSynthesisUtterance(texto);
-    voz.lang = 'es-MX';
-    voz.rate = 1.0;
-    voz.pitch = 1.4;
-    voz.volume = 1;
-
-    const voces = speechSynthesis.getVoices();
-    const vozPayaso = voces.find(v => v.name.includes("Sabina") || v.lang === "es-MX");
-    if (vozPayaso) voz.voice = vozPayaso;
-
-    speechSynthesis.speak(voz);
   }
 
   function mostrarImagen(numero) {
     imagenZona.innerHTML = "";
     const img = document.createElement("img");
-    img.src = imagenes[numero] || "globo.png"; // Imagen por defecto si no hay específica
+    img.alt = "Ilustración del conteo";
+    img.src = imagenes[numero] || "globo.png"; // globo por defecto
     imagenZona.appendChild(img);
   }
 
@@ -170,8 +193,6 @@
       setTimeout(() => document.body.removeChild(confeti), 2000);
     }
   }
-
-  window.speechSynthesis.onvoiceschanged = () => {};
 </script>
 </body>
 </html>
