@@ -10,33 +10,7 @@
       background: #f0f8ff;
       overflow: hidden;
     }
-#panelInferior {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  margin-top: 10px;
-}
 
-#startBtn {
-  margin-top: 10px;
-  padding: 15px 30px;
-  font-size: 20px;
-  background: #32cd32;
-  color: white;
-  border: none;
-  border-radius: 10px;
-  cursor: pointer;
-  align-self: center;
-}
-
-#startBtn:hover {
-  background: #228b22;
-}
-
-#startBtn:hover {
-  background: #228b22;
-}
     #gameArea {
       position: relative;
       width: 400px;
@@ -71,6 +45,14 @@
       font-size: 20px;
       font-weight: bold;
       color: #333;
+    }
+
+    #panelInferior {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      margin-top: 10px;
     }
 
     #opciones {
@@ -110,6 +92,7 @@
       border: none;
       border-radius: 10px;
       cursor: pointer;
+      align-self: center;
     }
 
     #startBtn:hover {
@@ -134,213 +117,185 @@
   <div id="puntos">Puntos: 0</div>
   <div id="fallos">Fallos: 0 / 10</div>
   <div id="gameArea"><div id="lineaTope"></div></div>
- <div id="panelInferior">
-  <div id="opciones"></div>
-  <button id="startBtn" onclick="iniciarJuego()">Iniciar Juego</button>
-</div>
-const palabras = [
-  {es:"casa",en:"house"},{es:"perro",en:"dog"},{es:"gato",en:"cat"},{es:"libro",en:"book"},
-  {es:"agua",en:"water"},{es:"sol",en:"sun"},{es:"luna",en:"moon"},{es:"niño",en:"boy"},
-  {es:"niña",en:"girl"},{es:"madre",en:"mother"},{es:"padre",en:"father"},{es:"hermano",en:"brother"},
-  {es:"hermana",en:"sister"},{es:"amigo",en:"friend"},{es:"escuela",en:"school"},{es:"maestro",en:"teacher"},
-  {es:"mesa",en:"table"},{es:"silla",en:"chair"},{es:"puerta",en:"door"},{es:"ventana",en:"window"},
-  {es:"coche",en:"car"},{es:"tren",en:"train"},{es:"avión",en:"plane"},{es:"flor",en:"flower"},
-  {es:"árbol",en:"tree"},{es:"pan",en:"bread"},{es:"leche",en:"milk"},{es:"manzana",en:"apple"},
-  {es:"plátano",en:"banana"},{es:"zapato",en:"shoe"},{es:"camisa",en:"shirt"},{es:"pantalón",en:"pants"},
-  {es:"sombrero",en:"hat"},{es:"rojo",en:"red"},{es:"azul",en:"blue"},{es:"verde",en:"green"},
-  {es:"amarillo",en:"yellow"},{es:"blanco",en:"white"},{es:"negro",en:"black"},{es:"grande",en:"big"},
-  {es:"pequeño",en:"small"},{es:"feliz",en:"happy"},{es:"triste",en:"sad"},{es:"rápido",en:"fast"},
-  {es:"lento",en:"slow"},{es:"día",en:"day"},{es:"noche",en:"night"},{es:"comida",en:"food"},
-  {es:"juego",en:"game"},{es:"música",en:"music"},{es:"mar",en:"sea"},{es:"río",en:"river"},
-  {es:"montaña",en:"mountain"},{es:"ciudad",en:"city"},{es:"pueblo",en:"town"},{es:"camino",en:"road"},
-  {es:"calle",en:"street"},{es:"tienda",en:"shop"},{es:"dinero",en:"money"},{es:"trabajo",en:"work"},
-  {es:"tiempo",en:"time"},{es:"mano",en:"hand"},{es:"cabeza",en:"head"},{es:"ojo",en:"eye"},
-  {es:"boca",en:"mouth"},{es:"nariz",en:"nose"},{es:"oreja",en:"ear"},{es:"pie",en:"foot"},
-  {es:"corazón",en:"heart"},{es:"familia",en:"family"},{es:"comer",en:"eat"},{es:"beber",en:"drink"},
-  {es:"correr",en:"run"},{es:"caminar",en:"walk"},{es:"leer",en:"read"},{es:"escribir",en:"write"},
-  {es:"cantar",en:"sing"},{es:"bailar",en:"dance"},{es:"jugar",en:"play"},{es:"abrir",en:"open"},
-  {es:"cerrar",en:"close"},{es:"subir",en:"go up"},{es:"bajar",en:"go down"},{es:"entrar",en:"enter"},
-  {es:"salir",en:"exit"},{es:"frío",en:"cold"},{es:"caliente",en:"hot"},{es:"nuevo",en:"new"},
-  {es:"viejo",en:"old"},{es:"bueno",en:"good"},{es:"malo",en:"bad"},{es:"bonito",en:"pretty"},
-  {es:"feo",en:"ugly"},{es:"fácil",en:"easy"},{es:"difícil",en:"hard"},{es:"caro",en:"expensive"},
-  {es:"barato",en:"cheap"},{es:"corto",en:"short"},{es:"largo",en:"long"},{es:"alto",en:"tall"},
-  {es:"bajo",en:"low"},{es:"cielo",en:"sky"},{es:"estrella",en:"star"},{es:"tierra",en:"earth"}
-];
 
-let puntos = 0, fallos = 0, palabraActual, globo, animacion;
-let duracion = 2000, pos = 0;
-const alturaMax = 500;
+  <div id="panelInferior">
+    <div id="opciones"></div>
+    <button id="startBtn" onclick="iniciarJuego()">Iniciar Juego</button>
+  </div>
 
-const gameArea = document.getElementById("gameArea");
-const opcionesDiv = document.getElementById("opciones");
-const puntosDiv = document.getElementById("puntos");
-const fallosDiv = document.getElementById("fallos");
-const startBtn = document.getElementById("startBtn");
+  <script>
+    const palabras = [ /* tus 100 palabras aquí */ ];
 
-let idiomaPregunta = "es", idiomaRespuesta = "en";
+    let puntos = 0, fallos = 0, palabraActual, globo, animacion;
+    let duracion = 2000, pos = 0;
+    const alturaMax = 500;
 
-function iniciarJuego() {
-  puntos = 0; fallos = 0; duracion = 2000;
-  puntosDiv.textContent = "Puntos: " + puntos;
-  fallosDiv.textContent = "Fallos: " + fallos + " / 10";
-  startBtn.style.display = "none";
-  crearGlobo();
-}
-   function crearGlobo() {
-  if (globo) globo.remove();
-  idiomaPregunta = idiomaPregunta === "es" ? "en" : "es";
-  idiomaRespuesta = idiomaPregunta === "es" ? "en" : "es";
+    const gameArea = document.getElementById("gameArea");
+    const opcionesDiv = document.getElementById("opciones");
+    const puntosDiv = document.getElementById("puntos");
+    const fallosDiv = document.getElementById("fallos");
+    const startBtn = document.getElementById("startBtn");
 
-  palabraActual = palabras[Math.floor(Math.random() * palabras.length)];
-  globo = document.createElement("div");
-  globo.className = "globo";
-  globo.textContent = palabraActual[idiomaPregunta];
-  gameArea.appendChild(globo);
+    let idiomaPregunta = "es", idiomaRespuesta = "en";
 
-  pos = 0;
-  mostrarOpciones(palabraActual[idiomaRespuesta]);
-  moverGlobo();
-}
-
-function mostrarOpciones(correcto) {
-  opcionesDiv.innerHTML = "";
-  let opciones = [correcto];
-  while (opciones.length < 4) {
-    let random = palabras[Math.floor(Math.random() * palabras.length)][idiomaRespuesta];
-    if (!opciones.includes(random)) opciones.push(random);
-  }
-  opciones.sort(() => Math.random() - 0.5);
-
-  opciones.forEach(op => {
-    let boton = document.createElement("div");
-    boton.className = "opcion";
-    boton.textContent = op;
-    boton.onclick = () => verificarRespuesta(op);
-    opcionesDiv.appendChild(boton);
-  });
-}
-
-function moverGlobo() {
-  clearInterval(animacion);
-  let pasos = alturaMax / 5;
-  let intervalo = duracion / pasos;
-  animacion = setInterval(() => {
-    pos += 5;
-    globo.style.bottom = pos + "px";
-    if (pos >= alturaMax) {
-      clearInterval(animacion);
-      registrarFallo(true);
-    }
-  }, intervalo);
-}
-
-function verificarRespuesta(opcion) {
-  if (opcion === palabraActual[idiomaRespuesta]) {
-    puntos++;
-    puntosDiv.textContent = "Puntos: " + puntos;
-    clearInterval(animacion);
-    duracion = 2000;
-
-    // 🎉 Recompensas por hitos
-    if ([20, 40, 60, 80].includes(puntos)) {
-      lanzarConfeti(`¡${puntos} puntos! 🎉`);
-      fallos = 0;
-      fallosDiv.textContent = "Fallos: " + fallos + " / 10"; // ✅ actualización visual
-    }
-
-    // 🏆 Campeonato
-    if (puntos === 100) {
-      fallos = 0;
-      fallosDiv.textContent = "Fallos: " + fallos + " / 10"; // ✅ actualización visual
-      mostrarBannerCampeonato();
-      return; // ✅ detener aquí para que no cree otro globo
-    }
-
-    crearGlobo();
-  } else {
-    registrarFallo(false);
-    duracion = Math.max(300, duracion / 1);
-    moverGlobo();
-  }
-}
-function registrarFallo(porTiempo) {
-  fallos++;
-  fallosDiv.textContent = "Fallos: " + fallos + " / 10";
-  if (fallos >= 10) {
-    alert("¡Has perdido! Reiniciando...");
-    startBtn.style.display = "block";
-    clearInterval(animacion);
-    if (globo) globo.remove();
-  } else {
-    if (porTiempo) {
-      duracion = 2000;
+    function iniciarJuego() {
+      puntos = 0; fallos = 0; duracion = 2000;
+      puntosDiv.textContent = "Puntos: " + puntos;
+      fallosDiv.textContent = "Fallos: " + fallos + " / 10";
+      startBtn.style.display = "none";
       crearGlobo();
     }
-  }
-}
 
-function lanzarConfeti(mensaje = "") {
-  for (let i = 0; i < 100; i++) {
-    let confeti = document.createElement("div");
-    confeti.textContent = "🎉";
-    confeti.style.position = "fixed";
-    confeti.style.left = Math.random() * 100 + "vw";
-    confeti.style.top = "-10px";
-    confeti.style.fontSize = "24px";
-    confeti.style.animation = `caer ${2 + Math.random() * 3}s linear forwards`;
-    document.body.appendChild(confeti);
-    setTimeout(() => confeti.remove(), 5000);
-  }
-  if (mensaje !== "") {
-    let cartel = document.createElement("div");
-    cartel.textContent = mensaje;
-    cartel.style.position = "fixed";
-    cartel.style.top = "40%";
-    cartel.style.left = "50%";
-    cartel.style.transform = "translate(-50%,-50%)";
-    cartel.style.fontSize = "28px";
-    cartel.style.fontWeight = "bold";
-    cartel.style.color = "darkblue";
-    cartel.style.background = "white";
-    cartel.style.padding = "20px";
-    cartel.style.border = "3px solid blue";
-    cartel.style.borderRadius = "10px";
-    cartel.style.zIndex = "9999";
-    document.body.appendChild(cartel);
-    setTimeout(() => cartel.remove(), 4000);
-  }
-}
+    function crearGlobo() {
+      if (globo) globo.remove();
+      idiomaPregunta = idiomaPregunta === "es" ? "en" : "es";
+      idiomaRespuesta = idiomaPregunta === "es" ? "en" : "es";
 
-function mostrarBannerCampeonato() {
-  const banner = document.createElement("div");
-  banner.innerHTML = "🏆 ¡Campeón de los 100 puntos! 🏆<br>¡Eres un maestro de los globos!";
-  banner.style.position = "fixed";
-  banner.style.top = "30%";
-  banner.style.left = "50%";
-  banner.style.transform = "translate(-50%, -50%)";
-  banner.style.background = "gold";
-  banner.style.color = "darkred";
-  banner.style.fontSize = "32px";
-  banner.style.fontWeight = "bold";
-  banner.style.padding = "30px";
-  banner.style.border = "5px solid darkred";
-  banner.style.borderRadius = "20px";
-  banner.style.boxShadow = "0 0 20px rgba(0,0,0,0.5)";
-  banner.style.zIndex = "9999";
-  banner.style.textAlign = "center";
-  banner.style.animation = "aparecer 1s ease-out";
-  document.body.appendChild(banner);
+      palabraActual = palabras[Math.floor(Math.random() * palabras.length)];
+      globo = document.createElement("div");
+      globo.className = "globo";
+      globo.textContent = palabraActual[idiomaPregunta];
+      gameArea.appendChild(globo);
 
-  lanzarConfeti("¡Campeón de los 100 puntos!");
-  clearInterval(animacion);
-  if (globo) globo.remove();
-  startBtn.style.display = "block";
-  setTimeout(() => banner.remove(), 6000);
-}
-</script>
+      pos = 0;
+      mostrarOpciones(palabraActual[idiomaRespuesta]);
+      moverGlobo();
+    }
+
+    function mostrarOpciones(correcto) {
+      opcionesDiv.innerHTML = "";
+      let opciones = [correcto];
+      while (opciones.length < 4) {
+        let random = palabras[Math.floor(Math.random() * palabras.length)][idiomaRespuesta];
+        if (!opciones.includes(random)) opciones.push(random);
+      }
+      opciones.sort(() => Math.random() - 0.5);
+
+      opciones.forEach(op => {
+        let boton = document.createElement("div");
+        boton.className = "opcion";
+        boton.textContent = op;
+        boton.onclick = () => verificarRespuesta(op);
+        opcionesDiv.appendChild(boton);
+      });
+    }
+
+    function moverGlobo() {
+      clearInterval(animacion);
+      let pasos = alturaMax / 5;
+      let intervalo = duracion / pasos;
+      animacion = setInterval(() => {
+        pos += 5;
+        globo.style.bottom = pos + "px";
+        if (pos >= alturaMax) {
+          clearInterval(animacion);
+          registrarFallo(true);
+        }
+      }, intervalo);
+    }
+
+    function verificarRespuesta(opcion) {
+      if (opcion === palabraActual[idiomaRespuesta]) {
+        puntos++;
+        puntosDiv.textContent = "Puntos: " + puntos;
+        clearInterval(animacion);
+        duracion = 2000;
+
+        if ([20, 40, 60, 80].includes(puntos)) {
+          lanzarConfeti(`¡${puntos} puntos! 🎉`);
+          fallos = 0;
+          fallosDiv.textContent = "Fallos: " + fallos + " / 10";
+        }
+
+        if (puntos === 100) {
+          fallos = 0;
+          fallosDiv.textContent = "Fallos: " + fallos + " / 10";
+          mostrarBannerCampeonato();
+          return;
+        }
+
+        crearGlobo();
+      } else {
+        registrarFallo(false);
+        duracion = Math.max(300, duracion / 1);
+        moverGlobo();
+      }
+    }
+
+    function registrarFallo(porTiempo) {
+      fallos++;
+      fallosDiv.textContent = "Fallos: " + fallos + " / 10";
+      if (fallos >= 10) {
+        alert("¡Has perdido! Reiniciando...");
+        startBtn.style.display = "block";
+        clearInterval(animacion);
+        if (globo) globo.remove();
+      } else {
+        if (porTiempo) {
+          duracion = 2000;
+          crearGlobo();
+        }
+      }
+    }
+
+    function lanzarConfeti(mensaje = "") {
+      for (let i = 0; i < 100; i++) {
+        let confeti = document.createElement("div");
+        confeti.textContent = "🎉";
+        confeti.style.position = "fixed";
+        confeti.style.left = Math.random() * 100 + "vw";
+        confeti.style.top = "-10px";
+        confeti.style.fontSize = "24px";
+        confeti.style.animation = `caer ${2 + Math.random() * 3}s linear forwards`;
+        document.body.appendChild(confeti);
+        setTimeout(() => confeti.remove(), 5000);
+      }
+      if (mensaje !== "") {
+        let cartel = document.createElement("div");
+        cartel.textContent = mensaje;
+        cartel.style.position = "fixed";
+        cartel.style.top = "40%";
+        cartel.style.left = "50%";
+        cartel.style.transform = "translate(-50%,-50%)";
+        cartel.style.fontSize = "28px";
+        cartel.style.fontWeight = "bold";
+        cartel.style.color = "darkblue";
+           cartel.style.background = "white";
+        cartel.style.padding = "20px";
+        cartel.style.border = "3px solid blue";
+        cartel.style.borderRadius = "10px";
+        cartel.style.zIndex = "9999";
+        document.body.appendChild(cartel);
+        setTimeout(() => cartel.remove(), 4000);
+      }
+    }
+
+    function mostrarBannerCampeonato() {
+      const banner = document.createElement("div");
+      banner.innerHTML = "🏆 ¡Campeón de los 100 puntos! 🏆<br>¡Eres un maestro de los globos!";
+      banner.style.position = "fixed";
+      banner.style.top = "30%";
+      banner.style.left = "50%";
+      banner.style.transform = "translate(-50%, -50%)";
+      banner.style.background = "gold";
+      banner.style.color = "darkred";
+      banner.style.fontSize = "32px";
+      banner.style.fontWeight = "bold";
+      banner.style.padding = "30px";
+      banner.style.border = "5px solid darkred";
+      banner.style.borderRadius = "20px";
+      banner.style.boxShadow = "0 0 20px rgba(0,0,0,0.5)";
+      banner.style.zIndex = "9999";
+      banner.style.textAlign = "center";
+      banner.style.animation = "aparecer 1s ease-out";
+      document.body.appendChild(banner);
+
+      lanzarConfeti("¡Campeón de los 100 puntos!");
+      clearInterval(animacion);
+      if (globo) globo.remove();
+      startBtn.style.display = "block";
+      setTimeout(() => banner.remove(), 6000);
+    }
+  </script>
 </body>
-</html> 
-
-
-
-
+</html>
