@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Conversación, Viajes y Entrevistas - Globos de Vocabulario</title>
+  <style>
+    body { font-family: Arial, sans-serif; text-align: center; background: #f9f9f9; margin:0; padding:0; }
+    #gameArea { position: relative; width: 400px; height: 500px; margin: 20px auto; border: 2px solid #333;
+      background: linear-gradient(#d0f0ff, #ffffff); overflow: hidden; }
+    #lineaTope { position: absolute; top: 0; left: 0; width: 100%; height: 10px; background: red; }
+    .globo { position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 120px; height: 120px;
+      background: pink; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+      font-size: 16px; font-weight: bold; color: #333; text-align: center; padding: 5px; }
+
+    #opciones {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      width: 260px;
+      margin: 20px auto;
+    }
+    .opcion {
+      padding: 15px;
+      font-size: 18px;
+      background: #87cefa;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    .opcion:hover { background: #4682b4; color: white; }
+
+    #puntos, #fallos { font-size: 20px; margin: 10px; }
+
+    .botones {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 15px;
+    }
+    button {
+      padding: 15px 30px;
+      font-size: 18px;
+      background: #32cd32;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+    button:hover { background: #228b22; }
+
+    #fallasConvOverlay {
+      position: fixed;
+      top: 100px;
+      right: 20px;
+      width: 260px;
+      background: white;
+      padding: 15px;
+      border: 2px solid #333;
+      border-radius: 10px;
+      z-index: 9999;
+      max-height: 400px;
+      overflow-y: auto;
+      text-align: left;
+    }
+  </style>
+</head>
+<body>
+  <h1>🎈 Conversación, Viajes y Entrevistas - Globos de Vocabulario 🎈</h1>
+  <div id="puntos">Puntos: 0</div>
+  <div id="fallos">Fallos: 0 / 5</div>
+  <div id="gameArea"><div id="lineaTope"></div></div>
+  <div id="opciones"></div>
+
+  <div class="botones">
+    <button onclick="iniciarJuego()">Iniciar Juego</button>
+    <button id="repasoBtn" style="display:none;" onclick="iniciarRepaso()">Practicar falladas</button>
+  </div>
+
+  <script>
+    const conversacionViajesEntrevistas = [
+      // Conversación básica
+      {en:"Hello", es:"Hola"},
+      {en:"How are you?", es:"¿Cómo estás?"},
+      {en:"Please", es:"Por favor"},
+      {en:"Thank you", es:"Gracias"},
+      {en:"Excuse me", es:"Disculpe"},
+      {en:"Sorry", es:"Perdón"},
+      {en:"Goodbye", es:"Adiós"},
+      {en:"Nice to meet you", es:"Mucho gusto"},
+      // Viajes
+      {en:"Airport", es:"Aeropuerto"},
+      {en:"Ticket", es:"Boleto"},
+      {en:"Passport", es:"Pasaporte"},
+      {en:"Luggage", es:"Equipaje"},
+      {en:"Hotel", es:"Hotel"},
+      {en:"Reservation", es:"Reserva"},
+      {en:"Taxi", es:"Taxi"},
+      {en:"Bus station", es:"Terminal de buses"},
+      {en:"Train station", es:"Estación de tren"},
+      {en:"Map", es:"Mapa"},
+      {en:"Beach", es:"Playa"},
+      {en:"Restaurant", es:"Restaurante"},
+      // Entrevistas
+      {en:"Job interview", es:"Entrevista de trabajo"},
+      {en:"Experience", es:"Experiencia"},
+      {en:"Skills", es:"Habilidades"},
+      {en:"Salary", es:"Salario"},
+      {en:"Strengths", es:"Fortalezas"},
+      {en:"Weaknesses", es:"Debilidades"},
+      {en:"Teamwork", es:"Trabajo en equipo"},
+      {en:"Schedule", es:"Horario"},
+      {en:"Position", es:"Cargo"},
+      {en:"Company", es:"Empresa"}
+    ];
+
+    let puntos = 0, fallos = 0, palabraActual, respuestaCorrecta;
+    let globo, animacion, pos = 0, duracion = 4000;
+    let fallasConv = [];
+    let modoRepaso = false;
+    const alturaMax = 400;
+
+    const gameArea = document.getElementById("gameArea");
+    const opcionesDiv = document.getElementById("opciones");
+    const puntosDiv = document.getElementById("puntos");
+    const fallosDiv = document.getElementById("fallos");
+    const repasoBtn = document.getElementById("repasoBtn");
+
+    function iniciarJuego() {
+      limpiarFallasConv();
+      puntos = 0; fallos = 0; duracion = 4000;
+      fallasConv = [];
+      modoRepaso = false;
+      puntosDiv.textContent = "Puntos: " + puntos;
+      fallosDiv.textContent = "Fallos: " + fallos + " / 5";
+      repasoBtn.style.display = "none";
+      crearGloboConv();
+    }
+
+    function iniciarRepaso() {
+      if (fallasConv.length === 0) return;
+      limpiarFallasConv();
+      puntos = 0; fallos = 0; duracion = 4000;
+      modoRepaso = true;
+      puntosDiv.textContent = "Puntos: " + puntos;
+      fallosDiv.textContent = "Fallos: " + fallos + " / 5";
+      repasoBtn.style.display = "none";
+      crearGloboConv();
+    }
+
+    function crearGloboConv() {
+      if (globo) globo.remove();
+
+      if (modoRepaso && fallasConv.length > 0) {
+        let {pregunta, respuestaCorrecta:res} = fallasConv.shift();
+        palabraActual = pregunta;
+        respuestaCorrecta = res;
+      } else {
+        let item = conversacionViajesEntrevistas[Math.floor(Math.random()*conversacionViajesEntrevistas.length)];
+        palabraActual = item.en;
+        respuestaCorrecta = item.es;
+      }
+
+      globo = document.createElement("div");
+      globo.className = "globo";
+      globo.textContent = palabraActual;
+      gameArea.appendChild(globo);
+
+      pos = 0;
+      mostrarOpciones(respuestaCorrecta);
+      moverGlobo();
+    }
+
+    function mostrarOpciones(correcto) {
+      opcionesDiv.innerHTML = "";
+      let opciones = [correcto];
+      while (opciones.length < 4) {
+        let candidato = conversacionViajesEntrevistas[Math.floor(Math.random()*conversacionViajesEntrevistas.length)].es;
+        if (!opciones.includes(candidato)) opciones.push(candidato);
+      }
+      opciones.sort(() => Math.random() - 0.5);
+      opciones.forEach(op => {
+        let boton = document.createElement("div");
+        boton.className = "opcion";
+        boton.textContent = op;
+        boton.onclick = () => verificarRespuesta(op);
+        opcionesDiv.appendChild(boton);
+      });
+    }
+
+    function moverGlobo() {
+      clearInterval(animacion);
+      let pasos = alturaMax / 5;
+      let intervalo = duracion / pasos;
+      animacion = setInterval(() => {
+        pos += 5;
+        globo.style.bottom = pos + "px";
+        if (pos >= alturaMax) {
+          clearInterval(animacion);
+          registrarFalla(true);
+        }
+      }, intervalo);
+    }
+
+    function verificarRespuesta(opcion) {
+      if (opcion === respuestaCorrecta) {
+        puntos++;
+        puntosDiv.textContent = "Puntos: " + puntos;
+        clearInterval(animacion);
+        duracion = 4000;
+        crearGloboConv();
+      } else {
+              registrarFalla(false);
+        duracion = Math.max(300, duracion / 2);
+        moverGlobo();
+      }
+    }
+
+    function registrarFalla(porTiempo) {
+      fallos++;
+      fallosDiv.textContent = "Fallos: " + fallos + " / 5";
+      if (globo) {
+        fallasConv.push({pregunta: globo.textContent, respuestaCorrecta});
+      }
+      if (fallos >= 5) {
+        mostrarFallasConv();
+        alert("¡Has perdido! Reiniciando...");
+        repasoBtn.style.display = "block";
+        clearInterval(animacion);
+        if (globo) globo.remove();
+      } else {
+        if (porTiempo) {
+          duracion = 4000;
+          crearGloboConv();
+        }
+      }
+    }
+
+    function mostrarFallasConv() {
+      limpiarFallasConv();
+      if (fallasConv.length > 0) {
+        const panel = document.createElement("div");
+        panel.id = "fallasConvOverlay";
+        panel.innerHTML = "<h2>❌ Palabras para repasar:</h2><ul>" +
+          fallasConv.map(f => `<li>${f.pregunta} → ${f.respuestaCorrecta}</li>`).join("") +
+          "</ul>";
+        document.body.appendChild(panel);
+      }
+    }
+
+    function limpiarFallasConv() {
+      const overlay = document.getElementById("fallasConvOverlay");
+      if (overlay) overlay.remove();
+    }
+  </script>
+</body>
+</html>
