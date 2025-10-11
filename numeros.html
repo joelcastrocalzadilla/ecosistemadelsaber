@@ -152,7 +152,6 @@
     }
 
     cuenta++;
-    if (cuenta > 10) cuenta = 1; // ciclo de 1 a 10
 
     contador.innerText = cuenta;
     contador.classList.add("animado");
@@ -167,11 +166,13 @@
 
     mostrarImagen(cuenta);
 
-    if (cuenta % 5 === 0) {
+    if (cuenta === 10) {
       lanzarConfeti();
       triunfo.currentTime = 0;
       triunfo.play();
-      decir("¡Bravooo! ¡Tito está feliz! Cinco más y llegamos al diez.");
+      decir("¡Bravooo! ¡Llegamos al diez! Vamos a repetir nuevamente el conteo hasta el diez.");
+      // Reinicia para que la próxima vez empiece en 1
+      cuenta = 0;
     }
   }
 
@@ -196,4 +197,3 @@
 </script>
 </body>
 </html>
-
