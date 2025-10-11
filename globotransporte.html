@@ -51,6 +51,22 @@
       cursor: pointer;
     }
     button:hover { background: #228b22; }
+
+    /* Panel lateral derecho para el listado */
+    #listadoFallosOverlay {
+      position: fixed;
+      top: 100px;
+      right: 20px;
+      width: 220px;
+      background: white;
+      padding: 15px;
+      border: 2px solid #333;
+      border-radius: 10px;
+      z-index: 9999;
+      max-height: 400px;
+      overflow-y: auto;
+      text-align: left;
+    }
   </style>
 </head>
 <body>
@@ -77,14 +93,13 @@
     const opcionesDiv = document.getElementById("opciones");
     const puntosDiv = document.getElementById("puntos");
     const fallosDiv = document.getElementById("fallos");
-    const startBtn = document.getElementById("startBtn");
     const repasoBtn = document.getElementById("repasoBtn");
 
     let operacionesFalladas = [];
     let modoRepaso = false;
 
     function iniciarJuego() {
-      limpiarListados(); // 👉 limpia cualquier listado previo
+      limpiarListados();
       puntos = 0; fallos = 0; duracion = 4000;
       operacionesFalladas = [];
       modoRepaso = false;
@@ -96,7 +111,7 @@
 
     function iniciarRepaso() {
       if (operacionesFalladas.length === 0) return;
-      limpiarListados(); // 👉 elimina listado antes de iniciar
+      limpiarListados();
       puntos = 0; fallos = 0; duracion = 4000;
       modoRepaso = true;
       puntosDiv.textContent = "Puntos: " + puntos;
@@ -106,9 +121,7 @@
     }
 
     function crearGlobo() {
-      limpiarListados(); // 👉 por seguridad, limpia cualquier overlay
       if (globo) globo.remove();
-
       let a, b;
       if (modoRepaso && operacionesFalladas.length > 0) {
         let {op, res} = operacionesFalladas.shift();
@@ -125,7 +138,6 @@
         globo.textContent = `${a}x${b}`;
       }
       gameArea.appendChild(globo);
-
       pos = 0;
       mostrarOpciones(resultadoCorrecto);
       moverGlobo();
@@ -139,7 +151,6 @@
         if (!opciones.includes(num)) opciones.push(num);
       }
       opciones.sort(() => Math.random() - 0.5);
-
       opciones.forEach(op => {
         let boton = document.createElement("div");
         boton.className = "opcion";
@@ -168,7 +179,7 @@
         puntos++;
         puntosDiv.textContent = "Puntos: " + puntos;
         clearInterval(animacion);
-        duracion = 4000; // reinicia lento
+        duracion = 4000;
         crearGlobo();
       } else {
         registrarFallo(false);
@@ -180,11 +191,9 @@
     function registrarFallo(porTiempo) {
       fallos++;
       fallosDiv.textContent = "Fallos: " + fallos + " / 5";
-
       if (globo) {
         operacionesFalladas.push({op: globo.textContent, res: resultadoCorrecto});
       }
-
       if (fallos >= 5) {
         mostrarListadoFallos();
         alert("¡Has perdido! Reiniciando...");
@@ -193,37 +202,25 @@
         if (globo) globo.remove();
       } else {
         if (porTiempo) {
-          duracion = 4000; // reinicia lento
+          duracion = 4000;
           crearGlobo();
         }
       }
     }
 
     function mostrarListadoFallos() {
-      limpiarListados(); // 👉 asegura que no haya duplicados
+      limpiarListados();
       if (operacionesFalladas.length > 0) {
         const listado = document.createElement("div");
-        listado.id = "listadoFallosOverlay"; // 👉 ID único
+        listado.id = "listadoFallosOverlay";
         listado.innerHTML = "<h2>📚 Operaciones para repasar:</h2><ul>" +
           operacionesFalladas.map(obj => `<li>${obj.op} = ${obj.res}</li>`).join("") +
           "</ul>";
-        listado.style.position = "fixed";
-        listado.style.top = "20%";
-        listado.style.left = "50%";
-        listado.style.transform = "translate(-50%, 0)";
-                listado.style.background = "white";
-        listado.style.padding = "20px";
-        listado.style.border = "3px solid #333";
-        listado.style.borderRadius = "10px";
-        listado.style.zIndex = "9999";
-        listado.style.maxHeight = "300px";
-        listado.style.overflowY = "auto";
         document.body.appendChild(listado);
       }
     }
 
     function limpiarListados() {
-      // 👉 Elimina cualquier listado de fallos que esté en pantalla
       const overlay = document.getElementById("listadoFallosOverlay");
       if (overlay) overlay.remove();
     }
