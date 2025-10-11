@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Globos de Verbos (100)</title>
+  <style>
+    body { font-family: Arial, sans-serif; text-align: center; background: #f0f8ff; overflow: hidden; }
+    #gameArea { position: relative; width: 400px; height: 600px; margin: 20px auto; border: 2px solid #333;
+      background: linear-gradient(#d0f0ff, #ffffff); overflow: hidden; }
+    #lineaTope { position: absolute; top: 0; left: 0; width: 100%; height: 10px; background: red; }
+    .globo { position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
+      width: 120px; height: 130px; background: pink; border-radius: 50% 50% 45% 45%;
+      display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: bold; color: #333; }
+    #opciones { margin-top: 20px; display: flex; justify-content: center; flex-wrap: wrap; gap: 10px; }
+    .opcion { flex: 1 1 30%; max-width: 120px; padding: 15px; font-size: 16px; background: #87cefa;
+      border-radius: 10px; cursor: pointer; transition: background 0.3s; }
+    .opcion:hover { background: #4682b4; color: white; }
+    #puntos, #fallos { font-size: 20px; margin: 10px; }
+    #startBtn { margin-top: 20px; padding: 15px 30px; font-size: 20px; background: #32cd32; color: white;
+      border: none; border-radius: 10px; cursor: pointer; }
+    #startBtn:hover { background: #228b22; }
+  </style>
+</head>
+<body>
+  <h1>🎈 Globos de Verbos (100) 🎈</h1>
+  <div id="puntos">Puntos: 0</div>
+  <div id="fallos">Fallos: 0 / 10</div>
+  <div id="gameArea"><div id="lineaTope"></div></div>
+  <div id="opciones"></div>
+  <button id="startBtn" onclick="iniciarJuego()">Iniciar Juego</button>
+
+  <script>
+    const verbos = [
+      {es:"ser",en:"to be"},{es:"estar",en:"to be"},{es:"tener",en:"to have"},{es:"hacer",en:"to do"},
+      {es:"decir",en:"to say"},{es:"ir",en:"to go"},{es:"ver",en:"to see"},{es:"dar",en:"to give"},
+      {es:"saber",en:"to know"},{es:"querer",en:"to want"},{es:"llegar",en:"to arrive"},{es:"pasar",en:"to happen"},
+      {es:"deber",en:"to owe/should"},{es:"poner",en:"to put"},{es:"parecer",en:"to seem"},{es:"quedar",en:"to stay"},
+      {es:"creer",en:"to believe"},{es:"hablar",en:"to speak"},{es:"llevar",en:"to carry"},{es:"dejar",en:"to leave"},
+      {es:"seguir",en:"to follow"},{es:"encontrar",en:"to find"},{es:"llamar",en:"to call"},{es:"venir",en:"to come"},
+      {es:"pensar",en:"to think"},{es:"salir",en:"to leave"},{es:"volver",en:"to return"},{es:"tomar",en:"to take"},
+      {es:"conocer",en:"to know"},{es:"vivir",en:"to live"},{es:"sentir",en:"to feel"},{es:"tratar",en:"to try"},
+      {es:"mirar",en:"to look"},{es:"contar",en:"to count/tell"},{es:"empezar",en:"to start"},{es:"esperar",en:"to wait"},
+      {es:"buscar",en:"to search"},{es:"entrar",en:"to enter"},{es:"trabajar",en:"to work"},{es:"escribir",en:"to write"},
+      {es:"perder",en:"to lose"},{es:"producir",en:"to produce"},{es:"ocurrir",en:"to occur"},{es:"entender",en:"to understand"},
+      {es:"pedir",en:"to ask for"},{es:"recibir",en:"to receive"},{es:"recordar",en:"to remember"},{es:"terminar",en:"to finish"},
+      {es:"permitir",en:"to allow"},{es:"aprender",en:"to learn"},{es:"correr",en:"to run"},{es:"cambiar",en:"to change"},
+      {es:"presentar",en:"to present"},{es:"crear",en:"to create"},{es:"abrir",en:"to open"},{es:"considerar",en:"to consider"},
+      {es:"oír",en:"to hear"},{es:"acabar",en:"to end"},{es:"convertir",en:"to convert"},{es:"ganar",en:"to win"},
+      {es:"formar",en:"to form"},{es:"traer",en:"to bring"},{es:"partir",en:"to leave/split"},{es:"morir",en:"to die"},
+      {es:"aceptar",en:"to accept"},{es:"realizar",en:"to carry out"},{es:"suponer",en:"to suppose"},{es:"comprender",en:"to understand"},
+      {es:"lograr",en:"to achieve"},{es:"explicar",en:"to explain"},{es:"preguntar",en:"to ask"},{es:"tocar",en:"to touch/play"},
+      {es:"reconocer",en:"to recognize"},{es:"estudiar",en:"to study"},{es:"alcanzar",en:"to reach"},{es:"nacer",en:"to be born"},
+      {es:"dirigir",en:"to direct"},{es:"correr",en:"to run"},{es:"utilizar",en:"to use"},{es:"pagar",en:"to pay"},
+      {es:"ayudar",en:"to help"},{es:"gustar",en:"to like"},{es:"jugar",en:"to play"},{es:"viajar",en:"to travel"},
+      {es:"comprar",en:"to buy"},{es:"vender",en:"to sell"},{es:"cocinar",en:"to cook"},{es:"limpiar",en:"to clean"},
+      {es:"beber",en:"to drink"},{es:"comer",en:"to eat"},{es:"leer",en:"to read"},{es:"nadar",en:"to swim"},
+      {es:"dormir",en:"to sleep"},{es:"soñar",en:"to dream"},{es:"caminar",en:"to walk"},{es:"subir",en:"to go up"},
+      {es:"bajar",en:"to go down"},{es:"cerrar",en:"to close"},{es:"llorar",en:"to cry"},{es:"reír",en:"to laugh"}
+    ];
+
+    let puntos=0, fallos=0, palabraActual, globo, animacion;
+    let duracion=2000, pos=0;
+    const alturaMax=500;
+
+    const gameArea=document.getElementById("gameArea");
+    const opcionesDiv=document.getElementById("opciones");
+    const puntosDiv=document.getElementById("puntos");
+    const fallosDiv=document.getElementById("fallos");
+    const startBtn=document.getElementById("startBtn");
+
+    let idiomaPregunta="es", idiomaRespuesta="en";
+    function iniciarJuego(){
+      puntos=0; fallos=0; duracion=2000;
+      puntosDiv.textContent="Puntos: "+puntos;
+      fallosDiv.textContent="Fallos: "+fallos+" / 10";
+      startBtn.style.display="none";
+      crearGlobo();
+    }
+
+    function crearGlobo(){
+      if(globo) globo.remove();
+
+      // alternar idiomas en cada nuevo globo
+      if(idiomaPregunta==="es"){ 
+        idiomaPregunta="en"; 
+        idiomaRespuesta="es"; 
+      } else { 
+        idiomaPregunta="es"; 
+        idiomaRespuesta="en"; 
+      }
+
+      palabraActual=verbos[Math.floor(Math.random()*verbos.length)];
+      globo=document.createElement("div");
+      globo.className="globo";
+      globo.textContent=palabraActual[idiomaPregunta];
+      gameArea.appendChild(globo);
+
+      pos=0;
+      mostrarOpciones(palabraActual[idiomaRespuesta]);
+      moverGlobo();
+    }
+
+    function mostrarOpciones(correcto){
+      opcionesDiv.innerHTML="";
+      let opciones=[correcto];
+      while(opciones.length<5){
+        let random = verbos[Math.floor(Math.random()*verbos.length)][idiomaRespuesta];
+        if(!opciones.includes(random)) opciones.push(random);
+      }
+      opciones.sort(()=>Math.random()-0.5);
+
+      opciones.forEach(op=>{
+        let boton=document.createElement("div");
+        boton.className="opcion";
+        boton.textContent=op;
+        boton.onclick=()=>verificarRespuesta(op);
+        opcionesDiv.appendChild(boton);
+      });
+    }
+    function moverGlobo(){
+      clearInterval(animacion);
+      let pasos=alturaMax/5;
+      let intervalo=duracion/pasos;
+      animacion=setInterval(()=>{
+        pos+=5;
+        globo.style.bottom=pos+"px";
+        if(pos>=alturaMax){
+          clearInterval(animacion);
+          registrarFallo(true);
+        }
+      },intervalo);
+    }
+
+    function verificarRespuesta(opcion){
+      if(opcion===palabraActual[idiomaRespuesta]){
+        puntos++;
+        puntosDiv.textContent="Puntos: "+puntos;
+        clearInterval(animacion);
+        duracion=2000; // reset normal al acertar
+        crearGlobo();
+      } else {
+        registrarFallo(false);
+        duracion=Math.max(300,duracion/2); // acelera solo en fallo por clic
+        moverGlobo();
+      }
+    }
+
+    function registrarFallo(porTiempo){
+      fallos++;
+      fallosDiv.textContent="Fallos: "+fallos+" / 10";
+
+      if(fallos>=10){
+        alert("¡Has perdido! Reiniciando...");
+        startBtn.style.display="block";
+        clearInterval(animacion);
+        if(globo) globo.remove();
+      } else {
+        if(porTiempo){
+          duracion=2000; // reset normal si fue por tiempo
+          crearGlobo();
+        }
+      }
+    }
+    // Función para lanzar papelillos (confeti simple con divs)
+    function lanzarConfeti(mensaje=""){
+      for(let i=0; i<100; i++){
+        let confeti=document.createElement("div");
+        confeti.textContent="🎉";
+        confeti.style.position="fixed";
+        confeti.style.left=Math.random()*100+"vw";
+        confeti.style.top="-10px";
+        confeti.style.fontSize="24px";
+        confeti.style.animation=`caer ${2+Math.random()*3}s linear forwards`;
+        document.body.appendChild(confeti);
+        setTimeout(()=>confeti.remove(),5000);
+      }
+      if(mensaje!==""){
+        let cartel=document.createElement("div");
+        cartel.textContent=mensaje;
+        cartel.style.position="fixed";
+        cartel.style.top="40%";
+        cartel.style.left="50%";
+        cartel.style.transform="translate(-50%,-50%)";
+        cartel.style.fontSize="28px";
+        cartel.style.fontWeight="bold";
+        cartel.style.color="darkblue";
+        cartel.style.background="white";
+        cartel.style.padding="20px";
+        cartel.style.border="3px solid blue";
+        cartel.style.borderRadius="10px";
+        document.body.appendChild(cartel);
+        setTimeout(()=>cartel.remove(),4000);
+      }
+    }
+
+    // Animación CSS para confeti
+    const style=document.createElement("style");
+    style.innerHTML=`
+      @keyframes caer {
+        to { transform: translateY(100vh) rotate(720deg); opacity:0; }
+      }
+    `;
+    document.head.appendChild(style);
+
+    // Modifica verificarRespuesta para añadir motivación
+    function verificarRespuesta(opcion){
+      if(opcion===palabraActual[idiomaRespuesta]){
+        puntos++;
+        puntosDiv.textContent="Puntos: "+puntos;
+        clearInterval(animacion);
+        duracion=2000; // reset normal al acertar
+
+        // 🎉 Motivación en hitos
+        if(puntos===20){ lanzarConfeti("¡20 puntos! 🎉"); }
+        if(puntos===40){ lanzarConfeti("¡40 puntos, increíble! 🎉"); }
+        if(puntos===60){ lanzarConfeti("¡Sigue, estás cerca del campeonato! 🏆"); }
+
+        crearGlobo();
+      } else {
+        registrarFallo(false);
+        duracion=Math.max(300,duracion/2);
+        moverGlobo();
+      }
+    }
+  </script>
+</body>
+</html>

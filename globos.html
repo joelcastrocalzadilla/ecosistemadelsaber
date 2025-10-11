@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Juego de Globos Matemáticos</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      background: #f0f8ff;
+      overflow: hidden;
+    }
+    #gameArea {
+      position: relative;
+      width: 400px;
+      height: 600px;
+      margin: 20px auto;
+      border: 2px solid #333;
+      background: linear-gradient(#d0f0ff, #ffffff);
+      overflow: hidden;
+    }
+    #lineaTope {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 10px;
+      background: red;
+    }
+    .globo {
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 80px;
+      height: 100px;
+      background: pink;
+      border-radius: 50% 50% 45% 45%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      font-weight: bold;
+      color: #333;
+    }
+    #opciones {
+      margin-top: 20px;
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .opcion {
+      flex: 1 1 30%;
+      max-width: 100px;
+      padding: 15px;
+      font-size: 18px;
+      background: #87cefa;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    .opcion:hover {
+      background: #4682b4;
+      color: white;
+    }
+    #puntos, #fallos {
+      font-size: 20px;
+      margin: 10px;
+    }
+    #startBtn {
+      margin-top: 20px;
+      padding: 15px 30px;
+      font-size: 20px;
+      background: #32cd32;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+    #startBtn:hover {
+      background: #228b22;
+    }
+  </style>
+</head>
+<body>
+  <h1>🎈 Globos Matemáticos 🎈</h1>
+  <div id="puntos">Puntos: 0</div>
+  <div id="fallos">Fallos: 0 / 5</div>
+  <div id="gameArea">
+    <div id="lineaTope"></div>
+  </div>
+  <div id="opciones"></div>
+  <button id="startBtn" onclick="iniciarJuego()">Iniciar Juego</button>
+
+  <script>
+    let puntos = 0;
+    let fallos = 0;
+    let resultadoCorrecto;
+    let globo;
+    let animacion;
+    let duracion = 2000; // 2 segundos base
+    let pos = 0;
+    const alturaMax = 500;
+
+    const gameArea = document.getElementById("gameArea");
+    const opcionesDiv = document.getElementById("opciones");
+    const puntosDiv = document.getElementById("puntos");
+    const fallosDiv = document.getElementById("fallos");
+    const startBtn = document.getElementById("startBtn");
+
+    function iniciarJuego() {
+      puntos = 0;
+      fallos = 0;
+      duracion = 2000;
+      puntosDiv.textContent = "Puntos: " + puntos;
+      fallosDiv.textContent = "Fallos: " + fallos + " / 5";
+      startBtn.style.display = "none";
+      crearGlobo();
+    }
+
+    function crearGlobo() {
+      if (globo) globo.remove();
+
+      let a = Math.floor(Math.random() * 9) + 1;
+      let b = Math.floor(Math.random() * 9) + 1;
+      resultadoCorrecto = a * b;
+
+      globo = document.createElement("div");
+      globo.className = "globo";
+      globo.textContent = `${a}x${b}`;
+      gameArea.appendChild(globo);
+
+      pos = 0;
+      mostrarOpciones(resultadoCorrecto);
+      moverGlobo();
+    }
+
+    function mostrarOpciones(correcto) {
+      opcionesDiv.innerHTML = "";
+      let opciones = [correcto];
+      while (opciones.length < 5) {
+        let num = Math.floor(Math.random() * 81) + 1;
+        if (!opciones.includes(num)) opciones.push(num);
+      }
+      opciones.sort(() => Math.random() - 0.5);
+
+      opciones.forEach(op => {
+        let boton = document.createElement("div");
+        boton.className = "opcion";
+        boton.textContent = op;
+        boton.onclick = () => verificarRespuesta(op);
+        opcionesDiv.appendChild(boton);
+      });
+    }
+
+    function moverGlobo() {
+      clearInterval(animacion);
+      let pasos = alturaMax / 5;
+      let intervalo = duracion / pasos;
+      animacion = setInterval(() => {
+        pos += 5;
+        globo.style.bottom = pos + "px";
+        if (pos >= alturaMax) {
+          clearInterval(animacion);
+          registrarFallo(true); // fallo por tiempo
+        }
+      }, intervalo);
+    }
+
+    function verificarRespuesta(opcion) {
+      if (opcion === resultadoCorrecto) {
+        puntos++;
+        puntosDiv.textContent = "Puntos: " + puntos;
+        clearInterval(animacion);
+        duracion = 2000; // ✅ reset normal al acertar
+        crearGlobo();
+      } else {
+        // ❌ fallo por clic: acelera
+        registrarFallo(false);
+        duracion = Math.max(300, duracion / 2);
+        moverGlobo();
+      }
+    }
+
+    function registrarFallo(porTiempo) {
+      fallos++;
+      fallosDiv.textContent = "Fallos: " + fallos + " / 5";
+
+      if (fallos >= 5) {
+        alert("¡Has perdido! Reiniciando...");
+        startBtn.style.display = "block";
+        clearInterval(animacion);
+        if (globo) globo.remove();
+      } else {
+        if (porTiempo) {
+          // si fue por tiempo, reinicia velocidad normal
+          duracion = 2000;
+          crearGlobo();
+        }
+        // si fue por clic, la aceleración ya se aplicó arriba
+      }
+    }
+  </script>
+</body>
+</html>
