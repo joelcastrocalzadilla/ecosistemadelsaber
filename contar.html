@@ -62,6 +62,26 @@
     #controls {
       margin-top: 20px;
     }
+    #controls input {
+      font-size: 1.5em;
+      padding: 10px;
+      width: 100px;
+      text-align: center;
+      margin: 10px;
+    }
+    #controls button {
+      font-size: 1.5em;
+      padding: 15px 30px;
+      background-color: #ff9800;
+      border: none;
+      border-radius: 10px;
+      color: white;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+    #controls button:hover {
+      background-color: #e68900;
+    }
     #conteo {
       margin-top: 10px;
     }
@@ -72,9 +92,6 @@
     #intentos {
       font-size: 1.5em;
       color: #4e342e;
-    }
-    input {
-      margin: 5px;
     }
     .confeti {
       position: absolute;
@@ -115,54 +132,13 @@
       0% { transform: scale(0); opacity: 0; }
       100% { transform: scale(1); opacity: 1; }
     }
-    #morrocoy {
-      position: absolute;
-      bottom: 40px;
-      left: 100%;
-      font-size: 2.5em;
-      cursor: pointer;
-      animation: caminarIzquierda 30s linear infinite;
-      z-index: 2;
-    }
-    @keyframes caminarIzquierda {
-      0% { left: 100%; }
-      100% { left: -100px; }
-    }
-    #morrocoy::after {
-      content: " 🪧 Haz clic aquí";
-      font-size: 0.6em;
-      margin-left: 10px;
-      color: #2e7d32;
-    }
-    .valor {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      font-size: 1.4em;
-      background: #fff3e0;
-      padding: 12px 24px;
-      border-radius: 12px;
-      color: #4e342e;
-      animation: titilar 1s infinite alternate;
-      z-index: 4;
-    }
-    @keyframes titilar {
-      from { opacity: 1; }
-      to { opacity: 0.3; }
-    }
-    .medalla {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      font-size: 4em;
-      animation: brillar 2s ease-in-out infinite alternate;
-      z-index: 5;
-    }
-    @keyframes brillar {
-      from { opacity: 0.5; transform: scale(1); }
-      to { opacity: 1; transform: scale(1.2); }
+    #toggleMusica {
+      position: fixed;
+      top: 10px;
+      right: 10px;
+      font-size: 1em;
+      padding: 10px;
+      z-index: 999;
     }
   </style>
 </head>
@@ -173,13 +149,13 @@
     <div id="nino">🧒</div>
     <div id="canasta"></div>
     <div id="campo"></div>
-    <div id="morrocoy" onclick="mostrarMensajeValor()">🐢</div>
   </div>
 
   <div id="controls">
     Ángulo: <input type="number" id="angulo" value="45" min="10" max="80">°
     Fuerza: <input type="number" id="fuerza" value="50" min="10" max="150">
-    <button onclick="lanzarPelota()">Lanzar</button>
+    <br>
+    <button onclick="lanzarPelota()">🚀 ¡LANZAR!</button>
   </div>
 
   <div id="conteo">
@@ -188,10 +164,12 @@
   </div>
 
   <!-- 🎵 Sonidos -->
-  <audio id="audiojuego" src="audiojuego.mp3" autoplay loop></audio>
+  <audio id="audiojuego" src="audiojuego.mp3" loop></audio>
   <audio id="aplausos" src="aplausos.mp3"></audio>
   <audio id="animo" src="animo.mp3"></audio>
   <audio id="triunfo" src="triunfo.mp3"></audio>
+
+  <button id="toggleMusica">🔊 Música ON/OFF</button>
 
 <script>
   let aciertos = 0;
@@ -202,25 +180,8 @@
   const aplausos = document.getElementById("aplausos");
   const animo = document.getElementById("animo");
   const nino = document.getElementById("nino");
-
-  const mensajesMotivacionales = [
-    "¡Soy el mejor!",
-    "¡Con 5 aciertos avanzas de nivel y con 10 aciertos GANAS la medalla de Honor!",
-    "Invita a tus padres a competir contigo",
-    "¡Soy muy inteligente!",
-    "¡Soy un luchador!",
-    "¡Puedo hacerlo!",
-    "¡Soy capaz de lograr cualquier cosa!"
-  ];
-
-  const mensajesValores = [
-    "Debo respetar a mis padres",
-    "Debo comer saludable",
-    "Debo hacer mis tareas",
-    "No debo hablar con extraños",
-    "Debo cuidar el planeta",
-    "Debo ayudar a los demás"
-  ];
+  const audio = document.getElementById("audiojuego");
+  const botonMusica = document.getElementById("toggleMusica");
 
   function lanzarPelota() {
     intentos++;
@@ -253,7 +214,7 @@
       pelota.style.left = `${x}px`;
       pelota.style.bottom = `${y}px`;
 
-           if (y < 40) {
+      if (y < 40) {
         clearInterval(intervalo);
         escena.removeChild(pelota);
 
@@ -270,50 +231,8 @@
           aplausos.play();
           animo.play();
           lanzarConfeti();
-          decir(`¡Acierto número ${aciertos}!`);
 
-          // Reiniciar inputs
-          document.getElementById("angulo").value = 0;
-          document.getElementById("fuerza").value = 0;
-
-          // Mover al lanzador tras acierto
           moverLanzador();
-
-          if (aciertos === 5) {
-            document.documentElement.style.setProperty('--pelota-size', '1.2em');
-            document.documentElement.style.setProperty('--canasta-width', '70px');
-            decir("¡Nivel 2 desbloqueado! La pelota es más pequeña y la canasta más angosta.");
-          }
-
-          if (aciertos === 10) {
-            const medalla = document.createElement("div");
-            medalla.className = "medalla";
-            medalla.innerText = "🥇";
-            escena.appendChild(medalla);
-
-            document.getElementById("triunfo").play();
-            decir("¡Eres un campeón! Has ganado la medalla de oro.");
-
-            setTimeout(() => escena.removeChild(medalla), 6000);
-          }
-
-        } else {
-          let mensaje = "";
-          if (x > canastaX - 80 && x < canastaX + 80) {
-            mensaje = "¡Estuvo cerca! Intenta otra vez.";
-          } else if (fuerza < 40) {
-            mensaje = "¡Dale con más fuerza!";
-          } else if (angulo < 30) {
-            mensaje = "¡Aumenta el ángulo!";
-          } else if (angulo > 70) {
-            mensaje = "¡Disminuye el ángulo!";
-          } else {
-            mensaje = "¡Piensa bien, cambia el ángulo y la fuerza!";
-          }
-
-          document.getElementById("aciertos").innerText = `🏀 Aciertos: ${aciertos}`;
-          document.getElementById("intentos").innerText = `🎯 Intentos: ${intentos}`;
-          decir(mensaje);
         }
       }
     }, 30);
@@ -330,72 +249,40 @@
     }
   }
 
+  function moverLanzador() {
+    const margenIzquierdo = 20;
+    const margenDerecho = escena.clientWidth - 200; // evita la canasta
+    const nuevaX = Math.floor(Math.random() * (margenDerecho - margenIzquierdo)) + margenIzquierdo;
+        const nuevaY = 40; // fijo en el suelo
+    nino.style.left = `${nuevaX}px`;
+    nino.style.bottom = `${nuevaY}px`;
+  }
+
   function decir(texto) {
     const voz = new SpeechSynthesisUtterance(texto);
     voz.lang = 'es-ES';
     speechSynthesis.speak(voz);
   }
 
-  function moverLanzador() {
-    const maxX = escena.clientWidth - 100; // ancho de la escena
-    const nuevaX = Math.floor(Math.random() * maxX);
-    const nuevaY = 40; // fijo en el suelo
-    nino.style.left = `${nuevaX}px`;
-    nino.style.bottom = `${nuevaY}px`;
-  }
-
-  function lanzarMariposa() {
-    const mariposa = document.createElement("div");
-    mariposa.className = "mariposa";
-    mariposa.innerText = "🦋";
-    escena.appendChild(mariposa);
-
-    setTimeout(() => {
-      escena.removeChild(mariposa);
-      mostrarMensajeMotivacional();
-    }, 4000);
-  }
-
-  function mostrarMensajeMotivacional() {
-    const mensaje = document.createElement("div");
-    mensaje.className = "mensaje";
-    const texto = mensajesMotivacionales[Math.floor(Math.random() * mensajesMotivacionales.length)];
-    mensaje.innerText = texto;
-    escena.appendChild(mensaje);
-    decir(texto);
-    setTimeout(() => escena.removeChild(mensaje), 4000);
-  }
-
-  function mostrarMensajeValor() {
-    const mensaje = document.createElement("div");
-    mensaje.className = "valor";
-    const texto = mensajesValores[Math.floor(Math.random() * mensajesValores.length)];
-    mensaje.innerText = texto;
-    escena.appendChild(mensaje);
-    decir(texto);
-    setTimeout(() => escena.removeChild(mensaje), 5000);
-  }
-
-  // Iniciar lanzador y mariposas
-  moverLanzador();
-  setInterval(lanzarMariposa, 20000);
-</script>
-
-<script>
-window.addEventListener('load', () => {
-  const audio = document.getElementById("audiojuego");
-  audio.play().catch(() => {
-    const boton = document.createElement("button");
-    boton.innerText = "🎵 Activar música principal";
-    boton.style = "position:fixed;top:10px;right:10px;font-size:1em;padding:10px;z-index:999;";
-    boton.onclick = () => {
-      audio.play();
-      boton.remove();
-      decir("¡Música activada! Que comience la celebración.");
-    };
-    document.body.appendChild(boton);
+  // Música automática + botón ON/OFF
+  window.addEventListener('load', () => {
+    audio.play().catch(() => {
+      // Si el navegador bloquea autoplay, el usuario puede activarla con el botón
+    });
   });
-});
+
+  botonMusica.addEventListener("click", () => {
+    if (audio.paused) {
+      audio.play();
+      decir("¡Música activada!");
+    } else {
+      audio.pause();
+      decir("Música apagada.");
+    }
+  });
+
+  // Iniciar lanzador en posición válida
+  moverLanzador();
 </script>
 </body>
 </html>
