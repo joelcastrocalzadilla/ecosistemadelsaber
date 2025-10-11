@@ -3,7 +3,105 @@
 <head>
   <meta charset="UTF-8">
   <title>Globos de Palabras (100)</title>
-  <link rel="stylesheet" href="estilos.css">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      background: #f0f8ff;
+      overflow: hidden;
+    }
+
+    #gameArea {
+      position: relative;
+      width: 400px;
+      height: 600px;
+      margin: 20px auto;
+      border: 2px solid #333;
+      background: linear-gradient(#d0f0ff, #ffffff);
+      overflow: hidden;
+    }
+
+    #lineaTope {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 10px;
+      background: red;
+    }
+
+    .globo {
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100px;
+      height: 120px;
+      background: pink;
+      border-radius: 50% 50% 45% 45%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      font-weight: bold;
+      color: #333;
+    }
+
+    #opciones {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+      width: 260px;
+      margin: 20px auto 10px auto;
+    }
+
+    .opcion {
+      padding: 12px;
+      font-size: 18px;
+      background: #87cefa;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background 0.3s;
+      text-align: center;
+    }
+
+    .opcion:hover {
+      background: #4682b4;
+      color: white;
+    }
+
+    #puntos, #fallos {
+      font-size: 20px;
+      margin: 10px;
+    }
+
+    #startBtn {
+      margin-top: 10px;
+      padding: 15px 30px;
+      font-size: 20px;
+      background: #32cd32;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+
+    #startBtn:hover {
+      background: #228b22;
+    }
+
+    @keyframes caer {
+      to {
+        transform: translateY(100vh) rotate(720deg);
+        opacity: 0;
+      }
+    }
+
+    @keyframes aparecer {
+      from { transform: translate(-50%, -60%) scale(0.5); opacity: 0; }
+      to { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+    }
+  </style>
 </head>
 <body>
   <h1>🎈 Globos de Palabras (100) 🎈</h1>
@@ -12,102 +110,171 @@
   <div id="gameArea"><div id="lineaTope"></div></div>
   <div id="opciones"></div>
   <button id="startBtn" onclick="iniciarJuego()">Iniciar Juego</button>
+  <script>
+const palabras = [
+  {es:"casa",en:"house"},{es:"perro",en:"dog"},{es:"gato",en:"cat"},{es:"libro",en:"book"},
+  {es:"agua",en:"water"},{es:"sol",en:"sun"},{es:"luna",en:"moon"},{es:"niño",en:"boy"},
+  {es:"niña",en:"girl"},{es:"madre",en:"mother"},{es:"padre",en:"father"},{es:"hermano",en:"brother"},
+  {es:"hermana",en:"sister"},{es:"amigo",en:"friend"},{es:"escuela",en:"school"},{es:"maestro",en:"teacher"},
+  {es:"mesa",en:"table"},{es:"silla",en:"chair"},{es:"puerta",en:"door"},{es:"ventana",en:"window"},
+  {es:"coche",en:"car"},{es:"tren",en:"train"},{es:"avión",en:"plane"},{es:"flor",en:"flower"},
+  {es:"árbol",en:"tree"},{es:"pan",en:"bread"},{es:"leche",en:"milk"},{es:"manzana",en:"apple"},
+  {es:"plátano",en:"banana"},{es:"zapato",en:"shoe"},{es:"camisa",en:"shirt"},{es:"pantalón",en:"pants"},
+  {es:"sombrero",en:"hat"},{es:"rojo",en:"red"},{es:"azul",en:"blue"},{es:"verde",en:"green"},
+  {es:"amarillo",en:"yellow"},{es:"blanco",en:"white"},{es:"negro",en:"black"},{es:"grande",en:"big"},
+  {es:"pequeño",en:"small"},{es:"feliz",en:"happy"},{es:"triste",en:"sad"},{es:"rápido",en:"fast"},
+  {es:"lento",en:"slow"},{es:"día",en:"day"},{es:"noche",en:"night"},{es:"comida",en:"food"},
+  {es:"juego",en:"game"},{es:"música",en:"music"},{es:"mar",en:"sea"},{es:"río",en:"river"},
+  {es:"montaña",en:"mountain"},{es:"ciudad",en:"city"},{es:"pueblo",en:"town"},{es:"camino",en:"road"},
+  {es:"calle",en:"street"},{es:"tienda",en:"shop"},{es:"dinero",en:"money"},{es:"trabajo",en:"work"},
+  {es:"tiempo",en:"time"},{es:"mano",en:"hand"},{es:"cabeza",en:"head"},{es:"ojo",en:"eye"},
+  {es:"boca",en:"mouth"},{es:"nariz",en:"nose"},{es:"oreja",en:"ear"},{es:"pie",en:"foot"},
+  {es:"corazón",en:"heart"},{es:"familia",en:"family"},{es:"comer",en:"eat"},{es:"beber",en:"drink"},
+  {es:"correr",en:"run"},{es:"caminar",en:"walk"},{es:"leer",en:"read"},{es:"escribir",en:"write"},
+  {es:"cantar",en:"sing"},{es:"bailar",en:"dance"},{es:"jugar",en:"play"},{es:"abrir",en:"open"},
+  {es:"cerrar",en:"close"},{es:"subir",en:"go up"},{es:"bajar",en:"go down"},{es:"entrar",en:"enter"},
+  {es:"salir",en:"exit"},{es:"frío",en:"cold"},{es:"caliente",en:"hot"},{es:"nuevo",en:"new"},
+  {es:"viejo",en:"old"},{es:"bueno",en:"good"},{es:"malo",en:"bad"},{es:"bonito",en:"pretty"},
+  {es:"feo",en:"ugly"},{es:"fácil",en:"easy"},{es:"difícil",en:"hard"},{es:"caro",en:"expensive"},
+  {es:"barato",en:"cheap"},{es:"corto",en:"short"},{es:"largo",en:"long"},{es:"alto",en:"tall"},
+  {es:"bajo",en:"low"},{es:"cielo",en:"sky"},{es:"estrella",en:"star"},{es:"tierra",en:"earth"}
+];
 
-  <script src="juego.js"></script>
-</body>
-</html>
-body {
-  font-family: Arial, sans-serif;
-  text-align: center;
-  background: #f0f8ff;
-  overflow: hidden;
+let puntos = 0, fallos = 0, palabraActual, globo, animacion;
+let duracion = 2000, pos = 0;
+const alturaMax = 500;
+
+const gameArea = document.getElementById("gameArea");
+const opcionesDiv = document.getElementById("opciones");
+const puntosDiv = document.getElementById("puntos");
+const fallosDiv = document.getElementById("fallos");
+const startBtn = document.getElementById("startBtn");
+
+let idiomaPregunta = "es", idiomaRespuesta = "en";
+
+function iniciarJuego() {
+  puntos = 0; fallos = 0; duracion = 2000;
+  puntosDiv.textContent = "Puntos: " + puntos;
+  fallosDiv.textContent = "Fallos: " + fallos + " / 10";
+  startBtn.style.display = "none";
+  crearGlobo();
+}
+   function crearGlobo() {
+  if (globo) globo.remove();
+  idiomaPregunta = idiomaPregunta === "es" ? "en" : "es";
+  idiomaRespuesta = idiomaPregunta === "es" ? "en" : "es";
+
+  palabraActual = palabras[Math.floor(Math.random() * palabras.length)];
+  globo = document.createElement("div");
+  globo.className = "globo";
+  globo.textContent = palabraActual[idiomaPregunta];
+  gameArea.appendChild(globo);
+
+  pos = 0;
+  mostrarOpciones(palabraActual[idiomaRespuesta]);
+  moverGlobo();
 }
 
-#gameArea {
-  position: relative;
-  width: 400px;
-  height: 600px;
-  margin: 20px auto;
-  border: 2px solid #333;
-  background: linear-gradient(#d0f0ff, #ffffff);
-  overflow: hidden;
+function mostrarOpciones(correcto) {
+  opcionesDiv.innerHTML = "";
+  let opciones = [correcto];
+  while (opciones.length < 4) {
+    let random = palabras[Math.floor(Math.random() * palabras.length)][idiomaRespuesta];
+    if (!opciones.includes(random)) opciones.push(random);
+  }
+  opciones.sort(() => Math.random() - 0.5);
+
+  opciones.forEach(op => {
+    let boton = document.createElement("div");
+    boton.className = "opcion";
+    boton.textContent = op;
+    boton.onclick = () => verificarRespuesta(op);
+    opcionesDiv.appendChild(boton);
+  });
 }
 
-#lineaTope {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 10px;
-  background: red;
+function moverGlobo() {
+  clearInterval(animacion);
+  let pasos = alturaMax / 5;
+  let intervalo = duracion / pasos;
+  animacion = setInterval(() => {
+    pos += 5;
+    globo.style.bottom = pos + "px";
+    if (pos >= alturaMax) {
+      clearInterval(animacion);
+      registrarFallo(true);
+    }
+  }, intervalo);
 }
 
-.globo {
-  position: absolute;
-  bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 100px;
-  height: 120px;
-  background: pink;
-  border-radius: 50% 50% 45% 45%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 20px;
-  font-weight: bold;
-  color: #333;
-}
+function verificarRespuesta(opcion) {
+  if (opcion === palabraActual[idiomaRespuesta]) {
+    puntos++;
+    puntosDiv.textContent = "Puntos: " + puntos;
+    clearInterval(animacion);
+    duracion = 2000;
 
-#opciones {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 8px;
-  width: 260px;
-  margin: 20px auto 10px auto;
-}
+    if (puntos === 20) lanzarConfeti("¡20 puntos! 🎉");
+    if (puntos === 40) lanzarConfeti("¡40 puntos, increíble! 🎉");
+    if (puntos === 60) lanzarConfeti("¡Sigue, estás cerca del campeonato! 🏆");
+    if (puntos === 100) mostrarBannerCampeonato();
 
-.opcion {
-  padding: 12px;
-  font-size: 18px;
-  background: #87cefa;
-  border-radius: 10px;
-  cursor: pointer;
-  transition: background 0.3s;
-  text-align: center;
-}
-
-.opcion:hover {
-  background: #4682b4;
-  color: white;
-}
-
-#puntos, #fallos {
-  font-size: 20px;
-  margin: 10px;
-}
-
-#startBtn {
-  margin-top: 10px;
-  padding: 15px 30px;
-  font-size: 20px;
-  background: #32cd32;
-  color: white;
-  border: none;
-  border-radius: 10px;
-  cursor: pointer;
-}
-
-#startBtn:hover {
-  background: #228b22;
-}
-
-@keyframes caer {
-  to {
-    transform: translateY(100vh) rotate(720deg);
-    opacity: 0;
+    crearGlobo();
+  } else {
+    registrarFallo(false);
+    duracion = Math.max(300, duracion / 1);
+    moverGlobo();
   }
 }
+
+function registrarFallo(porTiempo) {
+  fallos++;
+  fallosDiv.textContent = "Fallos: " + fallos + " / 10";
+  if (fallos >= 10) {
+    alert("¡Has perdido! Reiniciando...");
+    startBtn.style.display = "block";
+    clearInterval(animacion);
+    if (globo) globo.remove();
+  } else {
+    if (porTiempo) {
+      duracion = 2000;
+      crearGlobo();
+    }
+  }
+}
+
+function lanzarConfeti(mensaje = "") {
+  for (let i = 0; i < 100; i++) {
+    let confeti = document.createElement("div");
+    confeti.textContent = "🎉";
+    confeti.style.position = "fixed";
+    confeti.style.left = Math.random() * 100 + "vw";
+    confeti.style.top = "-10px";
+    confeti.style.fontSize = "24px";
+    confeti.style.animation = `caer ${2 + Math.random() * 3}s linear forwards`;
+    document.body.appendChild(confeti);
+    setTimeout(() => confeti.remove(), 5000);
+  }
+  if (mensaje !== "") {
+    let cartel = document.createElement("div");
+    cartel.textContent = mensaje;
+    cartel.style.position = "fixed";
+    cartel.style.top = "40%";
+    cartel.style.left = "50%";
+    cartel.style.transform = "translate(-50%,-50%)";
+    cartel.style.fontSize = "28px";
+    cartel.style.fontWeight = "bold";
+    cartel.style.color = "darkblue";
+    cartel.style.background = "white";
+    cartel.style.padding = "20px";
+    cartel.style.border = "3px solid blue";
+    cartel.style.borderRadius = "10px";
+    cartel.style.zIndex = "9999";
+    document.body.appendChild(cartel);
+    setTimeout(() => cartel.remove(), 4000);
+  }
+}
+
 function mostrarBannerCampeonato() {
   const banner = document.createElement("div");
   banner.innerHTML = "🏆 ¡Campeón de los 100 puntos! 🏆<br>¡Eres un maestro de los globos!";
@@ -126,27 +293,14 @@ function mostrarBannerCampeonato() {
   banner.style.zIndex = "9999";
   banner.style.textAlign = "center";
   banner.style.animation = "aparecer 1s ease-out";
-
   document.body.appendChild(banner);
 
-  // 🎉 Confeti adicional para el campeonato
   lanzarConfeti("¡Campeón de los 100 puntos!");
-
-  // Detener el juego
   clearInterval(animacion);
   if (globo) globo.remove();
   startBtn.style.display = "block";
-
-  // Eliminar el banner después de unos segundos
   setTimeout(() => banner.remove(), 6000);
 }
-
-// Animación de entrada para el banner
-const estiloBanner = document.createElement("style");
-estiloBanner.innerHTML = `
-  @keyframes aparecer {
-    from { transform: translate(-50%, -60%) scale(0.5); opacity: 0; }
-    to { transform: translate(-50%, -50%) scale(1); opacity: 1; }
-  }
-`;
-document.head.appendChild(estiloBanner);
+</script>
+</body>
+</html> 
