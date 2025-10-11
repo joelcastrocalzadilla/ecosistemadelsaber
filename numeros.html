@@ -23,7 +23,6 @@
     }
     #contador {
       font-size: 4em;
-      color: #d32f2f;
       margin-top: 20px;
     }
     #emojiZona {
@@ -49,18 +48,23 @@
       to { top: 100%; opacity: 0; }
     }
 
-    /* Animación de crecer y titilar */
-    @keyframes crecerVolver {
+    /* Animación de baile (1s por salto) */
+    @keyframes bailar {
       0%   { transform: scale(1); }
-      50%  { transform: scale(3); }
+      50%  { transform: scale(2.5); }
       100% { transform: scale(1); }
     }
-    @keyframes titilar {
-      0%, 100% { opacity: 1; }
-      50%      { opacity: 0.3; }
+
+    /* Animación de colores: cada 3 saltos cambia de color */
+    @keyframes colores {
+      0%, 24%   { color: green; }
+      25%, 49%  { color: red; }
+      50%, 74%  { color: blue; }
+      75%, 100% { color: orange; }
     }
-    .numeroAnimado {
-      animation: crecerVolver 0.8s ease-out, titilar 1s infinite;
+
+    .numeroBailando {
+      animation: bailar 1s ease-in-out infinite, colores 12s linear infinite;
     }
 
     #mensaje {
@@ -80,7 +84,7 @@
 
   <!-- Música de circo -->
   <audio id="musicaFondo" src="https://joelcastrocalzadilla.github.io/ecosistemadelsaber/videlecircus.mp3" loop></audio>
-  <!-- Sonido de triunfo (sube tu propio archivo a GitHub y cambia la ruta si quieres otro) -->
+  <!-- Sonido de triunfo -->
   <audio id="triunfo" src="triunfo.mp3"></audio>
 
 <script>
@@ -146,7 +150,7 @@
   function contar() {
     if (!musicaActivada) {
       musica.play();
-      musica.volume = 0.2; // volumen bajo para no molestar
+      musica.volume = 0.2; // volumen bajo
       musicaActivada = true;
       decir("¡Que suene el circooo! ¡Vamos a contar juntos!");
       mensaje.textContent = "¡Cuenta tocando a Tito y repite en voz alta!";
@@ -156,10 +160,10 @@
 
     contador.innerText = cuenta;
 
-    // Reinicia animación de número
-    contador.classList.remove("numeroAnimado");
-    void contador.offsetWidth; // truco para reiniciar animación
-    contador.classList.add("numeroAnimado");
+    // Reinicia animación de baile y colores
+    contador.classList.remove("numeroBailando");
+    void contador.offsetWidth; // truco para reiniciar
+    contador.classList.add("numeroBailando");
 
     const frase = fraseConteo(cuenta);
     decir(frase);
@@ -175,8 +179,7 @@
       triunfo.currentTime = 0;
       triunfo.play();
       decir("¡Bravooo! ¡Llegamos al diez! Vamos a repetir nuevamente el conteo hasta el diez.");
-      // Reinicia para que la próxima vez empiece en 1
-      cuenta = 0;
+      cuenta = 0; // reinicia
     }
   }
 
@@ -201,3 +204,4 @@
 </script>
 </body>
 </html>
+
