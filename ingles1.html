@@ -214,10 +214,19 @@ function verificarRespuesta(opcion) {
     clearInterval(animacion);
     duracion = 2000;
 
-    if (puntos === 20) lanzarConfeti("¡20 puntos! 🎉");
-    if (puntos === 40) lanzarConfeti("¡40 puntos, increíble! 🎉");
-    if (puntos === 60) lanzarConfeti("¡Sigue, estás cerca del campeonato! 🏆");
-    if (puntos === 100) mostrarBannerCampeonato();
+    // 🎉 Recompensas por hitos
+    if ([20, 40, 60, 80].includes(puntos)) {
+      lanzarConfeti(`¡${puntos} puntos! 🎉`);
+      fallos = 0;
+      fallosDiv.textContent = "Fallos: 0 / 10";
+    }
+
+    // 🏆 Campeonato
+    if (puntos === 100) {
+      fallos = 0;
+      fallosDiv.textContent = "Fallos: 0 / 10";
+      mostrarBannerCampeonato();
+    }
 
     crearGlobo();
   } else {
@@ -226,7 +235,6 @@ function verificarRespuesta(opcion) {
     moverGlobo();
   }
 }
-
 function registrarFallo(porTiempo) {
   fallos++;
   fallosDiv.textContent = "Fallos: " + fallos + " / 10";
@@ -304,3 +312,4 @@ function mostrarBannerCampeonato() {
 </script>
 </body>
 </html> 
+
