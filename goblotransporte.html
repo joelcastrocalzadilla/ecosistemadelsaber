@@ -87,7 +87,7 @@
       puntos = 0; fallos = 0; duracion = 4000;
       operacionesFalladas = [];
       modoRepaso = false;
-      limpiarListados();
+      limpiarListados(); // 👉 limpia cualquier listado previo
       puntosDiv.textContent = "Puntos: " + puntos;
       fallosDiv.textContent = "Fallos: " + fallos + " / 5";
       repasoBtn.style.display = "none";
@@ -96,9 +96,9 @@
 
     function iniciarRepaso() {
       if (operacionesFalladas.length === 0) return;
+      limpiarListados(); // 👉 elimina listado antes de iniciar
       puntos = 0; fallos = 0; duracion = 4000;
       modoRepaso = true;
-      limpiarListados(); // 👉 elimina listado antes de iniciar
       puntosDiv.textContent = "Puntos: " + puntos;
       fallosDiv.textContent = "Fallos: " + fallos + " / 5";
       repasoBtn.style.display = "none";
@@ -213,14 +213,13 @@
         listado.style.padding = "20px";
         listado.style.border = "3px solid #333";
         listado.style.borderRadius = "10px";
-        listado.style.zIndex = "9999";
-        listado.style.maxHeight = "300px";
+                listado.style.maxHeight = "300px";
         listado.style.overflowY = "auto";
         document.body.appendChild(listado);
       }
     }
 
-      function limpiarListados() {
+    function limpiarListados() {
       // 👉 Elimina cualquier listado de fallos que esté en pantalla
       document.querySelectorAll(".listadoFallos").forEach(el => el.remove());
     }
