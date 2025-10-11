@@ -48,21 +48,21 @@
     @keyframes caer {
       to { top: 100%; opacity: 0; }
     }
-    .animado {
-      animation: payasoZoom 0.8s ease-out;
+
+    /* Animación de crecer y titilar */
+    @keyframes crecerVolver {
+      0%   { transform: scale(1); }
+      50%  { transform: scale(3); }
+      100% { transform: scale(1); }
     }
-    @keyframes payasoZoom {
-      0% {
-        transform: scale(0.3) rotate(0deg);
-        opacity: 0.3;
-        color: #f57c00;
-      }
-      100% {
-        transform: scale(1.4) rotate(360deg);
-        opacity: 1;
-        color: #c2185b;
-      }
+    @keyframes titilar {
+      0%, 100% { opacity: 1; }
+      50%      { opacity: 0.3; }
     }
+    .numeroAnimado {
+      animation: crecerVolver 0.8s ease-out, titilar 1s infinite;
+    }
+
     #mensaje {
       margin-top: 10px;
       font-size: 1.2em;
@@ -80,7 +80,10 @@
 
   <!-- Música de circo -->
   <audio id="musicaFondo" src="https://joelcastrocalzadilla.github.io/ecosistemadelsaber/videlecircus.mp3" loop></audio>
- <script>
+  <!-- Sonido de triunfo (sube tu propio archivo a GitHub y cambia la ruta si quieres otro) -->
+  <audio id="triunfo" src="triunfo.mp3"></audio>
+
+<script>
   let cuenta = 0;
   let musicaActivada = false;
 
@@ -143,7 +146,7 @@
   function contar() {
     if (!musicaActivada) {
       musica.play();
-      musica.volume = 0.2;
+      musica.volume = 0.2; // volumen bajo para no molestar
       musicaActivada = true;
       decir("¡Que suene el circooo! ¡Vamos a contar juntos!");
       mensaje.textContent = "¡Cuenta tocando a Tito y repite en voz alta!";
@@ -152,8 +155,11 @@
     cuenta++;
 
     contador.innerText = cuenta;
-    contador.classList.add("animado");
-    setTimeout(() => contador.classList.remove("animado"), 800);
+
+    // Reinicia animación de número
+    contador.classList.remove("numeroAnimado");
+    void contador.offsetWidth; // truco para reiniciar animación
+    contador.classList.add("numeroAnimado");
 
     const frase = fraseConteo(cuenta);
     decir(frase);
@@ -195,4 +201,3 @@
 </script>
 </body>
 </html>
-
