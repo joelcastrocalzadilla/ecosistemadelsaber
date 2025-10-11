@@ -70,7 +70,7 @@
 
   <script>
     let puntos = 0, fallos = 0, resultadoCorrecto, globo, animacion;
-    let duracion = 2000, pos = 0;
+    let duracion = 4000, pos = 0; // 👉 velocidad más lenta
     const alturaMax = 400;
 
     const gameArea = document.getElementById("gameArea");
@@ -84,10 +84,10 @@
     let modoRepaso = false;
 
     function iniciarJuego() {
-      puntos = 0; fallos = 0; duracion = 2000;
+      puntos = 0; fallos = 0; duracion = 4000;
       operacionesFalladas = [];
       modoRepaso = false;
-      limpiarListados(); // 👉 limpia cualquier listado previo
+      limpiarListados();
       puntosDiv.textContent = "Puntos: " + puntos;
       fallosDiv.textContent = "Fallos: " + fallos + " / 5";
       repasoBtn.style.display = "none";
@@ -96,9 +96,9 @@
 
     function iniciarRepaso() {
       if (operacionesFalladas.length === 0) return;
-      puntos = 0; fallos = 0; duracion = 2000;
+      puntos = 0; fallos = 0; duracion = 4000;
       modoRepaso = true;
-      limpiarListados(); // 👉 elimina la pantalla de repaso antes de iniciar
+      limpiarListados(); // 👉 elimina listado antes de iniciar
       puntosDiv.textContent = "Puntos: " + puntos;
       fallosDiv.textContent = "Fallos: " + fallos + " / 5";
       repasoBtn.style.display = "none";
@@ -133,7 +133,7 @@
     function mostrarOpciones(correcto) {
       opcionesDiv.innerHTML = "";
       let opciones = [correcto];
-      while (opciones.length < 4) { // 👉 siempre 4 opciones
+      while (opciones.length < 4) {
         let num = Math.floor(Math.random() * 81) + 1;
         if (!opciones.includes(num)) opciones.push(num);
       }
@@ -167,7 +167,7 @@
         puntos++;
         puntosDiv.textContent = "Puntos: " + puntos;
         clearInterval(animacion);
-        duracion = 2000;
+        duracion = 4000; // reinicia lento
         crearGlobo();
       } else {
         registrarFallo(false);
@@ -192,7 +192,7 @@
         if (globo) globo.remove();
       } else {
         if (porTiempo) {
-          duracion = 2000;
+          duracion = 4000; // reinicia lento
           crearGlobo();
         }
       }
@@ -220,15 +220,10 @@
       }
     }
 
-    function limpiarListados() {
+      function limpiarListados() {
+      // 👉 Elimina cualquier listado de fallos que esté en pantalla
       document.querySelectorAll(".listadoFallos").forEach(el => el.remove());
     }
   </script>
 </body>
 </html>
-
-
-
-
-
-      
