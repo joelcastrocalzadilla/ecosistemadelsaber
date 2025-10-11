@@ -68,7 +68,7 @@
 
   <script>
     let puntos = 0, fallos = 0, resultadoCorrecto, globo, animacion;
-    let duracion = 2000, pos = 0;
+    let duracion = 4000, pos = 0;
     const alturaMax = 400;
 
     const gameArea = document.getElementById("gameArea");
@@ -82,7 +82,7 @@
     let modoRepaso = false;
 
     function iniciarJuego() {
-      puntos = 0; fallos = 0; duracion = 2000;
+      puntos = 0; fallos = 0; duracion = 4000;
       operacionesFalladas = [];
       modoRepaso = false;
       limpiarListados();
@@ -94,7 +94,7 @@
 
     function iniciarRepaso() {
       if (operacionesFalladas.length === 0) return;
-      puntos = 0; fallos = 0; duracion = 2000;
+      puntos = 0; fallos = 0; duracion = 4000;
       modoRepaso = true;
       limpiarListados();
       puntosDiv.textContent = "Puntos: " + puntos;
@@ -169,7 +169,7 @@
         crearGlobo();
       } else {
         registrarFallo(false);
-        duracion = Math.max(300, duracion / 2);
+        duracion = Math.max(300, duracion / 1);
         moverGlobo();
       }
     }
@@ -190,7 +190,7 @@
         if (globo) globo.remove();
       } else {
         if (porTiempo) {
-          duracion = 2000;
+          duracion = 4000;
           crearGlobo();
         }
       }
@@ -223,3 +223,4 @@
   </script>
 </body>
 </html>
+
