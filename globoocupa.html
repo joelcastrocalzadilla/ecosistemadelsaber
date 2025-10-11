@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Trabajos y Deportes - Globos de Vocabulario</title>
+  <style>
+    body { font-family: Arial, sans-serif; text-align: center; background: #f9f9f9; margin:0; padding:0; }
+    #gameArea { position: relative; width: 400px; height: 500px; margin: 20px auto; border: 2px solid #333;
+      background: linear-gradient(#d0f0ff, #ffffff); overflow: hidden; }
+    #lineaTope { position: absolute; top: 0; left: 0; width: 100%; height: 10px; background: red; }
+    .globo { position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 100px; height: 120px;
+      background: pink; border-radius: 50% 50% 45% 45%; display: flex; align-items: center; justify-content: center;
+      font-size: 18px; font-weight: bold; color: #333; text-align: center; padding: 5px; }
+
+    #opciones {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      width: 250px;
+      margin: 20px auto;
+    }
+    .opcion {
+      padding: 15px;
+      font-size: 18px;
+      background: #87cefa;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    .opcion:hover { background: #4682b4; color: white; }
+
+    #puntos, #fallos { font-size: 20px; margin: 10px; }
+
+    .botones {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 15px;
+    }
+    button {
+      padding: 15px 30px;
+      font-size: 18px;
+      background: #32cd32;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+    button:hover { background: #228b22; }
+
+    #fallasTrabDepOverlay {
+      position: fixed;
+      top: 100px;
+      right: 20px;
+      width: 240px;
+      background: white;
+      padding: 15px;
+      border: 2px solid #333;
+      border-radius: 10px;
+      z-index: 9999;
+      max-height: 400px;
+      overflow-y: auto;
+      text-align: left;
+    }
+  </style>
+</head>
+<body>
+  <h1>🎈 Trabajos y Deportes - Globos de Vocabulario 🎈</h1>
+  <div id="puntos">Puntos: 0</div>
+  <div id="fallos">Fallos: 0 / 5</div>
+  <div id="gameArea"><div id="lineaTope"></div></div>
+  <div id="opciones"></div>
+
+  <div class="botones">
+    <button onclick="iniciarJuego()">Iniciar Juego</button>
+    <button id="repasoBtn" style="display:none;" onclick="iniciarRepaso()">Practicar falladas</button>
+  </div>
+
+  <script>
+    const trabajosDeportes = [
+      // Trabajos
+      {en:"Doctor", es:"Doctor"},
+      {en:"Teacher", es:"Maestro"},
+      {en:"Engineer", es:"Ingeniero"},
+      {en:"Farmer", es:"Granjero"},
+      {en:"Chef", es:"Cocinero"},
+      {en:"Police Officer", es:"Policía"},
+      {en:"Firefighter", es:"Bombero"},
+      {en:"Nurse", es:"Enfermero"},
+      {en:"Pilot", es:"Piloto"},
+      {en:"Mechanic", es:"Mecánico"},
+      {en:"Carpenter", es:"Carpintero"},
+      {en:"Singer", es:"Cantante"},
+      {en:"Actor", es:"Actor"},
+      {en:"Driver", es:"Conductor"},
+      // Deportes
+      {en:"Soccer", es:"Fútbol"},
+      {en:"Basketball", es:"Baloncesto"},
+      {en:"Baseball", es:"Béisbol"},
+      {en:"Tennis", es:"Tenis"},
+      {en:"Swimming", es:"Natación"},
+      {en:"Running", es:"Atletismo"},
+      {en:"Cycling", es:"Ciclismo"},
+      {en:"Boxing", es:"Boxeo"},
+      {en:"Volleyball", es:"Voleibol"},
+      {en:"Golf", es:"Golf"},
+      {en:"Skiing", es:"Esquí"},
+      {en:"Surfing", es:"Surf"},
+      {en:"Karate", es:"Karate"},
+      {en:"Gymnastics", es:"Gimnasia"}
+    ];
+
+    let puntos = 0, fallos = 0, palabraActual, respuestaCorrecta;
+    let globo, animacion, pos = 0, duracion = 4000;
+    let fallasTrabDep = [];
+    let modoRepaso = false;
+    const alturaMax = 400;
+
+    const gameArea = document.getElementById("gameArea");
+    const opcionesDiv = document.getElementById("opciones");
+    const puntosDiv = document.getElementById("puntos");
+    const fallosDiv = document.getElementById("fallos");
+    const repasoBtn = document.getElementById("repasoBtn");
+
+    function iniciarJuego() {
+      limpiarFallasTrabDep();
+      puntos = 0; fallos = 0; duracion = 4000;
+      fallasTrabDep = [];
+      modoRepaso = false;
+      puntosDiv.textContent = "Puntos: " + puntos;
+      fallosDiv.textContent = "Fallos: " + fallos + " / 5";
+      repasoBtn.style.display = "none";
+      crearGloboTrabDep();
+    }
+
+    function iniciarRepaso() {
+      if (fallasTrabDep.length === 0) return;
+      limpiarFallasTrabDep();
+      puntos = 0; fallos = 0; duracion = 4000;
+      modoRepaso = true;
+      puntosDiv.textContent = "Puntos: " + puntos;
+      fallosDiv.textContent = "Fallos: " + fallos + " / 5";
+      repasoBtn.style.display = "none";
+      crearGloboTrabDep();
+    }
+
+    function crearGloboTrabDep() {
+      if (globo) globo.remove();
+
+      if (modoRepaso && fallasTrabDep.length > 0) {
+        let {pregunta, respuestaCorrecta:res} = fallasTrabDep.shift();
+        palabraActual = pregunta;
+        respuestaCorrecta = res;
+      } else {
+        let item = trabajosDeportes[Math.floor(Math.random()*trabajosDeportes.length)];
+        palabraActual = item.en;
+        respuestaCorrecta = item.es;
+      }
+
+      globo = document.createElement("div");
+      globo.className = "globo";
+      globo.textContent = palabraActual;
+      gameArea.appendChild(globo);
+
+      pos = 0;
+      mostrarOpciones(respuestaCorrecta);
+      moverGlobo();
+    }
+
+    function mostrarOpciones(correcto) {
+      opcionesDiv.innerHTML = "";
+      let opciones = [correcto];
+      while (opciones.length < 4) {
+        let candidato = trabajosDeportes[Math.floor(Math.random()*trabajosDeportes.length)].es;
+        if (!opciones.includes(candidato)) opciones.push(candidato);
+      }
+      opciones.sort(() => Math.random() - 0.5);
+      opciones.forEach(op => {
+        let boton = document.createElement("div");
+        boton.className = "opcion";
+        boton.textContent = op;
+        boton.onclick = () => verificarRespuesta(op);
+        opcionesDiv.appendChild(boton);
+      });
+    }
+
+    function moverGlobo() {
+      clearInterval(animacion);
+      let pasos = alturaMax / 5;
+      let intervalo = duracion / pasos;
+      animacion = setInterval(() => {
+        pos += 5;
+        globo.style.bottom = pos + "px";
+        if (pos >= alturaMax) {
+          clearInterval(animacion);
+          registrarFalla(true);
+        }
+      }, intervalo);
+    }
+
+    function verificarRespuesta(opcion) {
+      if (opcion === respuestaCorrecta) {
+        puntos++;
+        puntosDiv.textContent = "Puntos: " + puntos;
+        clearInterval(animacion);
+        duracion = 4000;
+        crearGloboTrabDep();
+      } else {
+        registrarFalla(false);
+               duracion = Math.max(300, duracion / 2);
+        moverGlobo();
+      }
+    }
+
+    function registrarFalla(porTiempo) {
+      fallos++;
+      fallosDiv.textContent = "Fallos: " + fallos + " / 5";
+      if (globo) {
+        fallasTrabDep.push({pregunta: globo.textContent, respuestaCorrecta});
+      }
+      if (fallos >= 5) {
+        mostrarFallasTrabDep();
+        alert("¡Has perdido! Reiniciando...");
+        repasoBtn.style.display = "block";
+        clearInterval(animacion);
+        if (globo) globo.remove();
+      } else {
+        if (porTiempo) {
+          duracion = 4000;
+          crearGloboTrabDep();
+        }
+      }
+    }
+
+    function mostrarFallasTrabDep() {
+      limpiarFallasTrabDep();
+      if (fallasTrabDep.length > 0) {
+        const panel = document.createElement("div");
+        panel.id = "fallasTrabDepOverlay";
+        panel.innerHTML = "<h2>❌ Palabras de trabajos y deportes para repasar:</h2><ul>" +
+          fallasTrabDep.map(f => `<li>${f.pregunta} → ${f.respuestaCorrecta}</li>`).join("") +
+          "</ul>";
+        document.body.appendChild(panel);
+      }
+    }
+
+    function limpiarFallasTrabDep() {
+      const overlay = document.getElementById("fallasTrabDepOverlay");
+      if (overlay) overlay.remove();
+    }
+  </script>
+</body>
+</html>
