@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Guía de supervivencia digital: Windows 10, Copilot y respaldo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Guía práctica para continuar trabajando con seguridad cuando Windows 10 quede sin soporte: respaldo, alternativas gratuitas y uso de Copilot." />
+  <style>
+    :root{
+      --bg:#0f172a; --panel:#111827; --card:#1f2937; --text:#e5e7eb;
+      --accent:#22c55e; --accent2:#3b82f6; --warn:#f59e0b;
+      --muted:#9ca3af; --border:#374151;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0; font-family:Inter,system-ui,Segoe UI,Arial,sans-serif;
+      background:var(--bg); color:var(--text); line-height:1.6;
+    }
+    header{
+      background:linear-gradient(135deg, #0ea5e9 0%, #22c55e 100%);
+      color:#0b1220; padding:40px 24px; text-align:center;
+    }
+    header h1{margin:0 0 8px; font-size:28px}
+    header p{margin:0; font-size:16px}
+    .wrap{max-width:980px; margin:0 auto; padding:24px}
+    .panel{
+      background:var(--panel); border:1px solid var(--border);
+      border-radius:12px; padding:20px; margin-bottom:20px;
+    }
+    h2{margin:0 0 12px; font-size:22px}
+    h3{margin:16px 0 8px; font-size:18px}
+    p{margin:8px 0}
+    .grid{display:grid; gap:16px}
+    @media(min-width:800px){ .grid-2{grid-template-columns:1fr 1fr} }
+    ul,ol{margin:8px 0 8px 20px}
+    .badge{
+      display:inline-block; padding:6px 10px; border-radius:999px;
+      font-size:12px; background:#0ea5e915; color:#cfeaff; border:1px solid #0ea5e9;
+      margin-right:8px;
+    }
+    .cta-row{display:flex; flex-wrap:wrap; gap:10px; margin-top:14px}
+    .btn{
+      display:inline-flex; align-items:center; gap:8px;
+      padding:10px 14px; border-radius:10px; border:1px solid var(--border);
+      color:var(--text); text-decoration:none; background:var(--card);
+      transition:.2s ease; font-weight:600
+    }
+    .btn:hover{transform:translateY(-1px); border-color:#4b5563}
+    .btn.primary{background:var(--accent2); color:#0b1220; border-color:#2563eb}
+    .btn.success{background:var(--accent); color:#0b1220; border-color:#16a34a}
+    .note{color:var(--muted); font-size:13px}
+    .card{
+      background:var(--card); border:1px solid var(--border);
+      border-radius:12px; padding:16px;
+    }
+    .checklist li{margin:6px 0}
+    .kbd{
+      background:#111827; border:1px solid #374151; padding:2px 6px; border-radius:6px;
+      font-family:ui-monospace, SFMono-Regular, Menlo, monospace; font-size:12px; color:#cbd5e1;
+    }
+    footer{
+      text-align:center; padding:24px; color:#9ca3af; font-size:13px
+    }
+    .share{
+      display:flex; gap:10px; flex-wrap:wrap;
+      margin-top:12px
+    }
+    .tag{display:inline-block; padding:6px 10px; border-radius:999px; border:1px dashed #334155; color:#cbd5e1; font-size:12px}
+    #contador{
+      font-size:20px; color:#f87171; font-weight:bold; margin-top:15px; text-align:center;
+    }
+  </style>
+  <script>
+    let tiempoTotal = 60; // segundos totales
+    let destino = "https://joelcastrocalzadilla.github.io/ecosistemadelsaber/index.html";
+
+    window.onload = function() {
+      // Inicia el conteo cuando falten 10 segundos
+      setTimeout(iniciarConteo, (tiempoTotal - 10) * 1000);
+
+      // Redirige al destino después de 60 segundos
+      setTimeout(function() {
+        window.location.href = destino;
+      }, tiempoTotal * 1000);
+    }
+
+    function iniciarConteo() {
+      let segundos = 10;
+      let contador = document.getElementById("contador");
+      contador.textContent = "⚠️ Serás redirigido en " + segundos + " segundos...";
+      let intervalo = setInterval(function() {
+        segundos--;
+        if (segundos > 0) {
+          contador.textContent = "⚠️ Serás redirigido en " + segundos + " segundos...";
+        } else {
+          clearInterval(intervalo);
+        }
+      }, 1000);
+    }
+  </script>
+</head>
+<body>
+
+<header>
+  <h1>Guía de supervivencia digital</h1>
+  <p>Windows 10 sin soporte, Copilot en la nube y respaldos que te salvan la vida</p>
+</header>
+
+<main class="wrap">
+
+  <!-- 🔥 Accesos rápidos al inicio -->
+  <section class="panel">
+    <div class="badge">Accesos rápidos</div>
+    <h2>Explora estas rutinas primero</h2>
+    <div class="grid">
+      <div class="card">
+        <h3>🌱 Salud y bienestar</h3>
+        <p>Accede a la rutina de salud y autocuidado.</p>
+        <div class="cta-row">
+          <a class="btn primary" href="https://buscandosaludhoy.blogspot.com" target="_blank">Ir a Salud Hoy</a>
+        </div>
+      </div>
+      <div class="card">
+        <h3>📘 Secretos del buen estudiante</h3>
+        <p>Descubre consejos y prácticas para aprender mejor.</p>
+        <div class="cta-row">
+          <a class="btn success" href="https://secretosdelbuenestudiante.blogspot.com" target="_blank">Ir a Buen Estudiante</a>
+        </div>
+      </div>
+    </div>
+    <!-- Contador de redirección -->
+    <div id="contador"></div>
+  </section>
+
+  <!-- ⚠️ Panel sobre el fin de soporte de Windows 10 -->
+  <section class="panel">
+    <div class="badge">⚠️ Aviso importante</div>
+    <h2>Fin de soporte de Windows 10 – 14 de octubre de 2025</h2>
+    <p>
+      A partir del <strong>14 de octubre de 2025</strong>, Microsoft dejará de dar soporte oficial a Windows 10.
+      Esto significa que el sistema seguirá funcionando, pero <strong>ya no recibirá actualizaciones de seguridad,
+      parches ni mejoras</strong>. Con el tiempo, los programas y controladores también pueden dejar de ser compatibles.
+    </p>
+    <ul>
+      <li>Tu PC será más vulnerable a virus y ataques.</li>
+      <li>No habrá soporte técnico oficial de Microsoft.</li>
+      <li>Algunas aplicaciones nuevas podrían no funcionar en Windows 10.</li>
+    </ul>
+    <p>
+      👉 Por eso es clave <strong>respaldar tus datos</strong>, considerar la migración a Windows 11 si tu equipo lo soporta,
+      o explorar alternativas gratuitas como Linux.
+    </p>
+  </section>
+
+   <!-- Paso 1 -->
+  <section class="panel">
+    <div class="badge">Paso 1</div>
+    <h2>Minimiza riesgos si sigues con Windows 10 sin soporte</h2>
+    <div class="grid grid-2">
+      <div class="card">
+        <h3>Seguridad esencial</h3>
+        <ul>
+          <li><strong>Últimos parches:</strong> mantén Windows 10 actualizado hasta el último release.</li>
+          <li><strong>Antivirus gratuito:</strong> Defender + una opción free (Avast, Bitdefender Free).</li>
+          <li><strong>Navegador actualizado:</strong> Edge/Chrome/Firefox para usar servicios web seguros.</li>
+          <li><strong>Hábitos sanos:</strong> instala solo desde fuentes oficiales y evita adjuntos sospechosos.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Plan B siempre listo</h3>
+        <ul>
+          <li><strong>Copias de seguridad</strong> frecuentes y verificadas.</li>
+          <li><strong>Sesión guardada</strong> en tu navegador/app para entrar a Copilot sin rodeos.</li>
+          <li><strong>Herramientas portables</strong> en un USB (navegador, editor, visor PDF).</li>
+        </ul>
+      </div>
+    </div>
+    <div class="note">Nada “deja de funcionar” de golpe: lo que se termina es el soporte y los parches. Tu foco debe ser seguridad y respaldo.</div>
+  </section>
+
+  <!-- Paso 2 -->
+  <section class="panel">
+    <div class="badge">Paso 2</div>
+    <h2>Usa Copilot sin depender del sistema operativo</h2>
+    <p>Copilot vive en la nube: aunque tu Windows esté viejo, puedes seguir usando Copilot desde el navegador, el móvil o integraciones.</p>
+    <ul>
+      <li><strong>Web:</strong> abre Copilot en tu navegador actualizado.</li>
+      <li><strong>Móvil:</strong> app de Copilot en Android/iOS.</li>
+      <li><strong>Edge:</strong> barra lateral con tu sesión de Microsoft.</li>
+      <li><strong>Mensajería:</strong> mantenlo como canal alterno cuando el navegador falle.</li>
+    </ul>
+    <div class="cta-row">
+      <a class="btn primary" href="https://copilot.microsoft.com" target="_blank">Entrar a Copilot</a>
+      <a class="btn" href="https://apps.microsoft.com/detail/9nqdw208cj1s" target="_blank">App de Copilot</a>
+    </div>
+    <div class="note">Consejo: guarda tu sesión y fija el acceso como favorito para entrar en un clic.</div>
+  </section>
+
+  <!-- Paso 3 -->
+  <section class="panel">
+    <div class="badge">Paso 3</div>
+    <h2>Alternativa gratuita: Linux para equipos sin Windows 11</h2>
+    <p>Si tu hardware no cumple requisitos de Windows 11, puedes instalar una distribución Linux ligera y estable para seguir trabajando sin costo.</p>
+    <ul>
+      <li><strong>Linux Mint:</strong> interfaz similar a Windows, curva suave.</li>
+      <li><strong>Ubuntu:</strong> soporte comunitario amplio.</li>
+      <li><strong>Lubuntu/Xubuntu:</strong> ideales para equipos con poca RAM.</li>
+    </ul>
+    <p>Dual-boot te permite conservar Windows y sumar Linux. Si prefieres simplicidad, instala solo Linux y usa Copilot en la web.</p>
+    <div class="cta-row">
+      <a class="btn success" href="https://linuxmint.com" target="_blank">Descargar Linux Mint</a>
+      <a class="btn" href="https://ubuntu.com/download" target="_blank">Descargar Ubuntu</a>
+    </div>
+  </section>
+
+  <!-- Paso 4 -->
+  <section class="panel">
+    <div class="badge">Paso 4</div>
+    <h2>Checklist de respaldo semanal</h2>
+    <div class="grid grid-2">
+      <div class="card">
+        <h3>Qué respaldar</h3>
+        <ul class="checklist">
+          <li>Documentos (Word, Excel, PDFs, presentaciones).</li>
+          <li>Rutinas y prácticas (HTML, proyectos, código fuente).</li>
+          <li>Fotos, videos y audios relevantes.</li>
+          <li>Marcadores del navegador y contactos.</li>
+          <li>Correos/configuraciones exportadas cuando sea posible.</li>
+        </ul>
+        <h3>Dónde guardar</h3>
+        <ul class="checklist">
+          <li>Disco externo o memoria USB.</li>
+          <li>Nube (OneDrive, Google Drive, Dropbox).</li>
+          <li>Segundo disco interno si lo tienes.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Cómo y cuándo</h3>
+        <ul class="checklist">
+          <li>Copia manual de carpetas clave.</li>
+          <li>Sincronización con <span class="kbd">FreeFileSync</span> u otra herramienta.</li>
+          <li>Usa formatos universales (PDF, CSV, ODT, HTML).</li>
+          <li>Respaldo inicial completo antes del fin de soporte.</li>
+          <li>Respaldo incremental semanal.</li>
+          <li>Regla 3-2-1: 3 copias, 2 medios distintos, 1 fuera de casa.</li>
+        </ul>
+        <h3>Verificación</h3>
+        <ul class="checklist">
+          <li>Abre archivos desde el respaldo para comprobar lectura.</li>
+          <li>Confirma que la nube terminó de sincronizar.</li>
+          <li>Etiqueta con fecha: <span class="kbd">Respaldo_12Oct2025</span>.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="cta-row">
+      <a class="btn" href="#" onclick="alert('Descarga tu checklist como PDF desde el navegador: Ctrl+P → Guardar como PDF.');">Guardar checklist como PDF</a>
+      <a class="btn" href="#" onclick="alert('Programa tu ritual de respaldo: usa recordatorios semanales en tu calendario.');">Programar recordatorio</a>
+    </div>
+  </section>
+
+  <!-- Cierre -->
+  <section class="panel">
+    <div class="badge">Cierre</div>
+    <h2>Mensaje clave</h2>
+    <p>El sistema puede quedar sin soporte, pero tu trabajo no tiene por qué quedar vulnerable. Con respaldo ritualizado, acceso a Copilot en la nube y un plan alternativo como Linux, sigues enseñando, creando y celebrando cada mejora.</p>
+    <div class="cta-row">
+      <a class="btn success" href="#" onclick="alert('Listo para compartir: publica esta página en tu sitio o envíala como enlace a tus estudiantes.');">Compartir esta guía</a>
+      <a class="btn" href="#" onclick="alert('¿Necesitas ajustes visuales? Pide una versión “póster” para imprimir y colocar en tu espacio de trabajo.');">Pedir versión póster</a>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  Hecho con dignidad pedagógica migrante. Ajusta, comparte y celebra cada mejora.
+</footer>
+
+</body>
+</html>
