@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>🌿 Método de Vogel Interactivo</title>
+  <style>
+    table { border-collapse: collapse; margin: 20px 0; }
+    td, th { border: 1px solid #ccc; padding: 8px; text-align: center; }
+    input { width: 50px; }
+    .asignacion { background-color: #d4f4dd; font-weight: bold; }
+  </style>
+</head>
+<body>
+  <h2>🌿 Método de Vogel: Rutina Migrante</h2>
+  <p>Ingresa los costos de transporte, oferta y demanda:</p>
+
+  <table id="tabla">
+    <tr>
+      <th></th><th>CD₁</th><th>CD₂</th><th>CD₃</th><th>Oferta</th>
+    </tr>
+    <tr>
+      <th>P₁</th>
+      <td><input type="number" id="p1cd1"></td>
+      <td><input type="number" id="p1cd2"></td>
+      <td><input type="number" id="p1cd3"></td>
+      <td><input type="number" id="p1oferta"></td>
+    </tr>
+    <tr>
+      <th>P₂</th>
+      <td><input type="number" id="p2cd1"></td>
+      <td><input type="number" id="p2cd2"></td>
+      <td><input type="number" id="p2cd3"></td>
+      <td><input type="number" id="p2oferta"></td>
+    </tr>
+    <tr>
+      <th>Demanda</th>
+      <td><input type="number" id="cd1demanda"></td>
+      <td><input type="number" id="cd2demanda"></td>
+      <td><input type="number" id="cd3demanda"></td>
+      <td></td>
+    </tr>
+  </table>
+
+  <button onclick="resolverTodoVogel()">✨ Resolver Completo</button>
+  <div id="resultado"></div>
+<script>
+function resolverTodoVogel() {
+  let costos = [
+    [parseInt(p1cd1.value), parseInt(p1cd2.value), parseInt(p1cd3.value)],
+    [parseInt(p2cd1.value), parseInt(p2cd2.value), parseInt(p2cd3.value)]
+  ];
+
+  let oferta = [parseInt(p1oferta.value), parseInt(p2oferta.value)];
+  let demanda = [parseInt(cd1demanda.value), parseInt(cd2demanda.value), parseInt(cd3demanda.value)];
+
+  let totalCosto = 0;
+  let asignaciones = [];
+  while (oferta.some(o => o > 0) && demanda.some(d => d > 0)) {
+    // Penalizaciones por fila
+    const penalizacionesFila = costos.map((fila, i) => {
+      if (oferta[i] === 0) return -1;
+      const ordenados = fila.filter((_, j) => demanda[j] > 0).sort((a, b) => a - b);
+      return ordenados.length >= 2 ? ordenados[1] - ordenados[0] : ordenados[0];
+    });
+
+    // Penalizaciones por columna
+    const penalizacionesColumna = [0, 1, 2].map(j => {
+      if (demanda[j] === 0) return -1;
+      const col = [costos[0][j], costos[1][j]].filter((_, i) => oferta[i] > 0).sort((a, b) => a - b);
+      return col.length >= 2 ? col[1] - col[0] : col[0];
+    });
+
+    const todas = [...penalizacionesFila, ...penalizacionesColumna];
+    const mayor = Math.max(...todas);
+    const tipo = todas.indexOf(mayor) < 2 ? "fila" : "columna";
+    const indice = todas.indexOf(mayor) % 3;
+    let iAsignado, jAsignado;
+    if (tipo === "fila") {
+      iAsignado = todas.indexOf(mayor);
+      const fila = costos[iAsignado];
+      jAsignado = fila.reduce((minIdx, val, j) => (demanda[j] > 0 && val < fila[minIdx] ? j : minIdx), fila.findIndex((_, j) => demanda[j] > 0));
+    } else {
+      jAsignado = indice;
+      const columna = [costos[0][jAsignado], costos[1][jAsignado]];
+      iAsignado = columna.reduce((minIdx, val, i) => (oferta[i] > 0 && val < columna[minIdx] ? i : minIdx), columna.findIndex((_, i) => oferta[i] > 0));
+    }
+
+    const cantidad = Math.min(oferta[iAsignado], demanda[jAsignado]);
+    const costoUnitario = costos[iAsignado][jAsignado];
+    const costoAsignado = cantidad * costoUnitario;
+
+    oferta[iAsignado] -= cantidad;
+    demanda[jAsignado] -= cantidad;
+    totalCosto += costoAsignado;
+
+    asignaciones.push(`P${iAsignado + 1} → CD${jAsignado + 1}: ${cantidad} unidades × \$${costoUnitario} = \$${costoAsignado}`);
+  }
+
+  // Mostrar resultado final
+  let resultado = `<h3>🎉 Solución Final</h3>`;
+  resultado += `<p><strong>Asignaciones:</strong><br>${asignaciones.join("<br>")}</p>`;
+  resultado += `<p><strong>Costo total:</strong> \$${totalCosto}</p>`;
+  document.getElementById("resultado").innerHTML = resultado;
+}
+</script>
+</body>
+</html>

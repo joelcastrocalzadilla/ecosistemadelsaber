@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Teoría del Interés</title>
+  <style>
+    body { font-family: Arial, sans-serif; line-height: 1.6; margin: 40px; background-color: #f9f9f9; }
+    h1, h2, h3 { color: #2c3e50; }
+    table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+    th, td { border: 1px solid #ccc; padding: 10px; text-align: center; }
+    th { background-color: #e0e0e0; }
+    .ejemplo { background-color: #eef; padding: 15px; border-radius: 8px; margin-top: 20px; }
+    .boton-practica {
+      display: inline-block;
+      padding: 12px 20px;
+      font-size: 16px;
+      background-color: #2c3e50;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      text-decoration: none;
+      margin-top: 30px;
+    }
+    .boton-practica:hover {
+      background-color: #1a242f;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>🧠 Teoría del Interés: Simple vs Compuesto</h1>
+
+  <h2>🔍 Definición General</h2>
+  <p>El <strong>interés</strong> es la ganancia que genera una cantidad de dinero (capital) al ser invertida o prestada durante un tiempo determinado.</p>
+
+  <h2>📘 Interés Simple</h2>
+  <ul>
+    <li><strong>Definición:</strong> Se calcula solo sobre el capital inicial.</li>
+    <li><strong>Fórmula:</strong> <code>I = C × r × t</code></li>
+    <li><strong>Características:</strong>
+      <ul>
+        <li>No se suma al capital.</li>
+        <li>Fácil de calcular.</li>
+        <li>Usado en préstamos cortos.</li>
+      </ul>
+    </li>
+  </ul>
+
+  <h2>📗 Interés Compuesto</h2>
+  <ul>
+    <li><strong>Definición:</strong> Se calcula sobre el capital inicial y los intereses acumulados.</li>
+    <li><strong>Fórmula:</strong> <code>M = C × (1 + r)<sup>t</sup></code></li>
+    <li><strong>Características:</strong>
+      <ul>
+        <li>El interés se reinvierte.</li>
+        <li>Crecimiento exponencial.</li>
+        <li>Usado en inversiones a largo plazo.</li>
+      </ul>
+    </li>
+  </ul>
+
+  <h2>⚖️ Diferencias Clave</h2>
+  <table>
+    <tr>
+      <th>Aspecto</th>
+      <th>Interés Simple</th>
+      <th>Interés Compuesto</th>
+    </tr>
+    <tr>
+      <td>Base de cálculo</td>
+      <td>Solo el capital inicial</td>
+      <td>Capital + intereses acumulados</td>
+    </tr>
+    <tr>
+      <td>Crecimiento</td>
+      <td>Lineal</td>
+      <td>Exponencial</td>
+    </tr>
+    <tr>
+      <td>Aplicación común</td>
+      <td>Préstamos cortos</td>
+      <td>Inversiones a largo plazo</td>
+    </tr>
+    <tr>
+      <td>Complejidad</td>
+      <td>Baja</td>
+      <td>Alta</td>
+    </tr>
+  </table>
+
+  <div class="ejemplo">
+    <h3>🧪 Ejemplo de Aplicación</h3>
+    <p><strong>Situación:</strong> Joel invierte $1.000 durante 3 años a una tasa del 10% anual.</p>
+    <p><strong>Interés Simple:</strong> <code>I = 1000 × 0.10 × 3 = $300</code> → Monto final: <strong>$1.300</strong></p>
+    <p><strong>Interés Compuesto:</strong> <code>M = 1000 × (1 + 0.10)<sup>3</sup> = 1000 × 1.331 = $1.331</code> → Interés generado: <strong>$331</strong></p>
+  </div>
+
+  <!-- Botón para ir a la práctica -->
+  <div style="text-align: center;">
+    <a href="interes.html" class="boton-practica">🚀 Ir a la práctica de Tasas de Interés</a>
+  </div>
+
+</body>
+</html>

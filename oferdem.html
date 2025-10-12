@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Práctica de Oferta y Demanda</title>
+  <style>
+    body { font-family: Arial; margin: 30px; }
+    table { border-collapse: collapse; margin-bottom: 20px; }
+    th, td { border: 1px solid #999; padding: 8px; text-align: center; }
+    input[type="number"] { width: 80px; }
+    .bloque { margin-bottom: 40px; }
+    canvas { border: 1px solid #ccc; }
+    #interpretacion { 
+      margin-top:20px; 
+      padding:15px; 
+      border:1px solid #999; 
+      background:#f9f9f9; 
+      max-width:700px; 
+    }
+  </style>
+</head>
+<body>
+
+  <h1>🧮 Práctica de Oferta y Demanda</h1>
+
+  <div class="bloque">
+    <h2>📋 Tabla de Oferta</h2>
+    <table id="tablaOferta">
+      <tr><th>Precio (P)</th><th>Cantidad (Q)</th></tr>
+      <tr><td><input type="number" id="op1p"></td><td><input type="number" id="op1q"></td></tr>
+      <tr><td><input type="number" id="op2p"></td><td><input type="number" id="op2q"></td></tr>
+      <tr><td><input type="number" id="op3p" placeholder="↔"></td><td><input type="number" id="op3q" placeholder="↔"></td></tr>
+    </table>
+  </div>
+
+  <div class="bloque">
+    <h2>📋 Tabla de Demanda</h2>
+    <table id="tablaDemanda">
+      <tr><th>Precio (P)</th><th>Cantidad (Q)</th></tr>
+      <tr><td><input type="number" id="dp1p"></td><td><input type="number" id="dp1q"></td></tr>
+      <tr><td><input type="number" id="dp2p"></td><td><input type="number" id="dp2q"></td></tr>
+      <tr><td><input type="number" id="dp3p" placeholder="↔"></td><td><input type="number" id="dp3q" placeholder="↔"></td></tr>
+    </table>
+  </div>
+
+  <button onclick="calcular()">Calcular funciones y equilibrio</button>
+
+  <div class="bloque">
+    <h2>📐 Resultados</h2>
+    <p id="oferta"></p>
+    <p id="demanda"></p>
+    <p id="equilibrio"></p>
+    <p id="elasticidades"></p>
+  </div>
+
+  <div class="bloque">
+    <h2>📊 Gráfico</h2>
+    <canvas id="grafico" width="600" height="450"></canvas>
+  </div>
+
+  <div id="interpretacion"></div>
+
+  <script>
+    function calcularPendiente(x1, y1, x2, y2) {
+      return (y2 - y1) / (x2 - x1);
+    }
+
+    function calcular() {
+      // Datos de oferta
+      let op1p = Number(document.getElementById("op1p").value);
+      let op1q = Number(document.getElementById("op1q").value);
+      let op2p = Number(document.getElementById("op2p").value);
+      let op2q = Number(document.getElementById("op2q").value);
+
+      // Datos de demanda
+      let dp1p = Number(document.getElementById("dp1p").value);
+      let dp1q = Number(document.getElementById("dp1q").value);
+      let dp2p = Number(document.getElementById("dp2p").value);
+      let dp2q = Number(document.getElementById("dp2q").value);
+
+      // Oferta: pendiente en Q-P
+      let mOferta = calcularPendiente(op1q, op1p, op2q, op2p); // ΔP/ΔQ
+      let bOferta = op1p - mOferta * op1q; // P = mQ + b
+
+      // Demanda: pendiente en Q-P
+      let mDemanda = calcularPendiente(dp1q, dp1p, dp2q, dp2p);
+      let bDemanda = dp1p - mDemanda * dp1q;
+
+      let fOferta = `P = ${mOferta.toFixed(2)}Q + ${bOferta.toFixed(2)}`;
+      let fDemanda = `P = ${mDemanda.toFixed(2)}Q + ${bDemanda.toFixed(2)}`;
+
+      document.getElementById("oferta").textContent = "Función de oferta: " + fOferta;
+      document.getElementById("demanda").textContent = "Función de demanda: " + fDemanda;
+
+      // Equilibrio
+      let qEq = (bDemanda - bOferta) / (mOferta - mDemanda);
+      let pEq = mOferta * qEq + bOferta;
+
+      document.getElementById("equilibrio").textContent =
+        `Punto de equilibrio: Q* = ${qEq.toFixed(2)}, P* = ${pEq.toFixed(2)}`;
+
+      // Estimaciones para la tercera fila
+      let op3p = document.getElementById("op3p");
+      let op3q = document.getElementById("op3q");
+      if (op3p.value && !op3q.value) {
+        let q = (Number(op3p.value) - bOferta) / mOferta;
+        op3q.value = q.toFixed(2);
+      } else if (!op3p.value && op3q.value) {
+        let p = mOferta * Number(op3q.value) + bOferta;
+        op3p.value = p.toFixed(2);
+      }
+
+      let dp3p = document.getElementById("dp3p");
+      let dp3q = document.getElementById("dp3q");
+      if (dp3p.value && !dp3q.value) {
+        let q = (Number(dp3p.value) - bDemanda) / mDemanda;
+        dp3q.value = q.toFixed(2);
+      } else if (!dp3p.value && dp3q.value) {
+        let p = mDemanda * Number(dp3q.value) + bDemanda;
+        dp3p.value = p.toFixed(2);
+      }
+
+      // Elasticidades (punto medio)
+      let deltaQd = dp2q - dp1q;
+      let deltaPd = dp2p - dp1p;
+      let Pd = (dp1p + dp2p) / 2;
+      let Qd = (dp1q + dp2q) / 2;
+      let Ed = (deltaQd / deltaPd) * (Pd / Qd);
+
+      let deltaQo = op2q - op1q;
+      let deltaPo = op2p - op1p;
+      let Po = (op1p + op2p) / 2;
+      let Qo = (op1q + op2q) / 2;
+      let Eo = (deltaQo / deltaPo) * (Po / Qo);
+
+      let tipoEd = Ed > 1 ? "elástica" : Ed < 1 ? "inelástica" : "unitaria";
+      let tipoEo = Eo > 1 ? "elástica" : Eo < 1 ? "inelástica" : "unitaria";
+
+      document.getElementById("elasticidades").innerHTML = `
+        Elasticidad de la demanda: Ed = ${Ed.toFixed(2)} → La demanda es <strong>${tipoEd}</strong><br>
+        Elasticidad de la oferta: Eo = ${Eo.toFixed(2)} → La oferta es <strong>${tipoEo}</strong>
+      `;
+
+      // Gráfico
+      let canvas = document.getElementById("grafico");
+      let ctx = canvas.getContext("2d");
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      let maxQ = Math.max(op1q, op2q, dp1q, dp2q, qEq) * 1.2;
+      let maxP = Math.max(op1p, op2p, dp1p, dp2p, pEq) * 1.2;
+
+      let escalaX = (canvas.width - 100) / maxQ;
+      let escalaY = (canvas.height - 100) / maxP;
+      let origenX = 60;
+      let origenY = canvas.height - 40;
+
+            // Ejes
+      ctx.beginPath();
+      ctx.moveTo(origenX, 20);
+      ctx.lineTo(origenX, origenY);
+      ctx.lineTo(canvas.width - 20, origenY);
+      ctx.strokeStyle = "#000";
+      ctx.stroke();
+
+      ctx.fillText("Cantidad (Q)", canvas.width/2, canvas.height-10);
+      ctx.save();
+      ctx.translate(20, canvas.height/2);
+      ctx.rotate(-Math.PI/2);
+      ctx.fillText("Precio (P)", 0, 0);
+      ctx.restore();
+
+      // Escalas eje X
+      ctx.textAlign="center";
+      for (let i=0; i<=maxQ; i+=Math.round(maxQ/5)) {
+        let x = origenX + i*escalaX;
+        ctx.moveTo(x, origenY); ctx.lineTo(x, origenY+5); ctx.stroke();
+        ctx.fillText(i, x, origenY+20);
+      }
+      // Escalas eje Y
+      ctx.textAlign="right";
+      for (let j=0; j<=maxP; j+=Math.round(maxP/5)) {
+        let y = origenY - j*escalaY;
+        ctx.moveTo(origenX-5, y); ctx.lineTo(origenX, y); ctx.stroke();
+        ctx.fillText(j, origenX-10, y+5);
+      }
+
+      // Dibujar líneas
+      function dibujarLinea(m, b, color) {
+        let q1 = 0, q2 = maxQ;
+        let p1 = m*q1 + b;
+        let p2 = m*q2 + b;
+        ctx.beginPath();
+        ctx.moveTo(origenX + q1*escalaX, origenY - p1*escalaY);
+        ctx.lineTo(origenX + q2*escalaX, origenY - p2*escalaY);
+        ctx.strokeStyle = color;
+        ctx.lineWidth = 2;
+        ctx.stroke();
+      }
+
+      dibujarLinea(mOferta, bOferta, "green");
+      dibujarLinea(mDemanda, bDemanda, "blue");
+
+      // Punto de equilibrio
+      ctx.beginPath();
+      ctx.arc(origenX + qEq*escalaX, origenY - pEq*escalaY, 5, 0, 2*Math.PI);
+      ctx.fillStyle="red"; ctx.fill();
+      ctx.fillText(`E(${qEq.toFixed(1)},${pEq.toFixed(1)})`, origenX + qEq*escalaX + 10, origenY - pEq*escalaY - 10);
+
+      // Interpretación teórica
+      document.getElementById("interpretacion").innerHTML = `
+        <h3>📖 Interpretación teórica</h3>
+        <p>El punto de equilibrio (${qEq.toFixed(2)}, ${pEq.toFixed(2)}) representa el balance del mercado: allí la cantidad demandada coincide con la cantidad ofrecida.</p>
+        <p>Si el precio está <strong>por encima</strong> de ${pEq.toFixed(2)}, se genera un <strong>excedente</strong>: los productores ofrecen más de lo que los consumidores desean comprar, lo que presiona el precio hacia abajo.</p>
+        <p>Si el precio está <strong>por debajo</strong> de ${pEq.toFixed(2)}, aparece una <strong>escasez</strong>: los consumidores demandan más de lo que los productores ofrecen, lo que presiona el precio hacia arriba.</p>
+        <p>Si nos movemos hacia la <strong>derecha</strong> del equilibrio (más cantidad), se produciría más de lo que se demanda, generando exceso de producción.</p>
+        <p>Si nos movemos hacia la <strong>izquierda</strong> del equilibrio (menos cantidad), se produciría menos de lo que se demanda, generando desabastecimiento.</p>
+        <p>En resumen, el equilibrio es el punto de estabilidad del mercado: cualquier desviación genera fuerzas que tienden a devolver el sistema a ese balance natural entre oferta y demanda.</p>
+      `;
+    }
+  </script>
+</body>
+</html>

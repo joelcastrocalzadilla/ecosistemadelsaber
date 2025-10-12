@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Práctica del Interés</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 40px; background-color: #f4f4f4; }
+    h1 { color: #2c3e50; }
+    label, select, input { display: block; margin: 10px 0; }
+    input, select { padding: 8px; width: 300px; }
+    button { padding: 10px 20px; background-color: #2c3e50; color: white; border: none; cursor: pointer; }
+    .resultado { background-color: #e0f7fa; padding: 20px; margin-top: 20px; border-radius: 8px; display: none; }
+    .error { color: red; margin-top: 10px; }
+  </style>
+</head>
+<body>
+
+  <h1>🧪 Práctica del Interés</h1>
+
+  <label for="tipoInteres">Tipo de interés:</label>
+  <select id="tipoInteres">
+    <option value="">-- Selecciona --</option>
+    <option value="simple">Interés Simple</option>
+    <option value="compuesto">Interés Compuesto</option>
+  </select>
+
+  <label for="capital">Capital (C):</label>
+  <input type="number" id="capital" placeholder="Ej: 1000">
+
+  <label for="tasa">Tasa (%):</label>
+  <input type="number" id="tasa" placeholder="Ej: 10">
+  <select id="tipoTasa">
+    <option value="anual">Anual</option>
+    <option value="mensual">Mensual</option>
+    <option value="trimestral">Trimestral</option>
+    <option value="semestral">Semestral</option>
+  </select>
+
+  <label for="tiempo">Tiempo (t):</label>
+  <input type="number" id="tiempo" placeholder="Ej: 3">
+  <select id="tipoTiempo">
+    <option value="años">Años</option>
+    <option value="meses">Meses</option>
+    <option value="trimestres">Trimestres</option>
+    <option value="semestral">Semestres</option>
+  </select>
+
+  <label for="interes">Interés ganado (I):</label>
+  <input type="number" id="interes" placeholder="Dejar vacío si se desea calcular">
+
+  <label for="monto">Monto final (M):</label>
+  <input type="number" id="monto" placeholder="Dejar vacío si se desea calcular">
+
+  <button onclick="calcular()">Calcular</button>
+
+  <div class="error" id="error"></div>
+  <div class="resultado" id="resultado"></div>
+  <script>
+    function convertirTiempo(tiempo, tipoTiempo, tipoTasa) {
+      const conversion = {
+        anual: { años: 1, meses: 1/12, trimestres: 1/4, semestral: 1/2 },
+        mensual: { años: 12, meses: 1, trimestres: 3, semestral: 6 },
+        trimestral: { años: 4, meses: 1/3, trimestres: 1, semestral: 2 },
+        semestral: { años: 2, meses: 1/6, trimestres: 1/2, semestral: 1 }
+      };
+      return tiempo * conversion[tipoTasa][tipoTiempo];
+    }
+
+    function calcular() {
+      const tipoInteres = document.getElementById("tipoInteres").value;
+      const C = parseFloat(document.getElementById("capital").value);
+      const r = parseFloat(document.getElementById("tasa").value) / 100;
+      const tipoTasa = document.getElementById("tipoTasa").value;
+      const t = parseFloat(document.getElementById("tiempo").value);
+      const tipoTiempo = document.getElementById("tipoTiempo").value;
+      const I = parseFloat(document.getElementById("interes").value);
+      const M = parseFloat(document.getElementById("monto").value);
+
+      const errorDiv = document.getElementById("error");
+      const resultadoDiv = document.getElementById("resultado");
+      errorDiv.textContent = "";
+      resultadoDiv.style.display = "none";
+
+      const tiempoConvertido = convertirTiempo(t, tipoTiempo, tipoTasa);
+      let formula = "", sustitucion = "", resultado = "", montoFinal = "";
+
+      if (tipoInteres === "simple") {
+        if (isNaN(I)) {
+          const interes = C * r * tiempoConvertido;
+          formula = "I = C × r × t";
+          sustitucion = `I = ${C} × ${r} × ${tiempoConvertido.toFixed(2)} (convertido de ${t} ${tipoTiempo})`;
+          resultado = `Interés ganado: $${interes.toFixed(2)}`;
+          montoFinal = C + interes;
+        } else if (isNaN(C)) {
+          const capital = I / (r * tiempoConvertido);
+          formula = "C = I / (r × t)";
+          sustitucion = `C = ${I} / (${r} × ${tiempoConvertido.toFixed(2)})`;
+          resultado = `Capital: $${capital.toFixed(2)}`;
+          montoFinal = capital + I;
+        } else if (isNaN(r)) {
+          const tasa = I / (C * tiempoConvertido);
+          formula = "r = I / (C × t)";
+          sustitucion = `r = ${I} / (${C} × ${tiempoConvertido.toFixed(2)})`;
+          resultado = `Tasa: ${(tasa * 100).toFixed(2)}%`;
+          montoFinal = C + I;
+        } else if (isNaN(t)) {
+          const tiempo = I / (C * r);
+          formula = "t = I / (C × r)";
+          sustitucion = `t = ${I} / (${C} × ${r})`;
+          resultado = `Tiempo: ${tiempo.toFixed(2)} ${tipoTasa}`;
+          montoFinal = C + I;
+        } else if (isNaN(M)) {
+          const monto = C + I;
+          formula = "M = C + I";
+          sustitucion = `M = ${C} + ${I}`;
+          resultado = `Monto final: $${monto.toFixed(2)}`;
+          montoFinal = monto;
+        }
+      }
+
+      else if (tipoInteres === "compuesto") {
+        if (isNaN(M)) {
+          const monto = C * Math.pow(1 + r, tiempoConvertido);
+          formula = "M = C × (1 + r)^t";
+          sustitucion = `M = ${C} × (1 + ${r})^${tiempoConvertido.toFixed(2)} (convertido de ${t} ${tipoTiempo})`;
+          resultado = `Monto final: $${monto.toFixed(2)}`;
+          montoFinal = monto;
+        } else if (isNaN(C)) {
+          const capital = M / Math.pow(1 + r, tiempoConvertido);
+          formula = "C = M / (1 + r)^t";
+          sustitucion = `C = ${M} / (1 + ${r})^${tiempoConvertido.toFixed(2)}`;
+          resultado = `Capital: $${capital.toFixed(2)}`;
+          montoFinal = M;
+        } else if (isNaN(r)) {
+          const tasa = Math.pow(M / C, 1 / tiempoConvertido) - 1;
+          formula = "r = (M / C)^(1/t) - 1";
+          sustitucion = `r = (${M} / ${C})^(1/${tiempoConvertido.toFixed(2)}) - 1`;
+          resultado = `Tasa: ${(tasa * 100).toFixed(2)}%`;
+          montoFinal = M;
+        } else if (isNaN(t)) {
+          const tiempo = Math.log(M / C) / Math.log(1 + r);
+          formula = "t = log(M / C) / log(1 + r)";
+          sustitucion = `t = log(${M} / ${C}) / log(1 + ${r})`;
+          resultado = `Tiempo: ${tiempo.toFixed(2)} ${tipoTasa}`;
+          montoFinal = M;
+        } else if (isNaN(I)) {
+          const interes = C * Math.pow(1 + r, tiempoConvertido) - C;
+          formula = "I = M - C";
+          sustitucion = `I = (${C} × (1 + ${r})^${tiempoConvertido.toFixed(2)}) - ${C}`;
+          resultado = `Interés ganado: $${interes.toFixed(2)}`;
+          montoFinal = C + interes;
+        }
+      }
+
+      if (resultado) {
+        resultadoDiv.innerHTML = `
+          <p><strong>Fórmula usada:</strong> ${formula}</p>
+          <p><strong>Sustitución:</strong> ${sustitucion}</p>
+          <p><strong>Resultado:</strong> ${resultado}</p>
+          <p><strong>💰 Monto final:</strong> $${montoFinal.toFixed(2)}</p>
+          <p>🎉 ¡Cálculo completado </p>
+        `;
+        resultadoDiv.style.display = "block";
+      } else {
+        errorDiv.textContent = "⚠️ Por favor deja solo una variable vacía para calcular.";
+      }
+    }
+  </script>
+
+</body>
+</html>
