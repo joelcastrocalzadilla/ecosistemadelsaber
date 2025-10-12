@@ -59,7 +59,7 @@
     ];
 
     let puntos=0, fallos=0, palabraActual, globo, animacion;
-    let duracion=2000, pos=0;
+    let duracion=4000, pos=0;
     const alturaMax=500;
 
     const gameArea=document.getElementById("gameArea");
@@ -70,7 +70,7 @@
 
     let idiomaPregunta="es", idiomaRespuesta="en";
     function iniciarJuego(){
-      puntos=0; fallos=0; duracion=2000;
+      puntos=0; fallos=0; duracion=4000;
       puntosDiv.textContent="Puntos: "+puntos;
       fallosDiv.textContent="Fallos: "+fallos+" / 10";
       startBtn.style.display="none";
@@ -140,7 +140,7 @@
         crearGlobo();
       } else {
         registrarFallo(false);
-        duracion=Math.max(300,duracion/2); // acelera solo en fallo por clic
+        duracion=Math.max(300,duracion/1); // acelera solo en fallo por clic
         moverGlobo();
       }
     }
@@ -208,7 +208,7 @@
         puntos++;
         puntosDiv.textContent="Puntos: "+puntos;
         clearInterval(animacion);
-        duracion=2000; // reset normal al acertar
+        duracion=4000; // reset normal al acertar
 
         // 🎉 Motivación en hitos
         if(puntos===20){ lanzarConfeti("¡20 puntos! 🎉"); }
@@ -218,10 +218,11 @@
         crearGlobo();
       } else {
         registrarFallo(false);
-        duracion=Math.max(300,duracion/2);
+        duracion=Math.max(300,duracion/1);
         moverGlobo();
       }
     }
   </script>
 </body>
+
 </html>
