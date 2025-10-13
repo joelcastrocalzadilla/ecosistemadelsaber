@@ -155,6 +155,22 @@
       .centro-info { order: -1; }
     }
   </style>
+  <style>
+  .titilante {
+    font-weight: bold;
+    font-size: 1.2em;
+    animation: titilar 1.5s infinite;
+    text-align: center;
+    margin-top: 20px;
+  }
+
+  @keyframes titilar {
+    0%   { color: #FFD700; } /* amarillo */
+    33%  { color: #1E90FF; } /* azul */
+    66%  { color: #FF0000; } /* rojo */
+    100% { color: #FFD700; } /* amarillo otra vez */
+  }
+</style>
 </head>
 
 <body>
@@ -270,7 +286,9 @@
         <button class="boton" onclick="location.href='perfil.html'">Perfil</button>
         <button class="boton" onclick="location.href='apoyo-proyecto.html'">¿Cómo puedo apoyar este proyecto?</button>
       </div>
-       Se dictan Clases presencial o en linea, Se ayuda en sus Tareas y examenes. +58 414 9373550 - +57 313 3269952 
+      <p class="titilante">
+  Se dictan Clases presencial o en línea, Se ayuda en sus Tareas y exámenes. +58 414 9373550 - +57 313 3269952
+</p>
     </footer>
   </main>
 
@@ -317,6 +335,7 @@
   </script>
 </body>
 </html>
+
 
 
 
