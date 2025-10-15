@@ -174,30 +174,6 @@
 </head>
 
 <body>
-  <script>
-// 🟢 Activación del sello mágico
-(function activarSelloMagico() {
-  const sello = "🟢 sello_valido";
-  localStorage.setItem("selloMagico", btoa(sello)); // btoa = encriptado básico
-  console.log("✨ Sello mágico activado. El ritual puede comenzar.");
-})();
-
-// 🛡️ Verificación del sello antes de mostrar contenido
-(function verificarSello() {
-  const selloGuardado = localStorage.getItem("selloMagico");
-  if (!selloGuardado || atob(selloGuardado) !== "🟢 sello_valido") {
-    document.body.innerHTML = `
-      <main style="text-align:center; padding:40px;">
-        <h1 style="color:#b22222;">🚪 Acceso bloqueado</h1>
-        <p style="font-size:1.1rem; color:#555;">
-          El sello mágico no fue encontrado.<br>
-          Vuelve al inicio del ritual para abrir el portal correctamente.
-        </p>
-      </main>
-    `;
-  }
-})();
-</script>
   <main>
     <header>
       <div class="marquee-wrap" aria-hidden="true">
@@ -352,6 +328,7 @@
 </script>
 </body>
 </html>
+
 
 
 
