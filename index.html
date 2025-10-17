@@ -170,6 +170,45 @@
     66%  { color: #FF0000; } /* rojo */
     100% { color: #FFD700; } /* amarillo otra vez */
   }
+    .anuncio {
+  width: 160px;
+  margin: 10px;
+  padding: 10px;
+  background: var(--fondo1);
+  border-radius: 12px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  text-align: center;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  display: inline-block;
+  vertical-align: top;
+}
+
+.anuncio:hover {
+  transform: scale(1.1);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.2);
+}
+
+.anuncio img {
+  max-width: 100%;
+  border-radius: 8px;
+}
+
+.anuncio h4 {
+  font-size: 0.9rem;
+  color: var(--verde);
+  margin: 8px 0;
+}
+
+.anuncio a.boton {
+  display: block;
+  margin-top: 6px;
+  padding: 6px 10px;
+  background: var(--verde);
+  color: #fff;
+  font-size: 0.8rem;
+  border-radius: 8px;
+  text-decoration: none;
+}
 </style>
 </head>
 
@@ -289,19 +328,16 @@
       <p class="titilante">
   Se dictan Clases presenciales o en línea, Se ayuda en sus Tareas y exámenes. +58 414 9373550 - +57 313 3269952
 </p>
-      <div style="text-align: center; margin: 30px auto; max-width: 600px; background: #fff8dc; padding: 20px; border-radius: 14px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
-  <h3 style="color: #2e8b57;">📦 SISTEMA DE INVENTARIO VENTA Y COMPRA CONTADO Y CRÉDITO</h3>
-  <a href="https://go.hotmart.com/C102474272H?dp=1" target="_blank">
-    <img src="https://static-media.hotmart.com/24V6j4JBL7J8jJxhQuiEgAD102w=/300x300/smart/filters:format(webp):background_color(white)/hotmart/product_pictures/10964f0c-826e-4a60-815e-ebede134c341/99.jpg?w=920" alt="Sistema de Inventario" style="max-width:100%; border-radius:12px; margin: 20px 0;">
-  </a>
-  <p style="font-size: 1rem; color: #333;">
-    Herramienta creada por un productor independiente para gestionar ventas, compras, boletas y más.  
-    <br><br>
-    🌱 Al adquirirlo desde aquí, apoyas este Ecosistema del Saber.
-  </p>
-  <a href="https://go.hotmart.com/C102474272H?dp=1" target="_blank" style="display: inline-block; padding: 12px 20px; background: #2e8b57; color: #fff; font-weight: bold; border-radius: 10px; text-decoration: none; margin-top: 10px;">
-    ✨ Adquirir ahora
-  </a>
+    <div style="text-align: center;">
+  <div class="anuncio">
+    <a href="https://go.hotmart.com/C102474272H?dp=1" target="_blank">
+      <img src="https://static-media.hotmart.com/24V6j4JBL7J8jJxhQuiEgAD102w=/300x300/smart/filters:format(webp):background_color(white)/hotmart/product_pictures/10964f0c-826e-4a60-815e-ebede134c341/99.jpg?w=920" alt="Sistema de Inventario">
+    </a>
+    <h4>Sistema de Inventario</h4>
+    <a class="boton" href="https://go.hotmart.com/C102474272H?dp=1" target="_blank">✨ Ver más</a>
+  </div>
+
+  <!-- Puedes duplicar este bloque para otros productos -->
 </div>
     </footer>
   </main>
@@ -342,6 +378,7 @@
 </script>
 </body>
 </html>
+
 
 
 
