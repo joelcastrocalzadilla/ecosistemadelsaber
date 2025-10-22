@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<title>Circunferencia inscrita de un triángulo (incentro y radio) • HTML + MathJax</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- MathJax v3 -->
+<script>
+window.MathJax = { tex: { inlineMath: [['\\(','\\)'], ['$', '$']] }, svg: { fontCache: 'global' } };
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<style>
+  :root{
+    --bg:#0f172a; --card:#111827; --muted:#9ca3af; --text:#e5e7eb; --accent:#60a5fa; --ok:#34d399; --warn:#f59e0b; --bad:#ef4444;
+  }
+  body{margin:0; font-family:system-ui, Segoe UI, Arial, sans-serif; background:var(--bg); color:var(--text);}
+  header{padding:20px 24px; border-bottom:1px solid #1f2937;}
+  h1{margin:0; font-size:20px;}
+  main{padding:24px; display:grid; gap:16px; grid-template-columns:1fr; max-width:1100px; margin:0 auto;}
+  @media(min-width:980px){ main{grid-template-columns:1fr 1fr;} }
+  .card{background:var(--card); border:1px solid #1f2937; border-radius:12px; padding:16px;}
+  .row{display:grid; grid-template-columns:repeat(3,1fr); gap:10px;}
+  label{font-size:13px; color:var(--muted);}
+  input{width:100%; padding:10px; border-radius:8px; border:1px solid #374151; background:#0b1220; color:var(--text);}
+  .btn{padding:10px 14px; border-radius:8px; border:0; background:var(--accent); color:#081021; font-weight:700; cursor:pointer;}
+  .btn:hover{filter:brightness(1.1);}
+  .result{background:#0b1220; border:1px dashed #374151; border-radius:10px; padding:12px; margin-top:10px; white-space:pre-wrap;}
+  .pill{display:inline-block; padding:4px 8px; border-radius:999px; font-size:12px; margin-right:6px;}
+  .ok{background:#052e2b; color:var(--ok);} .warn{background:#2b1d07; color:var(--warn);} .bad{background:#2b0b0b; color:var(--bad);}
+  .mono{font-family:ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;}
+  canvas{width:100%; height:360px; background:#0b1220; border-radius:12px; border:1px solid #1f2937;}
+  .small{font-size:12px; color:var(--muted);}
+</style>
+</head>
+<body>
+<header>
+  <h1>Circunferencia inscrita (incentro y radio) • Secretos del Buen alumno</h1>
+</header>
+<main>
+  <section class="card">
+    <h2>Entrada de vértices en el plano</h2>
+    <p class="small">Ingresa las coordenadas de los vértices \(A(x_1,y_1)\), \(B(x_2,y_2)\), \(C(x_3,y_3)\).</p>
+    <div class="row">
+      <div>
+        <label>A: x₁</label>
+        <input id="x1" type="number" step="any" value="0" />
+      </div>
+      <div>
+        <label>A: y₁</label>
+        <input id="y1" type="number" step="any" value="0" />
+      </div>
+      <div>
+        <label>&nbsp;</label>
+        <span class="pill ok">Vértice A</span>
+      </div>
+    </div>
+    <div class="row">
+      <div>
+        <label>B: x₂</label>
+        <input id="x2" type="number" step="any" value="4" />
+      </div>
+      <div>
+        <label>B: y₂</label>
+        <input id="y2" type="number" step="any" value="0" />
+      </div>
+      <div>
+        <label>&nbsp;</label>
+        <span class="pill ok">Vértice B</span>
+      </div>
+    </div>
+    <div class="row">
+      <div>
+        <label>C: x₃</label>
+        <input id="x3" type="number" step="any" value="2" />
+      </div>
+      <div>
+        <label>C: y₃</label>
+        <input id="y3" type="number" step="any" value="3" />
+      </div>
+      <div>
+        <label>&nbsp;</label>
+        <span class="pill ok">Vértice C</span>
+      </div>
+    </div>
+    <div style="margin-top:12px; display:flex; gap:10px;">
+      <button class="btn" onclick="calcular()">Calcular incentro y radio</button>
+      <button class="btn" style="background:#34d399;" onclick="reset()">Reset</button>
+    </div>
+
+    <div id="tipo" style="margin-top:10px;"></div>
+
+    <div class="result" id="resumen"></div>
+
+    <h3 style="margin-top:18px;">Fórmulas utilizadas</h3>
+    <div class="result" id="formulas"></div>
+    <div class="result mono" id="pasos"></div>
+  </section>
+
+  <section class="card">
+    <h2>Visualización</h2>
+    <p class="small">Se muestran el triángulo, su incentro y la circunferencia inscrita.</p>
+    <canvas id="plot" width="600" height="360"></canvas>
+    <div class="result mono" id="coords"></div>
+  </section>
+
+  <section class="card" style="grid-column:1 / -1;">
+    <h2>Casos especiales y fórmulas rápidas</h2>
+    <p class="small">
+      En cualquier triángulo, el radio inscrito es \(r = \dfrac{A}{s}\), donde \(A\) es el área y \(s\) el semiperímetro. El incentro es el baricentro ponderado por los lados:
+      \(I=\left(\dfrac{ax_A + bx_B + cx_C}{a+b+c}, \dfrac{ay_A + by_B + cy_C}{a+b+c}\right)\).
+      • Equilátero (\(a=b=c\)): \(r = \dfrac{\sqrt{3}}{6}a\). • Isósceles (\(a=b\)): \(A=\dfrac{c\,h}{2}\), \(h=\sqrt{a^2-(c/2)^2}\), entonces \(r=A/s\).
+    </p>
+    <div class="result" id="especiales"></div>
+  </section>
+</main>
+
+<script>
+function reset(){
+  document.getElementById('x1').value = 0;
+  document.getElementById('y1').value = 0;
+  document.getElementById('x2').value = 4;
+  document.getElementById('y2').value = 0;
+  document.getElementById('x3').value = 2;
+  document.getElementById('y3').value = 3;
+  calcular();
+}
+
+function calcular(){
+  const x1 = parseFloat(document.getElementById('x1').value);
+  const y1 = parseFloat(document.getElementById('y1').value);
+  const x2 = parseFloat(document.getElementById('x2').value);
+  const y2 = parseFloat(document.getElementById('y2').value);
+  const x3 = parseFloat(document.getElementById('x3').value);
+  const y3 = parseFloat(document.getElementById('y3').value);
+
+  // Lados: a=|BC|, b=|CA|, c=|AB|
+  const a = Math.hypot(x3-x2, y3-y2);
+  const b = Math.hypot(x1-x3, y1-y3);
+  const c = Math.hypot(x2-x1, y2-y1);
+
+  // Semiperímetro y área (Herón)
+  const s = (a+b+c)/2;
+  const area = Math.sqrt(Math.max(0, s*(s-a)*(s-b)*(s-c)));
+
+  // Incentro como promedio ponderado por lados
+  const Ix = (a*x1 + b*x2 + c*x3) / (a+b+c);
+  const Iy = (a*y1 + b*y2 + c*y3) / (a+b+c);
+
+  // Radio inscrito: r = A/s
+  const r = area / s;
+
+  // Tipo de triángulo
+  const eps = 1e-9;
+  let tipo = '';
+  if (Math.abs(a-b)<eps && Math.abs(b-c)<eps) tipo = 'Equilátero';
+  else if (Math.abs(a-b)<eps || Math.abs(b-c)<eps || Math.abs(c-a)<eps) tipo = 'Isósceles';
+  else tipo = 'Escaleno';
+  document.getElementById('tipo').innerHTML = `<span class="pill ok">${tipo}</span>`;
+
+  // Resumen
+  const resumen = [
+    `Lados: a=|BC|=${a.toFixed(4)}, b=|CA|=${b.toFixed(4)}, c=|AB|=${c.toFixed(4)}`,
+    `Semiperímetro: s=${s.toFixed(4)}`,
+    `Área (Herón): A=${area.toFixed(4)}`,
+    `Incentro: I=(xᵢ,yᵢ)=(${Ix.toFixed(6)}, ${Iy.toFixed(6)})`,
+    `Radio inscrito: r=${r.toFixed(6)}`
+  ].join('\n');
+  document.getElementById('resumen').textContent = resumen;
+
+  // Fórmulas en MathJax
+  const formulas = `
+  \\[
+    s=\\frac{a+b+c}{2},\\quad A=\\sqrt{s(s-a)(s-b)(s-c)},\\quad r=\\frac{A}{s}
+  \\]
+  \\[
+    I=\\left(\\frac{ax_A + bx_B + cx_C}{a+b+c},\\ \\frac{ay_A + by_B + cy_C}{a+b+c}\\right)
+  \\]
+  \\[
+    (x - x_i)^2 + (y - y_i)^2 = r^2
+  \\]
+  `;
+  document.getElementById('formulas').innerHTML = formulas;
+
+  // Pasos numéricos
+  const pasos = `
+a = |BC| = ${a.toFixed(6)},\tb = |CA| = ${b.toFixed(6)},\tc = |AB| = ${c.toFixed(6)}
+s = (a+b+c)/2 = ${s.toFixed(6)}
+A = sqrt( s(s-a)(s-b)(s-c) ) = ${area.toFixed(6)}
+xᵢ = (a·x₁ + b·x₂ + c·x₃)/(a+b+c) = ${Ix.toFixed(6)}
+yᵢ = (a·y₁ + b·y₂ + c·y₃)/(a+b+c) = ${Iy.toFixed(6)}
+r = A/s = ${r.toFixed(6)}
+`;
+  document.getElementById('pasos').textContent = pasos;
+
+  // Casos especiales
+  const re = (Math.sqrt(3)/6)*((a+b+c)/3); // sólo ilustrativo si equilátero con lado L
+  const especiales = `
+Equilátero (a=b=c=L): \\(A=\\tfrac{\\sqrt{3}}{4}L^2\\), \\(s=\\tfrac{3L}{2}\\), \\(r=\\tfrac{A}{s}=\\tfrac{\\sqrt{3}}{6}L\\).\\quad
+Isósceles (a=b): \\(h=\\sqrt{a^2-(c/2)^2}\\), \\(A=\\tfrac{c h}{2}\\), \\(r=\\tfrac{A}{s}\\).\\quad
+Escaleno: siempre \\(r=\\tfrac{A}{s}\\), incentro por promedio ponderado.
+`;
+  document.getElementById('especiales').innerHTML = especiales;
+
+  // Ecuación explícita
+  document.getElementById('coords').textContent =
+    `Ecuación: (x - ${Ix.toFixed(6)})^2 + (y - ${Iy.toFixed(6)})^2 = ${(r*r).toFixed(6)}\n` +
+    `Centro (incentro): (${Ix.toFixed(6)}, ${Iy.toFixed(6)}), Radio: ${r.toFixed(6)}`;
+
+  // Dibujo
+  dibujar(x1,y1,x2,y2,x3,y3, Ix, Iy, r);
+
+  if (window.MathJax && window.MathJax.typesetPromise) window.MathJax.typesetPromise();
+}
+
+function dibujar(x1,y1,x2,y2,x3,y3, cx, cy, r){
+  const canvas = document.getElementById('plot');
+  const ctx = canvas.getContext('2d');
+
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+
+  // Fit with padding
+  let minX = Math.min(x1,x2,x3), maxX = Math.max(x1,x2,x3);
+  let minY = Math.min(y1,y2,y3), maxY = Math.max(y1,y2,y3);
+  if (cx!=null && cy!=null && r!=null){
+    minX = Math.min(minX, cx-r); maxX = Math.max(maxX, cx+r);
+    minY = Math.min(minY, cy-r); maxY = Math.max(maxY, cy+r);
+  }
+
+  const pad = 20, w = canvas.width - 2*pad, h = canvas.height - 2*pad;
+  const dx = maxX - minX || 1, dy = maxY - minY || 1;
+  const scaleX = w / dx, scaleY = h / dy, scale = Math.min(scaleX, scaleY);
+
+  function mapX(x){ return pad + (x - minX)*scale; }
+  function mapY(y){ return canvas.height - pad - (y - minY)*scale; }
+
+  // Axes subtle
+  ctx.strokeStyle = '#1f2937';
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(pad, canvas.height-pad);
+  ctx.lineTo(canvas.width-pad, canvas.height-pad);
+  ctx.moveTo(pad, pad);
+  ctx.lineTo(pad, canvas.height-pad);
+  ctx.stroke();
+
+  // Triangle
+  ctx.strokeStyle = '#60a5fa';
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.moveTo(mapX(x1), mapY(y1));
+  ctx.lineTo(mapX(x2), mapY(y2));
+  ctx.lineTo(mapX(x3), mapY(y3));
+  ctx.closePath();
+  ctx.stroke();
+
+  // Points
+  function drawPoint(x,y,color,label){
+    ctx.fillStyle = color;
+    ctx.beginPath();
+    ctx.arc(mapX(x), mapY(y), 4, 0, Math.PI*2);
+    ctx.fill();
+    ctx.fillStyle = '#9ca3af';
+    ctx.font = '12px Segoe UI';
+    ctx.fillText(label, mapX(x)+6, mapY(y)-6);
+  }
+  drawPoint(x1,y1,'#93c5fd','A');
+  drawPoint(x2,y2,'#93c5fd','B');
+  drawPoint(x3,y3,'#93c5fd','C');
+
+  // Incenter and incircle
+  if (cx!=null && cy!=null && r!=null){
+    drawPoint(cx,cy,'#34d399','I');
+    ctx.strokeStyle = '#34d399';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.arc(mapX(cx), mapY(cy), r*scale, 0, Math.PI*2);
+    ctx.stroke();
+  }
+}
+
+// Inicial
+calcular();
+</script>
+</body>
+</html>
